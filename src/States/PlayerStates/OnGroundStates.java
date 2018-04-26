@@ -1,12 +1,10 @@
-package States;
+package States.PlayerStates;
 
 import Actors.Player;
 import Objects.GameObject;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
-
-import static Utilities.Util.collide;
 
 public class OnGroundStates extends CreatureState{
     protected boolean[] keys;
@@ -26,7 +24,7 @@ public class OnGroundStates extends CreatureState{
     }
 
     private void checkIfFalling() {
-        player.dy += player.grav;
+        player.dy += Player.grav;
 
         Rectangle currentPosition = player.getHitBox();
         Rectangle nextPosition = new Rectangle(player.getX(), player.getY(), player.getwidth(), player.getHeight());

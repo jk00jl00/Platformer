@@ -1,4 +1,4 @@
-package States;
+package States.PlayerStates;
 
 import Actors.Player;
 
@@ -10,7 +10,7 @@ public class JumpingState extends InAirStates{
     @Override
     public void update() {
         super.update();
-        if(player.dy < 0){
+        if(player.dy > 0){
             exit();
             PlayerState.push(new FallingState(player));
             PlayerState.getCurrent().update();

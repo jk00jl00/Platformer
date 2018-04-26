@@ -1,4 +1,4 @@
-package States;
+package States.PlayerStates;
 
 import Actors.Player;
 import Objects.GameObject;
@@ -15,6 +15,7 @@ public class InAirStates extends CreatureState{
     protected double inAirXAcc= 0.2;
     protected double xMaxSpeed = 7.5;
     protected double jumpSpeed = 12.5;
+    protected double maxAirSpeed = 20;
 
 
     InAirStates(Player creature) {
@@ -45,17 +46,18 @@ public class InAirStates extends CreatureState{
             player.dx = Util.clamp(player.dx, -xMaxSpeed, 0);
         }
         if(!keys[KeyEvent.VK_D] && !keys[KeyEvent.VK_A]){
-            if(player.dx > 0.3){
-                player.dx -= 0.3;
-            } else if(player.dx < -0.3){
-                player.dx += 0.3;
+            if(player.dx > 0.5){
+                player.dx -= 0.5;
+            } else if(player.dx < -0.5){
+                player.dx += 0.5;
             }
         }
     }
 
     @Override
     public void move() {
-        player.dy += player.grav;
+        player.dy += Player.grav;
+        player.dy = Util.clamp(player.dy, -100, maxAirSpeed);
 
         Rectangle currentPosition = player.getHitBox();
         Rectangle nextPosition = new Rectangle(player.getX(), player.getY(), player.getwidth(), player.getHeight());

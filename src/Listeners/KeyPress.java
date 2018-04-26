@@ -1,10 +1,16 @@
+package Listeners;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 //The class used to record key presses in game to later be handled by the different components
 public class KeyPress implements KeyListener {
 
-    boolean[] keysPressed = new boolean[256];
+    private boolean[] keysPressed = new boolean[256];
+
+    public boolean[] getKeysPressed() {
+        return keysPressed;
+    }
 
     @Override
     public void keyTyped(KeyEvent e) {

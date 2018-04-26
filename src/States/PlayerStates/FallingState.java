@@ -1,12 +1,6 @@
-package States;
+package States.PlayerStates;
 
 import Actors.Player;
-import Objects.GameObject;
-import Utilities.Util;
-
-import java.awt.*;
-
-import static Utilities.Util.collide;
 
 public class FallingState extends InAirStates {
 

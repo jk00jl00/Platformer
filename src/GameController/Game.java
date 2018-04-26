@@ -1,6 +1,13 @@
+package GameController;
+
 import Gfx.Camera;
 import Gfx.Display;
-import States.PlayerState;
+import LevelManagment.Level;
+import Listeners.KeyPress;
+import Listeners.MouseListener;
+import States.GameStates.MainMenu;
+import States.GameStates.State;
+import States.PlayerStates.PlayerState;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -17,6 +24,7 @@ public class Game implements Runnable{
     //Screen variables
     private Display display;
     private KeyPress kl = new KeyPress();
+    private MouseListener ml = new MouseListener();
     private int width = 1280;
     private int height = 720;
     private String title;
@@ -31,6 +39,8 @@ public class Game implements Runnable{
     Game(){
         this.display = new Display(width, height, "Game");
         this.display.addKeyListener(this.kl);
+        this.display.addMouseListener(this.ml);
+        this.display.addMouseMotionListener(this.ml);
     }
 
     //Initializes variables before starting the gameLoop
@@ -39,6 +49,8 @@ public class Game implements Runnable{
         level = new Level();
         level.instantiate();
         camera = new Camera(level.getPlayer(), width, height);
+        State.setGame(this);
+        State.currentState = new MainMenu();
     }
 
     //Holds the gameLoop and keeps it running
@@ -67,7 +79,7 @@ public class Game implements Runnable{
             timer += now - start;
             start = now;
             while (dt >= 1) {
-                update();
+                State.currentState.update();
                 draw();
                 dt --;
                 ticks++;
@@ -98,10 +110,11 @@ public class Game implements Runnable{
         g = (Graphics2D) bs.getDrawGraphics();
 
         //Start of drawing
-        g.setColor(Color.DARK_GRAY);
+        /*g.setColor(Color.DARK_GRAY);
         g.fillRect(0, 0,width, height);
 
-        level.draw(g, camera);
+        level.draw(g, camera);*/
+        State.currentState.draw(g);
 
 
 
@@ -114,8 +127,8 @@ public class Game implements Runnable{
 
     //Updates all gameObjects
     private void update() {
-        level.getPlayer().setKeys(this.kl.keysPressed);
-        if(kl.keysPressed[KeyEvent.VK_R]){
+        level.getPlayer().setKeys(this.kl.getKeysPressed());
+        if(kl.getKeysPressed()[KeyEvent.VK_R]){
             level.getPlayer().resetPos();
         }
         level.update();
@@ -133,5 +146,33 @@ public class Game implements Runnable{
 
     public static void main(String[] args) {
         new Game().start();
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public MouseListener getml() {
+        return ml;
+    }
+
+    public Display getDisplay() {
+        return display;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public Level getLevel() {
+        return level;
+    }
+
+    public KeyPress getkl() {
+        return kl;
+    }
+
+    public Camera getCamera() {
+        return camera;
     }
 }
