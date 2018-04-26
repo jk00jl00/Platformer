@@ -21,6 +21,7 @@ public class Level {
         gameObjects.add(new Platform(100, 600, 50, 10, false));
         gameObjects.add(new Platform(150, 500, 50, 10, false));
         gameObjects.add(new Platform(200, 400, 50, 10, false));
+        gameObjects.add(new Platform(400, 400, 5, 200, false));
         gameCreatures.add(new Player(50, 600, 1));
         player = (Player) gameCreatures.get(0);
     }

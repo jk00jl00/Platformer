@@ -111,6 +111,9 @@ public class Game implements Runnable{
     //Updates all gameObjects
     private void update() {
         level.getPlayer().setKeys(this.kl.keysPressed);
+        if(kl.keysPressed[KeyEvent.VK_R]){
+            level.getPlayer().resetPos();
+        }
         level.update();
     }
 

@@ -1,16 +1,25 @@
 package Actors;
 
 import Objects.GameObject;
+import Utilities.Util;
 
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
 public class Player extends Creature{
+
+    private enum state{
+        JUMPING, WALKING, RUNNING, STANDING
+    }
+
     private double dy;
     private double dx;
 
-    private double xAccceleration = 0.2;
+    state currentState = state.STANDING;
+
+    private double xAccceleration = 0.5;
+    private double xMaxSpeed = 10;
     private double jumpSpeed = 15;
 
     private static final double grav = 0.5;
@@ -32,6 +41,7 @@ public class Player extends Creature{
         move();
         updatePosition();
         collide();
+        //System.out.println("Player statistics:\n" + "dx: " + dx + "  ||  dy: " + dy);
     }
 
     private void move() {
@@ -46,7 +56,7 @@ public class Player extends Creature{
                     dx = 0;
                 }
                 dx += xAccceleration;
-                Math.max(dx, 1);
+                dx = Util.clamp(dx, 0, xMaxSpeed);
 
             }
             if (keys[KeyEvent.VK_A]) {
@@ -54,15 +64,15 @@ public class Player extends Creature{
                     dx = 0;
                 }
                 dx -= xAccceleration;
-                Math.min(dx, -1);
+                dx = Util.clamp(dx, -xMaxSpeed, 0);
             }
         }
     }
 
     private void jump() {
-        if (!jumping) {
+        if (!currentState.equals(state.JUMPING)) {
             dy -= jumpSpeed;
-            jumping = true;
+            currentState = state.JUMPING;
         }
     }
 
@@ -83,18 +93,31 @@ public class Player extends Creature{
         nextPosition.x += Math.round(dx);
 
         for(GameObject o: gos)
-            if (collide(o.getHitBox()[0], nextPosition)) {
-                nextPosition.x = currentPosition.x;
-                nextPosition.x = o.getHitBox()[0].x - this.width;
-                dx = 0;
+            if (o.isSolid()) {
+                if (collide(o.getHitBox()[0], nextPosition)) {
+                    if (currentPosition.x + this. width <= o.getHitBox()[0].x) {
+                        nextPosition.x = o.getHitBox()[0].x - this.width;
+                    } else{
+                        nextPosition.x = o.getHitBox()[0].x +o.getHitBox()[0].width;
+                    }
+                    dx = 0;
+                }
             }
         nextPosition.y += Math.round(dy);
 
         for(GameObject o: gos)
-            if(collide(o.getHitBox()[0], nextPosition)){
-                nextPosition.y = currentPosition.y;
-                dy = 0;
-                jumping = false;
+            if (o.isSolid()) {
+                if(collide(o.getHitBox()[0], nextPosition)){
+                    if (currentPosition.y + this.height <= o.getHitBox()[0].y) {
+                        nextPosition.y = o.getHitBox()[0].y - this.height;
+                    } else{
+                        nextPosition.y = o.getHitBox()[0].y + o.getHitBox()[0].height;
+                    }
+                    dy = 0;
+                    if(this.y + this.height <= o.getHitBox()[0].y){
+                        currentState = state.WALKING;
+                    }
+                }
             }
 
         if(!nextPosition.equals(currentPosition)){
@@ -112,5 +135,12 @@ public class Player extends Creature{
 
     public void setKeys(boolean[] b) {
         this.keys = b;
+    }
+
+    public void resetPos() {
+        this.x = 500;
+        this.y = 0;
+        this.hitBox.x = this.x;
+        this.hitBox.y = this.y;
     }
 }
