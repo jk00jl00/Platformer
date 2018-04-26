@@ -1,5 +1,6 @@
 import Actors.Creature;
 import Actors.Player;
+import Gfx.Camera;
 import Objects.GameObject;
 import Objects.Platform;
 
@@ -36,12 +37,12 @@ public class Level {
         }
     }
 
-    public void draw(Graphics2D g) {
+    public void draw(Graphics2D g, Camera camera) {
         for(GameObject o: gameObjects){
-            o.draw(g);
+            o.draw(g, camera);
         }
         for(Creature c: gameCreatures){
-            c.draw(g);
+            c.draw(g, camera);
         }
     }
 

@@ -1,11 +1,12 @@
 package Actors;
 
+import Gfx.Camera;
 import Objects.GameObject;
 
 import java.awt.*;
 
 public class Creature {
-    //The position and health of the creature, used by all subclasses of creature
+    //The position and health of the player, used by all subclasses of player
     protected int x;
     protected int y;
     protected int health;
@@ -14,8 +15,8 @@ public class Creature {
     protected Rectangle hitBox;
 
     //Static constants
-    protected static final int DEFAULT_CREATURE_WIDTH_ = 20;
-    protected static final int DEFAULT_CREATURE_HEIGHT_ = 50;
+    protected static final int DEFAULT_CREATURE_WIDTH_ = 15;
+    protected static final int DEFAULT_CREATURE_HEIGHT_ = 35;
 
     public Creature(int x, int y, int health){
         this.x = x;
@@ -27,8 +28,23 @@ public class Creature {
 
     }
 
-    public void draw(Graphics2D g){
+    public void draw(Graphics2D g, Camera camera){
 
     }
 
+    public int getwidth() {
+        return width;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getHeight() {
+        return height;
+    }
 }

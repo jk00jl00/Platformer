@@ -1,5 +1,7 @@
 package Objects;
 
+import Gfx.Camera;
+
 import java.awt.*;
 
 //The superclass of all objects in game
@@ -17,7 +19,7 @@ public class GameObject {
 
     }
 
-    public void draw(Graphics2D g){
+    public void draw(Graphics2D g, Camera camera){
 
     }
 

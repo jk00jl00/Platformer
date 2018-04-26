@@ -1,5 +1,6 @@
 import Gfx.Camera;
 import Gfx.Display;
+import States.PlayerState;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -37,6 +38,7 @@ public class Game implements Runnable{
         drawQueued = true;
         level = new Level();
         level.instantiate();
+        camera = new Camera(level.getPlayer(), width, height);
     }
 
     //Holds the gameLoop and keeps it running
@@ -73,6 +75,8 @@ public class Game implements Runnable{
 
             if(timer >= 1000000000){
                 System.out.println("Frames: " + ticks);
+                System.out.println("State: " + PlayerState.getCurrent());
+                System.out.println("dx: " + level.getPlayer().dx + "  ||  dy: " + level.getPlayer().dy);
                 ticks = 0;
                 timer = 0;
             }
@@ -97,7 +101,7 @@ public class Game implements Runnable{
         g.setColor(Color.DARK_GRAY);
         g.fillRect(0, 0,width, height);
 
-        level.draw(g);
+        level.draw(g, camera);
 
 
 
@@ -115,6 +119,7 @@ public class Game implements Runnable{
             level.getPlayer().resetPos();
         }
         level.update();
+        camera.update();
     }
 
     //Starts the game by initializing a thread and starting the gameLoop

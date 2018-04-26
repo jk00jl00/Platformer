@@ -1,5 +1,7 @@
 package Objects;
 
+import Gfx.Camera;
+
 import java.awt.*;
 
 public class Platform extends GameObject{
@@ -34,8 +36,8 @@ public class Platform extends GameObject{
     }
 
     @Override
-    public void draw(Graphics2D g) {
+    public void draw(Graphics2D g, Camera camera) {
         g.setColor(Color.BLACK);
-        g.fillRect(this.x,this.y, this.width, this.height);
+        g.fillRect(this.x -  camera.getX(),this.y + camera.getY(), this.width, this.height);
     }
 }
