@@ -1,21 +1,27 @@
 package States.GameStates;
 
 import Listeners.MouseListener;
+import Objects.GameObject;
 import Objects.Platform;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.security.Key;
 
 public class LevelEditState extends State {
 
     private MouseListener ml;
     private Rectangle tempRect;
+    private Platform tempPlatform;
+
+    private static GameObject justAdded;
 
 
     @Override
     public void update() {
-        if(game.getkl().getKeysPressed()[KeyEvent.VK_ESCAPE]){
+        if(game.getkl().getKeysPressed()[KeyEvent.VK_ESCAPE] || game.getkl().getKeysPressed()[KeyEvent.VK_P]){
             game.getkl().setKey(KeyEvent.VK_ESCAPE ,false);
+            game.getkl().setKey(KeyEvent.VK_P ,false);
             pop();
         }
 
@@ -23,10 +29,24 @@ public class LevelEditState extends State {
             tempRect = ml.dragTangle;
         }
         if(ml.rectReady && tempRect != null){
-            game.getLevel().addPlatform(new Platform(tempRect.x, tempRect.y, tempRect.width, tempRect.height, false));
+            tempPlatform = new Platform(tempRect.x + game.getCamera().getX(), tempRect.y, tempRect.width, tempRect.height, false);
+            if(justAdded == null) justAdded = tempPlatform;
+            else {
+                tempPlatform.next = justAdded;
+                justAdded = tempPlatform;
+            }
+            game.getLevel().addPlatform((Platform) justAdded);
             tempRect = null;
             ml.dragTangle.width = 0;
             ml.rectReady = false;
+        }
+
+        if(game.getkl().getControlMasked()[KeyEvent.VK_Z]){
+            if (justAdded != null) {
+                game.getLevel().removePlatform((Platform) justAdded);
+                justAdded = justAdded.next;
+            }
+            game.getkl().seControlMasked(KeyEvent.VK_Z, false);
         }
     }
 
@@ -39,6 +59,9 @@ public class LevelEditState extends State {
         if (tempRect != null) {
             g.fillRect(tempRect.x, tempRect.y, tempRect.width, tempRect.height);
         }
+        g.setColor(Color.WHITE);
+        g.drawString("Edit mode - Undo: ctrl z  ||  Place platform: click and drag", 0,
+                (int) g.getFontMetrics().getStringBounds("Edit mode - Undo: ctrl z  ||  Place platform: click and drag", g).getHeight());
     }
 
     @Override

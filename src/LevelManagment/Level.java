@@ -67,4 +67,8 @@ public class Level {
     public void addPlatform(Platform platform) {
         this.gameObjects.add(platform);
     }
+
+    public void removePlatform(Platform justAdded) {
+        gameObjects.remove(justAdded);
+    }
 }

@@ -1,5 +1,6 @@
 package Objects;
 
+import GameController.Game;
 import Gfx.Camera;
 
 import java.awt.*;
@@ -10,6 +11,7 @@ public class GameObject {
     protected int y;
     protected Rectangle[] hitBox;
     public Color color;
+    public GameObject next;
 
     public GameObject(int x, int y){
         this.x = x;

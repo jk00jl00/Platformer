@@ -7,6 +7,7 @@ import java.awt.event.KeyListener;
 public class KeyPress implements KeyListener {
 
     private boolean[] keysPressed = new boolean[256];
+    private boolean[] controlMasked = new boolean[256];
 
     public boolean[] getKeysPressed() {
         return keysPressed;
@@ -19,7 +20,8 @@ public class KeyPress implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        keysPressed[e.getKeyCode()] = true;
+        if(e.isControlDown()) controlMasked[e.getKeyCode()] = true;
+        else keysPressed[e.getKeyCode()] = true;
     }
 
     @Override
@@ -29,5 +31,13 @@ public class KeyPress implements KeyListener {
 
     public void setKey(int key, boolean b) {
         keysPressed[key] = b;
+    }
+
+    public boolean[] getControlMasked() {
+        return controlMasked;
+    }
+
+    public void seControlMasked(int key, boolean b) {
+        controlMasked[key] = b;
     }
 }
