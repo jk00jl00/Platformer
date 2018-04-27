@@ -5,7 +5,12 @@ public class PlayerState{
     private static PlayerStateStack playerState = new PlayerStateStack();
 
     public static CreatureState getCurrent(){
-        return playerState.getCurrent();
+        try {
+            return playerState.getCurrent();
+        } catch (NullPointerException e) {
+            return null;
+            
+        }
     }
 
     public static void push(CreatureState state){

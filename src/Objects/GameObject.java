@@ -9,6 +9,7 @@ public class GameObject {
     protected int x;
     protected int y;
     protected Rectangle[] hitBox;
+    public Color color;
 
     public GameObject(int x, int y){
         this.x = x;

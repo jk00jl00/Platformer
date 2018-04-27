@@ -31,21 +31,25 @@ public class MainMenu extends State{
 
             if(m.highlighted)
                 g.setColor(Color.BLUE);
-            g.drawString(m.text, game.getWidth()/2 - (int)g.getFontMetrics().getStringBounds(m.text, g).getWidth()/2, m.y);;
+            g.drawString(m.text, game.getWidth()/2 - (int)g.getFontMetrics().getStringBounds(m.text, g).getWidth()/2, m.y);
+
+            g.setColor(Color.BLUE);
+            g.drawRect(m.clickBox.x, m.clickBox.y, m.clickBox.width, m.clickBox.height);
         }
     }
 
     @Override
     public void update() {
-        if(menuTexts[0].clickBox == null || game.getml().lClicks == null) return;
+        if(menuTexts[0].clickBox == null || game.getml().lClick == null) return;
         for (MenuText m : menuTexts) {
-            if(m.clickBox.intersects(game.getml().lClicks)){
+            if(m.clickBox.intersects(game.getml().lClick)){
                 switch (m.text){
                     case "Exit":
                         System.exit(0);
                         break;
                     case "Start":
                         State.currentState = new PlayState();
+                        State.currentState.init();
                 }
             }
         }

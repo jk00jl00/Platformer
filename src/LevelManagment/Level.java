@@ -15,6 +15,12 @@ public class Level {
     private ArrayList<GameObject> gameObjects = new ArrayList<>();
     private ArrayList<Creature> gameCreatures = new ArrayList<>();
 
+    private boolean darker = false;
+
+    public void setDarker(boolean b){
+        this.darker = b;
+    }
+
     public Level(){
 
     }
@@ -41,14 +47,24 @@ public class Level {
 
     public void draw(Graphics2D g, Camera camera) {
         for(GameObject o: gameObjects){
+            g.setColor((darker) ? o.color.darker() : o.color);
             o.draw(g, camera);
         }
         for(Creature c: gameCreatures){
+            g.setColor((darker) ? c.color.darker() : c.color);
             c.draw(g, camera);
         }
     }
 
     public Player getPlayer() {
         return player;
+    }
+
+    public boolean getDarker() {
+        return darker;
+    }
+
+    public void addPlatform(Platform platform) {
+        this.gameObjects.add(platform);
     }
 }

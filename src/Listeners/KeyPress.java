@@ -26,4 +26,8 @@ public class KeyPress implements KeyListener {
     public void keyReleased(KeyEvent e) {
         keysPressed[e.getKeyCode()] = false;
     }
+
+    public void setKey(int key, boolean b) {
+        keysPressed[key] = b;
+    }
 }

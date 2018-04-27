@@ -18,7 +18,8 @@ public class MenuText {
         this.y = y;
     }
     public void init(Display d, Graphics2D g){
+        g.setFont(font);
         Rectangle2D r = g.getFontMetrics().getStringBounds(text , g);
-        this.clickBox = new Rectangle(d.getWidth()/2 - (int)r.getWidth()/2, y - (int) r.getHeight(), (int)r.getWidth(), (int)r.getHeight());
+        this.clickBox = new Rectangle(d.getWidth()/2 - (int)r.getWidth()/2, y - (int) r.getHeight(), (int)r.getWidth(), (int)r.getHeight() + 10);
     }
 }

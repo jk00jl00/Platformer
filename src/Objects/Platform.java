@@ -14,6 +14,7 @@ public class Platform extends GameObject{
         this.both = both;
         this.width = width;
         this.height = height;
+        this.color = (both) ? Color.white : Color.BLACK;
         createHitBox();
     }
 
@@ -37,7 +38,6 @@ public class Platform extends GameObject{
 
     @Override
     public void draw(Graphics2D g, Camera camera) {
-        g.setColor(Color.BLACK);
         g.fillRect(this.x -  camera.getX(),this.y + camera.getY(), this.width, this.height);
     }
 }

@@ -14,6 +14,9 @@ public class Creature {
     protected int height;
     protected Rectangle hitBox;
 
+    //Used for drawing
+    public Color color;
+
     //Static constants
     protected static final int DEFAULT_CREATURE_WIDTH_ = 15;
     protected static final int DEFAULT_CREATURE_HEIGHT_ = 35;

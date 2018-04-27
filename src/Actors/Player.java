@@ -14,8 +14,6 @@ public class Player extends Creature{
     public double dy;
     public double dx;
 
-    public double xAccceleration = 0.5;
-    public double xMaxSpeed = 7.5;
     public double jumpSpeed = 12.5;
 
     public static final double grav = 0.5;
@@ -29,6 +27,7 @@ public class Player extends Creature{
         this.width = Creature.DEFAULT_CREATURE_WIDTH_;
         this.height = Creature.DEFAULT_CREATURE_HEIGHT_;
         this.hitBox = new Rectangle(this.x, this.y,this.width, this.height);
+        this.color = Color.LIGHT_GRAY;
         PlayerState.push(new OnGroundStates(this));
         getState();
     }
@@ -44,7 +43,6 @@ public class Player extends Creature{
     }
 
     public void draw(Graphics2D g, Camera camera){
-        g.setColor(Color.LIGHT_GRAY);
         g.fillRect(this.x - camera.getX(), this.y + camera.getY(), this.width, this.height);
     }
 

@@ -18,8 +18,7 @@ public class Game implements Runnable{
     private Thread thread;
     private boolean running = false;
 
-    private long fps;
-    private boolean drawQueued;
+    private int fps;
 
     //Screen variables
     private Display display;
@@ -45,10 +44,6 @@ public class Game implements Runnable{
 
     //Initializes variables before starting the gameLoop
     private void initialize(){
-        drawQueued = true;
-        level = new Level();
-        level.instantiate();
-        camera = new Camera(level.getPlayer(), width, height);
         State.setGame(this);
         State.currentState = new MainMenu();
     }
@@ -78,25 +73,20 @@ public class Game implements Runnable{
             dt += (now - start)/ timePerFrame;
             timer += now - start;
             start = now;
-            while (dt >= 1) {
+            if (dt >= 1) {
                 State.currentState.update();
                 draw();
                 dt --;
                 ticks++;
             }
-
-            if(timer >= 1000000000){
-                System.out.println("Frames: " + ticks);
-                System.out.println("State: " + PlayerState.getCurrent());
-                System.out.println("dx: " + level.getPlayer().dx + "  ||  dy: " + level.getPlayer().dy);
+            if(timer >= 250000000){
+                System.out.println("Frames: " + ticks * 4);
+                if(PlayerState.getCurrent() != null)System.out.println("State: " + PlayerState.getCurrent());
+                if(level != null)System.out.println("dx: " + level.getPlayer().dx + "  ||  dy: " + level.getPlayer().dy);
                 ticks = 0;
                 timer = 0;
             }
-
-
         }
-
-
     }
 
     //Draws the game to the screen;
@@ -110,29 +100,13 @@ public class Game implements Runnable{
         g = (Graphics2D) bs.getDrawGraphics();
 
         //Start of drawing
-        /*g.setColor(Color.DARK_GRAY);
-        g.fillRect(0, 0,width, height);
 
-        level.draw(g, camera);*/
         State.currentState.draw(g);
-
-
 
         //End of Drawing
 
         bs.show();
         g.dispose();
-        drawQueued = false;
-    }
-
-    //Updates all gameObjects
-    private void update() {
-        level.getPlayer().setKeys(this.kl.getKeysPressed());
-        if(kl.getKeysPressed()[KeyEvent.VK_R]){
-            level.getPlayer().resetPos();
-        }
-        level.update();
-        camera.update();
     }
 
     //Starts the game by initializing a thread and starting the gameLoop
@@ -174,5 +148,13 @@ public class Game implements Runnable{
 
     public Camera getCamera() {
         return camera;
+    }
+
+    public void setLevel(Level level) {
+        this.level = level;
+    }
+
+    public void setCamera(Camera camera) {
+        this.camera = camera;
     }
 }
