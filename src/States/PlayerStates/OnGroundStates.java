@@ -86,7 +86,6 @@ public class OnGroundStates extends CreatureState{
                 }
             }
 
-
         if(!nextPosition.equals(currentPosition)){
             player.setX(nextPosition.x);
             player.setHitbox(nextPosition.x, nextPosition.y);

@@ -7,13 +7,15 @@ import Objects.GameObject;
 import Objects.Platform;
 
 import java.awt.*;
+import java.io.*;
 import java.util.ArrayList;
 
-public class Level {
+public class Level{
 
     private Player player;
     private ArrayList<GameObject> gameObjects = new ArrayList<>();
     private ArrayList<Creature> gameCreatures = new ArrayList<>();
+    private String name;
 
     private boolean darker = false;
 
@@ -22,7 +24,14 @@ public class Level {
     }
 
     public Level(){
+        player = new Player(0,0);
+        gameCreatures.add(player);
+    }
 
+    public Level(String name){
+        this.name = name;
+        player = new Player(0,0);
+        gameCreatures.add(player);
     }
 
     public void instantiate(){
@@ -70,5 +79,30 @@ public class Level {
 
     public void removePlatform(Platform justAdded) {
         gameObjects.remove(justAdded);
+    }
+
+    public GameObject[] getObjects() {
+        return gameObjects.toArray(new GameObject[gameObjects.size()]);
+    }
+
+    public void saveLevel(){
+        LevelSaver.saveLevel(this, this.name);
+    }
+
+    public Creature[] getCreatures() {
+        return gameCreatures.toArray(new Creature[gameCreatures.size()])    ;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+        gameCreatures.set(0, player);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String tempName) {
+        this.name = tempName;
     }
 }

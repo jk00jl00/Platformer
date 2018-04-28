@@ -24,6 +24,18 @@ public class Player extends Creature{
 
     public Player(int x, int y, int health) {
         super(x, y, health);
+        this.type = "player";
+        this.width = Creature.DEFAULT_CREATURE_WIDTH_;
+        this.height = Creature.DEFAULT_CREATURE_HEIGHT_;
+        this.hitBox = new Rectangle(this.x, this.y,this.width, this.height);
+        this.color = Color.LIGHT_GRAY;
+        PlayerState.push(new OnGroundStates(this));
+        getState();
+    }
+
+    public Player(int x, int y){
+        super(x, y, 3);
+        this.type = "player";
         this.width = Creature.DEFAULT_CREATURE_WIDTH_;
         this.height = Creature.DEFAULT_CREATURE_HEIGHT_;
         this.hitBox = new Rectangle(this.x, this.y,this.width, this.height);
@@ -86,5 +98,9 @@ public class Player extends Creature{
     public void setHitbox(int x, int y) {
         this.hitBox.x = x;
         this.hitBox.y = y;
+    }
+
+    public int getHealth() {
+        return this.health;
     }
 }

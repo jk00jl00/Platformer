@@ -2,7 +2,7 @@ package States.PlayerStates;
 
 import Actors.Player;
 
-public abstract class CreatureState {
+public abstract class CreatureState{
     protected Player player;
 
     CreatureState(Player player){

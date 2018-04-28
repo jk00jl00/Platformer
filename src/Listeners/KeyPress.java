@@ -37,7 +37,7 @@ public class KeyPress implements KeyListener {
         return controlMasked;
     }
 
-    public void seControlMasked(int key, boolean b) {
+    public void setControlMasked(int key, boolean b) {
         controlMasked[key] = b;
     }
 }

@@ -4,14 +4,21 @@ import GameController.Game;
 import Gfx.Camera;
 
 import java.awt.*;
+import java.io.Serializable;
 
 //The superclass of all objects in game
-public class GameObject {
+public class GameObject{
     protected int x;
     protected int y;
     protected Rectangle[] hitBox;
     public Color color;
     public GameObject next;
+    public boolean removed;
+    protected String type;
+
+    public String getType() {
+        return type;
+    }
 
     public GameObject(int x, int y){
         this.x = x;
@@ -32,5 +39,9 @@ public class GameObject {
 
     public Rectangle[] getHitBox() {
         return hitBox;
+    }
+
+    public String toLevelSave() {
+        return null;
     }
 }

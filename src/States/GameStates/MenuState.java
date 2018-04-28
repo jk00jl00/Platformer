@@ -9,39 +9,57 @@ public class MenuState extends State{
     private boolean[] keys;
     private MenuText[] menuTexts = new MenuText[]{
             new MenuText(200, new Font(Font.SANS_SERIF, Font.BOLD, 15), "Continue"),
-            new MenuText(250, new Font(Font.SANS_SERIF, Font.BOLD, 15), "Exit")
+            new MenuText(250, new Font(Font.SANS_SERIF, Font.BOLD, 15), "Exit to Menu"),
+            new MenuText(300, new Font(Font.SANS_SERIF, Font.BOLD, 15), "Exit")
     };
 
     @Override
     public void update() {
         keys = game.getkl().getKeysPressed();
         game.getLevel().getPlayer().setKeys(keys);
+
         if(keys[KeyEvent.VK_ESCAPE]){
-            game.getkl().setKey(KeyEvent.VK_ESCAPE, false);
-            game.getLevel().setDarker(false);
-            State.pop();
+            exitMenu();
         }
         if(menuTexts[0].clickBox == null || game.getml().lClick == null) return;
+
+        if (checkClicks()) return;
+
+        for(MenuText m: menuTexts){
+            if(m.clickBox.intersects(game.getml().cPos)){
+                m.highlighted = true;
+            } else if(m.highlighted) m.highlighted = false;
+        }
+    }
+
+    private void exitMenu() {
+        game.getkl().setKey(KeyEvent.VK_ESCAPE, false);
+        game.getLevel().setDarker(false);
+        State.pop();
+    }
+
+    private boolean checkClicks() {
         for (MenuText m : menuTexts) {
             if(m.clickBox.intersects(game.getml().lClick)){
                 switch (m.text){
                     case "Exit":
                         System.exit(0);
                         break;
+                    case "Exit to Menu":
+                        game.getml().setLClick(null);
+                        State.currentState = new MainMenu();
+                        game.getLevel().setDarker(false);
+                        return true;
                     case "Continue":
                         game.getml().setLClick(null);
                         State.pop();
                         game.getLevel().setDarker(false);
-                        return;
+                        return true;
 
                 }
             }
         }
-        for(MenuText m: menuTexts){
-            if(m.clickBox.intersects(game.getml().cPos) && !m.text.equals("Main Menu")){
-                m.highlighted = true;
-            } else if(m.highlighted) m.highlighted = false;
-        }
+        return false;
     }
 
     @Override

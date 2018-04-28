@@ -4,8 +4,9 @@ import Gfx.Camera;
 import Objects.GameObject;
 
 import java.awt.*;
+import java.io.Serializable;
 
-public class Creature {
+public class Creature{
     //The position and health of the player, used by all subclasses of player
     protected int x;
     protected int y;
@@ -17,9 +18,26 @@ public class Creature {
     //Used for drawing
     public Color color;
 
+    public static int getDefaultCreatureWidth() {
+        return DEFAULT_CREATURE_WIDTH_;
+    }
+
+    public static int getDefaultCreatureHeight() {
+        return DEFAULT_CREATURE_HEIGHT_;
+    }
+
     //Static constants
     protected static final int DEFAULT_CREATURE_WIDTH_ = 15;
     protected static final int DEFAULT_CREATURE_HEIGHT_ = 35;
+    protected String type;
+
+    public String getType() {
+        return this.type;
+    }
+
+    public Creature(){
+
+    }
 
     public Creature(int x, int y, int health){
         this.x = x;
@@ -49,5 +67,9 @@ public class Creature {
 
     public int getHeight() {
         return height;
+    }
+
+    public String toLevelSave() {
+        return null;
     }
 }

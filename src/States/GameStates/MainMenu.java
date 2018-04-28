@@ -7,13 +7,16 @@ import java.awt.*;
 
 public class MainMenu extends State{
 
-    MenuText[] menuTexts = new MenuText[4];
+    MenuText[] menuTexts = new MenuText[5];
 
     public MainMenu(){
-        menuTexts[0] = new MenuText(175, new Font(Font.SANS_SERIF, Font.BOLD, 25), "Main Menu");
-        menuTexts[1] = new MenuText(275, new Font(Font.SANS_SERIF, Font.BOLD, 15), "Start");
-        menuTexts[2] = new MenuText(325, new Font(Font.SANS_SERIF, Font.BOLD, 15), "Options");
-        menuTexts[3] = new MenuText(375, new Font(Font.SANS_SERIF, Font.BOLD, 15), "Exit");
+        int firstTExtY = 174;
+        int dy = 50;
+        menuTexts[0] = new MenuText(firstTExtY, new Font(Font.SANS_SERIF, Font.BOLD, 25), "Main Menu");
+        menuTexts[1] = new MenuText(firstTExtY + dy, new Font(Font.SANS_SERIF, Font.BOLD, 15), "Start");
+        menuTexts[2] = new MenuText(firstTExtY + dy*2, new Font(Font.SANS_SERIF, Font.BOLD, 15), "Editor");
+        menuTexts[3] = new MenuText(firstTExtY + dy*3, new Font(Font.SANS_SERIF, Font.BOLD, 15), "Options");
+        menuTexts[4] = new MenuText(firstTExtY + dy*4, new Font(Font.SANS_SERIF, Font.BOLD, 15), "Exit");
 
     }
 
@@ -48,8 +51,12 @@ public class MainMenu extends State{
                         System.exit(0);
                         break;
                     case "Start":
-                        State.currentState = new PlayState();
-                        State.currentState.init();
+                        State.push(new PlayState());
+                        currentState.init();
+                        break;
+                    case "Editor":
+                        State.push(new LevelEditState());
+                        currentState.init();
                 }
             }
         }
@@ -58,5 +65,7 @@ public class MainMenu extends State{
                 m.highlighted = true;
             } else if(m.highlighted) m.highlighted = false;
         }
+        game.getml().lClick.x = 0;
+        game.getml().lClick.y = 0;
     }
 }

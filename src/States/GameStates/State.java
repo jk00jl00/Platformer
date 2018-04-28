@@ -3,8 +3,9 @@ package States.GameStates;
 import GameController.Game;
 
 import java.awt.*;
+import java.io.Serializable;
 
-public class State {
+public class State{
     public static State currentState;
     protected static Game game;
     protected State next;
