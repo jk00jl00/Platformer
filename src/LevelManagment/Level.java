@@ -108,4 +108,8 @@ public class Level{
     public void removeCreature(Creature c) {
         gameCreatures.remove(c);
     }
+
+    public void addCreature(Creature c) {
+        this.gameCreatures.add(c);
+    }
 }
