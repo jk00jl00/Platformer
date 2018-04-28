@@ -4,7 +4,6 @@ import Gfx.Camera;
 import Objects.GameObject;
 
 import java.awt.*;
-import java.io.Serializable;
 
 public class Creature{
     //The position and health of the player, used by all subclasses of player

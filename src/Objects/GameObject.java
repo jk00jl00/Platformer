@@ -1,10 +1,8 @@
 package Objects;
 
-import GameController.Game;
 import Gfx.Camera;
 
 import java.awt.*;
-import java.io.Serializable;
 
 //The superclass of all objects in game
 public class GameObject{

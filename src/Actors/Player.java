@@ -6,7 +6,6 @@ import States.PlayerStates.CreatureState;
 import States.PlayerStates.OnGroundStates;
 import States.PlayerStates.PlayerState;
 
-
 import java.awt.*;
 
 public class Player extends Creature{

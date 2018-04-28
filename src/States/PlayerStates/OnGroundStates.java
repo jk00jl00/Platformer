@@ -39,8 +39,6 @@ public class OnGroundStates extends CreatureState{
             }
 
 
-
-        PlayerState.push(new InAirStates(player));
         PlayerState.push(new FallingState(player));
         PlayerState.getCurrent().enter();
         PlayerState.getCurrent().update();

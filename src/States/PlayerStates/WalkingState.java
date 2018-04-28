@@ -1,8 +1,6 @@
 package States.PlayerStates;
 
 import Actors.Player;
-import States.PlayerStates.OnGroundStates;
-import States.PlayerStates.PlayerState;
 import Utilities.Util;
 
 import java.awt.event.KeyEvent;

@@ -10,7 +10,6 @@ import States.GameStates.State;
 import States.PlayerStates.PlayerState;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 
 public class Game implements Runnable{
@@ -35,7 +34,7 @@ public class Game implements Runnable{
     Level level;
 
 
-    Game(){
+    public Game(){
         this.display = new Display(width, height, "Game");
         this.display.addKeyListener(this.kl);
         this.display.addMouseListener(this.ml);
@@ -116,10 +115,6 @@ public class Game implements Runnable{
             running = true;
             thread.start();
         }
-    }
-
-    public static void main(String[] args) {
-        new Game().start();
     }
 
     public int getWidth() {

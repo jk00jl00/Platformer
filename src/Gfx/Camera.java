@@ -1,7 +1,6 @@
 package Gfx;
 
 import Actors.Creature;
-import Utilities.Util;
 
 //Keeps the offset in order to make centering the camera easier
 public class Camera {
