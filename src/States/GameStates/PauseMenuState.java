@@ -5,7 +5,7 @@ import States.GameStates.MainMenuTexts.MenuText;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
-public class MenuState extends State{
+public class PauseMenuState extends State{
     private boolean[] keys;
     private MenuText[] menuTexts = new MenuText[]{
             new MenuText(200, new Font(Font.SANS_SERIF, Font.BOLD, 15), "Continue"),

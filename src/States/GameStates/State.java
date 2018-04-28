@@ -16,7 +16,6 @@ public class State{
 
     public static void pop(){
         currentState = currentState.next;
-        currentState.next = null;
     }
 
 

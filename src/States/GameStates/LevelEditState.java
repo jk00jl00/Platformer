@@ -125,7 +125,7 @@ public class LevelEditState extends State {
     private void enterMenu() {
         game.getkl().setKey(KeyEvent.VK_ESCAPE ,false);
 
-        State.push(new MenuState());
+        State.push(new PauseMenuState());
         State.currentState.init();
         State.currentState.update();
         return;

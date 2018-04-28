@@ -25,7 +25,7 @@ public class PlayState extends State {
     }
 
     private void enterMenu() {
-        State.push(new MenuState());
+        State.push(new PauseMenuState());
         game.getkl().setKey(KeyEvent.VK_ESCAPE, false);
         State.currentState.init();
         State.currentState.update();

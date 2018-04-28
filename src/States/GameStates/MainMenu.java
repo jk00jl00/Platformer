@@ -44,6 +44,16 @@ public class MainMenu extends State{
     @Override
     public void update() {
         if(menuTexts[0].clickBox == null || game.getml().lClick == null) return;
+        checkMenuClick();
+        for(MenuText m: menuTexts){
+            if(m.clickBox.intersects(game.getml().cPos) && !m.text.equals("Main Menu")){
+                m.highlighted = true;
+            } else if(m.highlighted) m.highlighted = false;
+        }
+
+    }
+
+    private void checkMenuClick() {
         for (MenuText m : menuTexts) {
             if(m.clickBox.intersects(game.getml().lClick)){
                 switch (m.text){
@@ -60,12 +70,5 @@ public class MainMenu extends State{
                 }
             }
         }
-        for(MenuText m: menuTexts){
-            if(m.clickBox.intersects(game.getml().cPos) && !m.text.equals("Main Menu")){
-                m.highlighted = true;
-            } else if(m.highlighted) m.highlighted = false;
-        }
-        game.getml().lClick.x = 0;
-        game.getml().lClick.y = 0;
     }
 }
