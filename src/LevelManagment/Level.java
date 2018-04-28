@@ -72,12 +72,12 @@ public class Level{
         return darker;
     }
 
-    public void addPlatform(Platform platform) {
-        this.gameObjects.add(platform);
+    public void addGameObject(GameObject o) {
+        this.gameObjects.add(o);
     }
 
-    public void removePlatform(Platform justAdded) {
-        gameObjects.remove(justAdded);
+    public void removeObject(GameObject object) {
+        gameObjects.remove(object);
     }
 
     public GameObject[] getObjects() {
@@ -103,5 +103,9 @@ public class Level{
 
     public void setName(String tempName) {
         this.name = tempName;
+    }
+
+    public void removeCreature(Creature c) {
+        gameCreatures.remove(c);
     }
 }

@@ -29,7 +29,7 @@ public class LevelLoader {
                 currentReadSplit = currentRead.split(" ");
                 switch (currentReadSplit[0]){
                     case "platform":
-                        l.addPlatform(new Platform(Integer.parseInt(currentReadSplit[1]), Integer.parseInt(currentReadSplit[2]) , Integer.parseInt(currentReadSplit[3]),
+                        l.addGameObject(new Platform(Integer.parseInt(currentReadSplit[1]), Integer.parseInt(currentReadSplit[2]) , Integer.parseInt(currentReadSplit[3]),
                                 Integer.parseInt(currentReadSplit[4]), Boolean.parseBoolean(currentReadSplit[5])));
                         break;
                 }

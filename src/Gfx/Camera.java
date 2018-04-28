@@ -18,7 +18,7 @@ public class Camera {
 
     public void update(){
         if (centerOn != null) {
-            x = centerOn.getX() - width/2  + centerOn.getwidth()/2;
+            x = centerOn.getX() - width/2  + centerOn.getWidth()/2;
             y = -(centerOn.getY() - height/2 + centerOn.getHeight()/2);
             if(x < 0) x = 0;
             if(y > 0) y = 0;

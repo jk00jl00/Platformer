@@ -2,6 +2,7 @@ package Actors;
 
 import Gfx.Camera;
 import Objects.GameObject;
+import Utilities.Util;
 
 import java.awt.*;
 
@@ -52,7 +53,7 @@ public class Creature{
 
     }
 
-    public int getwidth() {
+    public int getWidth() {
         return width;
     }
 
@@ -70,5 +71,16 @@ public class Creature{
 
     public String toLevelSave() {
         return null;
+    }
+
+    public Rectangle getHitBox() {
+        return this.hitBox;
+    }
+
+    public void move(int xDrag, int yDrag) {
+        this.x = Util.clamp(x + xDrag, 0, 10000 - this.width);
+        this.y = Util.clamp(y + yDrag, 0, 10000 - this.height);
+        this.hitBox.x  = this.x;
+        this.hitBox.y = this.y;
     }
 }

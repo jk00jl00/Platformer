@@ -3,6 +3,7 @@ package GameController;
 import Gfx.Camera;
 import Gfx.Display;
 import LevelManagment.Level;
+import Listeners.ButtonListener;
 import Listeners.KeyPress;
 import Listeners.MouseListener;
 import States.GameStates.MainMenu;
@@ -23,6 +24,7 @@ public class Game implements Runnable{
     private Display display;
     private KeyPress kl = new KeyPress();
     private MouseListener ml = new MouseListener();
+    private ButtonListener bl = new ButtonListener();
     private int width = 1280;
     private int height = 720;
     private String title;
@@ -39,6 +41,7 @@ public class Game implements Runnable{
         this.display.addKeyListener(this.kl);
         this.display.addMouseListener(this.ml);
         this.display.addMouseMotionListener(this.ml);
+        bl.addDisplay(display);
     }
 
     //Initializes variables before starting the gameLoop
@@ -79,9 +82,9 @@ public class Game implements Runnable{
                 ticks++;
             }
             if(timer >= 250000000){
-                System.out.println("Frames: " + ticks * 4);
-                if(PlayerState.getCurrent() != null)System.out.println("State: " + PlayerState.getCurrent());
-                if(level != null)System.out.println("dx: " + level.getPlayer().dx + "  ||  dy: " + level.getPlayer().dy);
+                //System.out.println("Frames: " + ticks * 4);
+                //if(PlayerState.getCurrent() != null)System.out.println("State: " + PlayerState.getCurrent());
+                //if(level != null)System.out.println("dx: " + level.getPlayer().dx + "  ||  dy: " + level.getPlayer().dy);
                 ticks = 0;
                 timer = 0;
             }
@@ -151,5 +154,9 @@ public class Game implements Runnable{
 
     public void setCamera(Camera camera) {
         this.camera = camera;
+    }
+
+    public ButtonListener getbl() {
+        return bl;
     }
 }

@@ -47,6 +47,8 @@ public class PauseMenuState extends State{
                         break;
                     case "Exit to Menu":
                         game.getml().setLClick(null);
+                        State.pop();
+                        State.currentState.exit();
                         State.currentState = new MainMenu();
                         game.getLevel().setDarker(false);
                         return true;

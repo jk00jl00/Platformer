@@ -1,19 +1,26 @@
 package Listeners;
 
+import Actors.Creature;
+import Objects.GameObject;
+
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 
 public class MouseListener implements java.awt.event.MouseListener, MouseMotionListener {
     public Rectangle lClick;
-    public Rectangle rClick;
     public Rectangle cPos = new Rectangle(0, 0, 2, 3);
     public Rectangle dragTangle = new Rectangle(0,0,0,0);
-    public Rectangle delTangle = new Rectangle(-1,-1,2,3);
     public boolean dragging = false;
-    public boolean rDragging = false;
-    public boolean delQueued = false;
     public boolean rectReady;
+    public boolean draggingSelection = false;
+    private boolean hasSelection;
+    private boolean inEdit;
+    private GameObject[] selectedObjects;
+
+    private int xDrag;
+    private int yDrag;
+    private Creature[] selectedCreatures;
 
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -21,31 +28,42 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if(e.getButton() == MouseEvent.BUTTON1){
+        if (e.getButton() == MouseEvent.BUTTON1) {
             lClick = new Rectangle(e.getX(), e.getY(), 2, 3);
-            dragTangle.x = 0;
-            dragTangle.y = 0;
-            dragTangle.width = 0;
-            dragTangle.height = 0;
+            dragTangle.x = lClick.x;
+            dragTangle.y = lClick.y;
+            dragTangle.width = 1;
+            dragTangle.height = 1;
+            if (hasSelection) {
+                for (GameObject o : selectedObjects) {
+                    if (o.getHitBox().intersects(dragTangle)) {
+                        draggingSelection = true;
+                        xDrag = 0;
+                        yDrag = 0;
+                        break;
+                    }
+                }
+                if (!draggingSelection  ) {
+                    for (Creature c : selectedCreatures) {
+                        if (c.getHitBox().intersects(dragTangle)) {
+                            draggingSelection = true;
+                            xDrag = 0;
+                            yDrag = 0;
+                            break;
+                        }
+                    }
+                }
+            }
             dragging = true;
-        } else if(e.getButton() == MouseEvent.BUTTON3){
-            rClick = new Rectangle(e.getX(), e.getY(), 2, 3);
-            delTangle.x = 0;
-            delTangle.y = 0;
-            delTangle.width = 0;
-            delTangle.height = 0;
-            rDragging = true;
+
         }
     }
 
     @Override
-    public void mouseReleased(MouseEvent e) {
+public void mouseReleased(MouseEvent e) {
         dragging = false;
-        rDragging = false;
         if (e.getButton() ==  MouseEvent.BUTTON1) {
             rectReady = true;
-        } else if(e.getButton() == MouseEvent.BUTTON3){
-            delQueued = true;
         }
     }
 
@@ -61,7 +79,15 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        if (dragging) {
+        if(draggingSelection){
+            xDrag = e.getX() - lClick.x;
+            yDrag = e.getY() - lClick.y;
+            lClick.x += xDrag;
+            lClick.y += yDrag;
+            return;
+        }
+
+        if (dragging && inEdit) {
             if(lClick.x < e.getX()){
                 dragTangle.x = lClick.x;
                 dragTangle.width = e.getX() - lClick.x;
@@ -77,22 +103,6 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
                 dragTangle.y = e.getY();
                 dragTangle.height = lClick.y - e.getY();
             }
-        } else if(rDragging){
-            if(rClick.x < e.getX()){
-                delTangle.x = rClick.x;
-                delTangle.width = e.getX() - rClick.x;
-            } else if(rClick.x > e.getX()){
-                delTangle.x = e.getX();
-                delTangle.width = rClick.x - e.getX();
-            }
-
-            if(rClick.y < e.getY()){
-                delTangle.y = rClick.y;
-                delTangle.height = e.getY() - rClick.y;
-            } else if (rClick.y > e.getY()){
-                delTangle.y = e.getY();
-                delTangle.height = rClick.y - e.getY();
-            }
         }
     }
 
@@ -104,5 +114,36 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
 
     public void setLClick(Rectangle lClick) {
         this.lClick = lClick;
+    }
+    public void setInEdit(boolean b) {
+        this.inEdit = b;
+    }
+
+    public void setHasSelection(boolean hasSelection) {
+        this.hasSelection = hasSelection;
+    }
+
+    public void setSelectedObjects(GameObject[] selectedObjects) {
+        this.selectedObjects = selectedObjects;
+    }
+
+    public int getXDrag() {
+        return xDrag;
+    }
+
+    public int getYDrag() {
+        return yDrag;
+    }
+
+    public void setXDrag(int XDrag) {
+        this.xDrag = XDrag;
+    }
+
+    public void setYDrag(int YDrag) {
+        this.yDrag = YDrag;
+    }
+
+    public void setSelectedCreatures(Creature[] selectedCreatures) {
+        this.selectedCreatures = selectedCreatures;
     }
 }

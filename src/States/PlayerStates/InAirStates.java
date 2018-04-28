@@ -60,17 +60,17 @@ public class InAirStates extends CreatureState{
         player.dy = Util.clamp(player.dy, -100, maxAirSpeed);
 
         Rectangle currentPosition = player.getHitBox();
-        Rectangle nextPosition = new Rectangle(player.getX(), player.getY(), player.getwidth(), player.getHeight());
+        Rectangle nextPosition = new Rectangle(player.getX(), player.getY(), player.getWidth(), player.getHeight());
 
         nextPosition.x += Math.round(player.dx);
 
         for(GameObject o: player.getGos())
             if (o.isSolid()) {
-                if (collide(o.getHitBox()[0], nextPosition)) {
-                    if (currentPosition.x + player.getwidth() <= o.getHitBox()[0].x) {
-                        nextPosition.x = o.getHitBox()[0].x - player.getwidth();
+                if (collide(o.getHitBox(), nextPosition)) {
+                    if (currentPosition.x + player.getWidth() <= o.getHitBox().x) {
+                        nextPosition.x = o.getHitBox().x - player.getWidth();
                     } else{
-                        nextPosition.x = o.getHitBox()[0].x +o.getHitBox()[0].width;
+                        nextPosition.x = o.getHitBox().x +o.getHitBox().width;
                     }
                     player.dx = 0;
                 }
@@ -79,14 +79,14 @@ public class InAirStates extends CreatureState{
 
         for(GameObject o: player.getGos())
             if (o.isSolid()) {
-                if(collide(o.getHitBox()[0], nextPosition)){
-                    if (currentPosition.y + player.getHeight() <= o.getHitBox()[0].y) {
-                        nextPosition.y = o.getHitBox()[0].y - player.getHeight();
+                if(collide(o.getHitBox(), nextPosition)){
+                    if (currentPosition.y + player.getHeight() <= o.getHitBox().y) {
+                        nextPosition.y = o.getHitBox().y - player.getHeight();
                     } else{
-                        nextPosition.y = o.getHitBox()[0].y + o.getHitBox()[0].height;
+                        nextPosition.y = o.getHitBox().y + o.getHitBox().height;
                     }
                     player.dy = 0;
-                    if(player.getY() + player.getwidth() <= o.getHitBox()[0].y){
+                    if(player.getY() + player.getWidth() <= o.getHitBox().y){
                         exit();
                     }
                 }

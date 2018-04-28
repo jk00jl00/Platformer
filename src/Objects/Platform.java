@@ -20,16 +20,7 @@ public class Platform extends GameObject{
     }
 
     private void createHitBox() {
-        if(both){
-            hitBox = new Rectangle[4];
-            hitBox[0] = new Rectangle(this.x, this.y, this.width, this.height);
-            hitBox[1] = new Rectangle(this.x, this.y, 1, this.height);
-            hitBox[2] = new Rectangle(this.x, this.y + this.height - 1, this.width, 1);
-            hitBox[3] = new Rectangle(this.x + this.width - 1, this.y, 1, this.height);
-        } else{
-            hitBox = new Rectangle[1];
-            hitBox[0] = new Rectangle(this.x, this.y, this.width, this.height);
-        }
+        hitBox = new Rectangle(this.x, this.y, this.width, this.height);
     }
 
     @Override

@@ -50,6 +50,7 @@ public class MainMenu extends State{
                 m.highlighted = true;
             } else if(m.highlighted) m.highlighted = false;
         }
+        game.getml().lClick = null;
 
     }
 

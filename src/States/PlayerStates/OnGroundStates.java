@@ -27,12 +27,12 @@ public class OnGroundStates extends CreatureState{
         player.dy += Player.grav;
 
         Rectangle currentPosition = player.getHitBox();
-        Rectangle nextPosition = new Rectangle(player.getX(), player.getY(), player.getwidth(), player.getHeight());
+        Rectangle nextPosition = new Rectangle(player.getX(), player.getY(), player.getWidth(), player.getHeight());
 
         nextPosition.y += Math.round(player.dy);
         for(GameObject o: player.getGos())
             if (o.isSolid()) {
-                if(collide(o.getHitBox()[0], nextPosition)) {
+                if(collide(o.getHitBox(), nextPosition)) {
                     player.dy = 0;
                     return;
                 }
@@ -68,17 +68,17 @@ public class OnGroundStates extends CreatureState{
     @Override
     public void move() {
         Rectangle currentPosition = player.getHitBox();
-        Rectangle nextPosition = new Rectangle(player.getX(), player.getY(), player.getwidth(), player.getHeight());
+        Rectangle nextPosition = new Rectangle(player.getX(), player.getY(), player.getWidth(), player.getHeight());
 
         nextPosition.x += Math.round(player.dx);
 
         for(GameObject o: player.getGos())
             if (o.isSolid()) {
-                if (collide(o.getHitBox()[0], nextPosition)) {
-                    if (currentPosition.x + player.getwidth() <= o.getHitBox()[0].x) {
-                        nextPosition.x = o.getHitBox()[0].x - player.getwidth();
+                if (collide(o.getHitBox(), nextPosition)) {
+                    if (currentPosition.x + player.getWidth() <= o.getHitBox().x) {
+                        nextPosition.x = o.getHitBox().x - player.getWidth();
                     } else{
-                        nextPosition.x = o.getHitBox()[0].x +o.getHitBox()[0].width;
+                        nextPosition.x = o.getHitBox().x +o.getHitBox().width;
                     }
                     player.dx = 0;
                 }
