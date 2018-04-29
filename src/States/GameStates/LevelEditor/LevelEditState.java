@@ -4,6 +4,7 @@ import Actors.Creature;
 import Gfx.Camera;
 import LevelManagment.Level;
 import LevelManagment.LevelLoader;
+import Listeners.ButtonListener;
 import Listeners.MouseListener;
 import Objects.GameObject;
 import Objects.Platform;
@@ -16,6 +17,7 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 import static Listeners.ButtonListener.DELETE_TOOL_;
+import static Listeners.ButtonListener.PLACING;
 import static Listeners.ButtonListener.SELECT_TOOL_;
 
 public class LevelEditState extends State {
@@ -30,14 +32,19 @@ public class LevelEditState extends State {
     private ArrayList<GameObject> selectedGameObjects = new ArrayList<>();
     private ArrayList<Creature> selectedCreatures = new ArrayList<>();
 
+    private String toPlace = "";
+
     private static GameObject justChanged;
 
     private int tool = SELECT_TOOL_;
+    private String editItemSelection = " ";
 
     @Override
     public void update() {
         if (checkKeyButtons()) return;
         checkToolSelection();
+        checkEditItemChange();
+        checkPlaceble();
 
         if(ml.dragTangle.width == 0){
             return;
@@ -51,6 +58,11 @@ public class LevelEditState extends State {
                     break;
                 case DELETE_TOOL_:
                     handleDeletion();
+                    break;
+                case PLACING:
+                    if(toPlace != "")
+                        createPlatform();
+                    System.out.println(toPlace);
                     break;
 
 
@@ -70,6 +82,45 @@ public class LevelEditState extends State {
             createPlatform();
         }*/
 
+    }
+
+    private void checkPlaceble() {
+        if(!game.getbl().getToPlace().equals("") && !this.toPlace.equals(game.getbl().getToPlace())){
+            System.out.println(this.toPlace + " " + game.getbl().getToPlace());
+            switch (this.editItemSelection){
+                case "objects":
+                    selectObjectToPlace();
+                    break;
+                case "creatures":
+                    break;
+            }
+            this.changeTool(PLACING);
+        }
+    }
+
+    private void selectObjectToPlace() {
+        switch (game.getbl().getToPlace()){
+            case "Platform":
+                this.toPlace = game.getbl().getToPlace();
+                System.out.println(toPlace);
+                break;
+
+        }
+    }
+
+    private void checkEditItemChange() {
+        if(!this.editItemSelection.equals(game.getbl().getSelection())){
+            this.editItemSelection = game.getbl().getSelection();
+
+            switch (this.editItemSelection){
+                case "objects":
+                    game.getDisplay().displayEditItems(game);
+                    break;
+                case "creatures":
+                    game.getDisplay().displayEditItems(game);
+                    break;
+            }
+        }
     }
 
     private void handleDeletion() {
@@ -130,7 +181,7 @@ public class LevelEditState extends State {
         if(game.getbl().getButtonsPressed()[DELETE_TOOL_]){
             game.getbl().disableButton(DELETE_TOOL_);
             changeTool(DELETE_TOOL_);
-            System.out.println(DELETE_TOOL_);
+            System.out.println("DeleteTool");
         }
     }
 
@@ -226,22 +277,6 @@ public class LevelEditState extends State {
         return selectedCreatures.isEmpty() && selectedGameObjects.isEmpty();
     }
 
-    /*private void delete() {
-        if(ml.delTangle.width == 0) ml.delTangle = ml.rClick;
-        ml.delTangle.x += game.getCamera().getX();
-        ml.delTangle.y += game.getCamera().getY();
-        for(GameObject o: game.getLevel().getObjects()){
-            if(ml.delTangle.intersects(o.getHitBox()[0])){
-                o.next = justChanged;
-                justChanged = o;
-                o.removed = true;
-                game.getLevel().removePlatform((Platform) o);
-            }
-        }
-        ml.delQueued = false;
-        ml.delTangle.width = 0;
-    }*/
-
     private void undo() {
         if (ChangeManager.firstChange != null) {
             if (!ChangeManager.wasMoved()) {
@@ -274,21 +309,26 @@ public class LevelEditState extends State {
             case SELECT_TOOL_:
                 ml.setSelectedCreatures(new Creature[0]);
                 ml.setSelectedObjects(new GameObject[0]);
+                this.selectedGameObjects.removeAll(selectedGameObjects);
+                this.selectedCreatures.removeAll(selectedCreatures);
                 ml.setHasSelection(false);
                 ml.draggingSelection = false;
                 break;
+            case PLACING:
+                game.getDisplay().removeItemAreaSelection();
+                this.toPlace = "";
+                game.getbl().setToPlace("");
+                break;
         }
+
         this.tool = tool;
     }
 
     private void createPlatform() {
         tempPlatform = new Platform(tempRect.x + game.getCamera().getX(), tempRect.y, tempRect.width, tempRect.height, false);
-        if(justChanged == null) justChanged = tempPlatform;
-        else {
-            tempPlatform.next = justChanged;
-            justChanged = tempPlatform;
-        }
-        game.getLevel().addGameObject((Platform) justChanged);
+        ChangeManager.push(1, 0, false);
+        ChangeManager.push(tempPlatform);
+        game.getLevel().addGameObject(tempPlatform);
         tempRect = null;
         ml.dragTangle.width = 0;
         ml.rectReady = false;
@@ -340,9 +380,16 @@ public class LevelEditState extends State {
         g.fillRect(0, 0, game.getWidth(), game.getHeight());
 
         game.getLevel().draw(g, game.getCamera());
-        if(tempRect != null && tool == SELECT_TOOL_){
-            g.setColor(Color.RED);
-            g.drawRect(tempRect.x, tempRect.y, tempRect.width, tempRect.height);
+        if (tempRect != null) {
+            if(tool == SELECT_TOOL_){
+                g.setColor(Color.RED);
+                g.drawRect(tempRect.x, tempRect.y, tempRect.width, tempRect.height);
+            }else if (tool == DELETE_TOOL_) {
+                g.fillRect(tempRect.x, tempRect.y, tempRect.width, tempRect.height);
+            } else if(tool == PLACING){
+                g.setColor(Color.BLACK);
+                g.fillRect(tempRect.x, tempRect.y, tempRect.width, tempRect.height);
+            }
         }
 
         if(!selectionEmpty()){
@@ -358,9 +405,6 @@ public class LevelEditState extends State {
             }
         }
 
-        if (tempRect != null && tool != SELECT_TOOL_) {
-            g.fillRect(tempRect.x, tempRect.y, tempRect.width, tempRect.height);
-        }
         g.setColor(Color.WHITE);
         g.drawString("Edit mode - Undo: ctrl z  ||  Place platform: click and drag", 0,
                 (int) g.getFontMetrics().getStringBounds("Edit mode - Undo: ctrl z  ||  Place platform: click and drag", g).getHeight());
@@ -370,6 +414,7 @@ public class LevelEditState extends State {
     @Override
     public void init() {
         game.getDisplay().levelEditorUI(game);
+        game.getDisplay().displayEditItems(game);
         game.getml().setInEdit(true);
         this.workingLevel = new Level();
         game.setLevel(workingLevel);
