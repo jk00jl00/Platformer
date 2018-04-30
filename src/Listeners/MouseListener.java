@@ -9,6 +9,7 @@ import java.awt.event.MouseMotionListener;
 
 public class MouseListener implements java.awt.event.MouseListener, MouseMotionListener {
     public Rectangle lClick;
+    public Rectangle rClick;
     public Rectangle cPos = new Rectangle(0, 0, 2, 3);
     public Rectangle dragTangle = new Rectangle(0,0,0,0);
     public boolean dragging = false;
@@ -56,15 +57,17 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
             }
             dragging = true;
 
+        } else if(e.getButton() == MouseEvent.BUTTON3){
+            this.rClick = new Rectangle(e.getX(), e.getY(), 2, 3);
         }
     }
 
     @Override
-public void mouseReleased(MouseEvent e) {
-        dragging = false;
-        if (e.getButton() ==  MouseEvent.BUTTON1) {
+    public void mouseReleased(MouseEvent e) {
+        if (e.getButton() ==  MouseEvent.BUTTON1 && dragging) {
             rectReady = true;
         }
+        dragging = false;
     }
 
     @Override
@@ -80,8 +83,8 @@ public void mouseReleased(MouseEvent e) {
     @Override
     public void mouseDragged(MouseEvent e) {
         if(draggingSelection){
-            xDrag = e.getX() - lClick.x;
-            yDrag = e.getY() - lClick.y;
+            xDrag += e.getX() - lClick.x;
+            yDrag += e.getY() - lClick.y;
             lClick.x += xDrag;
             lClick.y += yDrag;
             return;
@@ -145,5 +148,13 @@ public void mouseReleased(MouseEvent e) {
 
     public void setSelectedCreatures(Creature[] selectedCreatures) {
         this.selectedCreatures = selectedCreatures;
+    }
+
+    public Rectangle getRClick() {
+        return rClick;
+    }
+
+    public void setRClick(Rectangle r) {
+        this.rClick = r;
     }
 }

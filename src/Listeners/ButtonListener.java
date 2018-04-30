@@ -54,7 +54,7 @@ public class ButtonListener implements ActionListener, ListSelectionListener{
                     break;
             }
         }
-
+        display.requestFocus();
     }
 
     public void addDisplay(Display display) {
@@ -97,6 +97,7 @@ public class ButtonListener implements ActionListener, ListSelectionListener{
                     break;
             }
         }
+        display.requestFocus();
     }
 
     public String getToPlace() {

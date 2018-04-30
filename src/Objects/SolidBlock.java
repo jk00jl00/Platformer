@@ -1,13 +1,14 @@
 package Objects;
 
 import Gfx.Camera;
-import org.w3c.dom.css.RGBColor;
 
 import java.awt.*;
 
 public class SolidBlock extends GameObject{
     private int width;
     private int height;
+
+    private static Color defaultColor = Color.decode("#44240b");
 
     public SolidBlock(int x, int y, int width, int height) {
         super(x, y);
@@ -39,5 +40,9 @@ public class SolidBlock extends GameObject{
         sb.append(this.x).append(" ").append(this.y).append(" ").append(this.width).append(" ").append(this.height).append(" ");
 
         return sb.toString();
+    }
+
+    public static Color getColor(){
+        return defaultColor;
     }
 }

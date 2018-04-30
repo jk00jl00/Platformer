@@ -27,8 +27,8 @@ public class Creature{
     }
 
     //Static constants
-    protected static final int DEFAULT_CREATURE_WIDTH_ = 15;
-    protected static final int DEFAULT_CREATURE_HEIGHT_ = 35;
+    protected static final int DEFAULT_CREATURE_WIDTH_ = 16;
+    protected static final int DEFAULT_CREATURE_HEIGHT_ = 32;
     protected String type;
 
     public String getType() {

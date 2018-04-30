@@ -10,6 +10,7 @@ public class GameObject{
     protected int x;
     protected int y;
     protected Rectangle hitBox;
+    private static Color defaultColor;
     public Color color;
     public GameObject next;
     public boolean removed;
@@ -64,5 +65,9 @@ public class GameObject{
 
     public int getY() {
         return y;
+    }
+
+    public static Color getColor() {
+        return defaultColor;
     }
 }

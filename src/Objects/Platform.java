@@ -8,6 +8,8 @@ public class Platform extends GameObject{
     private int width;
     private int height;
 
+    private static Color defaultColor = Color.BLACK;
+
     public Platform(int x, int y, int width, int height) {
         super(x, y);
         this.type = "platform";
@@ -38,5 +40,9 @@ public class Platform extends GameObject{
         sb.append(this.x).append(" ").append(this.y).append(" ").append(this.width).append(" ").append(this.height).append(" ");
 
         return sb.toString();
+    }
+
+    public static Color getColor(){
+        return defaultColor;
     }
 }

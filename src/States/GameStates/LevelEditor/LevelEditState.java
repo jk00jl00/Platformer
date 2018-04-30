@@ -10,18 +10,19 @@ import Objects.Platform;
 import Objects.SolidBlock;
 import States.GameStates.PauseMenuState;
 import States.GameStates.State;
+import Utilities.Util;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
-import static Listeners.ButtonListener.DELETE_TOOL_;
-import static Listeners.ButtonListener.PLACING;
-import static Listeners.ButtonListener.SELECT_TOOL_;
+import static Listeners.ButtonListener.*;
 
 public class LevelEditState extends State {
 
+    private static final int GRID_HEIGHT = 32;
+    private static final int GRID_WIDTH = 32;
     private MouseListener ml;
     private Rectangle tempRect;
     private Level workingLevel;
@@ -32,8 +33,12 @@ public class LevelEditState extends State {
     private ArrayList<Creature> selectedCreatures = new ArrayList<>();
 
     private String toPlace = "";
+    private Color toPlaceColor;
 
     private static GameObject justChanged;
+
+    private boolean gridDisplayed;
+    private boolean snapTo;
 
     private int tool = SELECT_TOOL_;
     private String editItemSelection = " ";
@@ -44,6 +49,12 @@ public class LevelEditState extends State {
         checkToolSelection();
         checkEditItemChange();
         checkPlaceble();
+        checkArrowKeys();
+
+        if(ml.getRClick() != null){
+            handleRightClick();
+            ml.setRClick(null);
+        }
 
         if(ml.dragTangle.width == 0){
             return;
@@ -79,6 +90,72 @@ public class LevelEditState extends State {
             drag();
         }
 
+    }
+
+    private void checkArrowKeys() {
+        if(selectionEmpty()) return;
+        if (!snapTo) {
+            if(game.getkl().getKeysPressed()[KeyEvent.VK_UP]){
+                for(GameObject o :this.selectedGameObjects) o.move(0, -1);
+                game.getkl().setKey(KeyEvent.VK_UP, false);
+            }
+            if(game.getkl().getKeysPressed()[KeyEvent.VK_RIGHT]){
+                for(GameObject o :this.selectedGameObjects) o.move(1, 0);
+                game.getkl().setKey(KeyEvent.VK_RIGHT, false);
+            }
+            if(game.getkl().getKeysPressed()[KeyEvent.VK_DOWN]){
+                for(GameObject o :this.selectedGameObjects) o.move(0, 1);
+                game.getkl().setKey(KeyEvent.VK_DOWN, false);
+            }
+            if(game.getkl().getKeysPressed()[KeyEvent.VK_LEFT]){
+                for(GameObject o :this.selectedGameObjects) o.move(-1,0);
+                game.getkl().setKey(KeyEvent.VK_LEFT, false);
+            }
+        } else{
+            if(game.getkl().getKeysPressed()[KeyEvent.VK_UP]){
+                for(GameObject o :this.selectedGameObjects) o.move(0, snapToGridY(o.getY(), -1));
+                game.getkl().setKey(KeyEvent.VK_UP, false);
+            }
+            if(game.getkl().getKeysPressed()[KeyEvent.VK_RIGHT]){
+                for(GameObject o :this.selectedGameObjects) o.move(snapToGridX(o.getX(), 1), 0);
+                game.getkl().setKey(KeyEvent.VK_RIGHT, false);
+            }
+            if(game.getkl().getKeysPressed()[KeyEvent.VK_DOWN]){
+                for(GameObject o :this.selectedGameObjects) o.move(0, snapToGridY(o.getY(), 1));
+                game.getkl().setKey(KeyEvent.VK_DOWN, false);
+            }
+            if(game.getkl().getKeysPressed()[KeyEvent.VK_LEFT]){
+                for(GameObject o :this.selectedGameObjects) o.move(snapToGridX(o.getX(), -1),0);
+                game.getkl().setKey(KeyEvent.VK_LEFT, false);
+            }
+
+        }
+    }
+
+    private int snapToGridY(int y, int i) {
+        return (y%GRID_HEIGHT == 0) ? i*GRID_HEIGHT : (i > 0) ? GRID_HEIGHT - y%GRID_HEIGHT : -(y%GRID_HEIGHT);
+    }
+    private int snapToGridX(int x, int i) {
+        return (x%GRID_WIDTH == 0) ? i*GRID_WIDTH : (i > 0) ? GRID_WIDTH - x%GRID_WIDTH : -(x%GRID_WIDTH);
+    }
+
+    private void handleRightClick() {
+        switch (this.tool){
+            case SELECT_TOOL_:
+                if(!Util.rectIntersectsWithObjectArray(ml.getRClick(), this.selectedGameObjects) &&
+                        !Util.rectIntersectsWithCreatureArray(ml.getRClick(), this.selectedCreatures)){
+                    clearSelection();
+                }
+                break;
+            case DELETE_TOOL_:
+                ml.dragging = false;
+                ml.dragTangle.width = 0;
+                break;
+            case PLACING:
+                ml.dragging = false;
+                ml.dragTangle.width = 0;
+                break;
+        }
     }
 
     private void placeSelectedCreature() {
@@ -126,10 +203,12 @@ public class LevelEditState extends State {
         switch (game.getbl().getToPlace()){
             case "Platform":
                 this.toPlace = game.getbl().getToPlace();
+                this.toPlaceColor = Platform.getColor();
                 System.out.println(toPlace);
                 break;
             case "SolidBlock":
                 this.toPlace = game.getbl().getToPlace();
+                this.toPlaceColor = SolidBlock.getColor();
                 break;
 
         }
@@ -209,6 +288,16 @@ public class LevelEditState extends State {
             game.getbl().disableButton(DELETE_TOOL_);
             changeTool(DELETE_TOOL_);
             System.out.println("DeleteTool");
+        }
+        if(game.getbl().getButtonsPressed()[SHOW_GRID_]){
+            if(gridDisplayed) gridDisplayed = false;
+            else gridDisplayed = true;
+            game.getbl().disableButton(SHOW_GRID_);
+        }
+        if(game.getbl().getButtonsPressed()[SNAP_TO_GRID_]){
+            if(snapTo) snapTo = false;
+            else snapTo = true;
+            game.getbl().disableButton(SNAP_TO_GRID_);
         }
     }
 
@@ -334,12 +423,7 @@ public class LevelEditState extends State {
     public void changeTool(int tool){
         switch (this.tool){
             case SELECT_TOOL_:
-                ml.setSelectedCreatures(new Creature[0]);
-                ml.setSelectedObjects(new GameObject[0]);
-                this.selectedGameObjects.removeAll(selectedGameObjects);
-                this.selectedCreatures.removeAll(selectedCreatures);
-                ml.setHasSelection(false);
-                ml.draggingSelection = false;
+                clearSelection();
                 break;
             case PLACING:
                 game.getDisplay().removeItemAreaSelection();
@@ -349,6 +433,15 @@ public class LevelEditState extends State {
         }
 
         this.tool = tool;
+    }
+
+    private void clearSelection() {
+        ml.setSelectedCreatures(new Creature[0]);
+        ml.setSelectedObjects(new GameObject[0]);
+        this.selectedGameObjects.removeAll(selectedGameObjects);
+        this.selectedCreatures.removeAll(selectedCreatures);
+        ml.setHasSelection(false);
+        ml.draggingSelection = false;
     }
 
     private boolean leadLevel() {
@@ -385,7 +478,7 @@ public class LevelEditState extends State {
         }
     }
 
-    private void enterMenu() {
+    private void enterMenu()    {
         game.getkl().setKey(KeyEvent.VK_ESCAPE ,false);
 
         State.push(new PauseMenuState(true));
@@ -398,8 +491,16 @@ public class LevelEditState extends State {
     public void draw(Graphics2D g) {
         g.setColor((game.getLevel().getDarker()) ? Color.DARK_GRAY.darker() : Color.DARK_GRAY);
         g.fillRect(0, 0, game.getWidth(), game.getHeight());
-
         game.getLevel().draw(g, game.getCamera());
+
+        if(gridDisplayed){
+            g.setColor(Color.BLACK);
+            for(int y = 0; y < game.getDisplay().getHeight(); y += GRID_HEIGHT){
+                for(int x = 0; x < game.getDisplay().getWidth(); x += GRID_WIDTH){
+                    g.drawRect(x, y, GRID_WIDTH, GRID_HEIGHT);
+                }
+            }
+        }
         if (tempRect != null) {
             if(tool == SELECT_TOOL_){
                 g.setColor(Color.RED);
@@ -407,7 +508,7 @@ public class LevelEditState extends State {
             }else if (tool == DELETE_TOOL_) {
                 g.fillRect(tempRect.x, tempRect.y, tempRect.width, tempRect.height);
             } else if(tool == PLACING){
-                g.setColor(Color.BLACK);
+                g.setColor(toPlaceColor);
                 g.fillRect(tempRect.x, tempRect.y, tempRect.width, tempRect.height);
             }
         }
