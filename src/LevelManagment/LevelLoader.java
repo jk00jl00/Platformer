@@ -2,6 +2,7 @@ package LevelManagment;
 
 import Actors.Player;
 import Objects.Platform;
+import Objects.SolidBlock;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -30,8 +31,11 @@ public class LevelLoader {
                 switch (currentReadSplit[0]){
                     case "platform":
                         l.addGameObject(new Platform(Integer.parseInt(currentReadSplit[1]), Integer.parseInt(currentReadSplit[2]) , Integer.parseInt(currentReadSplit[3]),
-                                Integer.parseInt(currentReadSplit[4]), Boolean.parseBoolean(currentReadSplit[5])));
+                                Integer.parseInt(currentReadSplit[4])));
                         break;
+                    case "solidblock":
+                        l.addGameObject(new SolidBlock(Integer.parseInt(currentReadSplit[1]), Integer.parseInt(currentReadSplit[2]) , Integer.parseInt(currentReadSplit[3]),
+                                Integer.parseInt(currentReadSplit[4])));
                 }
             }
 

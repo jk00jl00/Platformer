@@ -1,6 +1,7 @@
 package Listeners;
 
 import Gfx.Display;
+import Objects.GameObject;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -20,9 +21,7 @@ public class ButtonListener implements ActionListener, ListSelectionListener{
     public static final int DELETE_TOOL_ = 1;
     public static final int SHOW_GRID_ = 2;
     public static final int SNAP_TO_GRID_ = 3;
-    private static final String[] PLACEBLE_OBJECTS = new String[]{
-            "Platform"
-    };
+    private static final String[] PLACEBLE_OBJECTS = GameObject.OBJECTS;
     private static final String[] PLACEBLE_CREATURES = new String[]{
             "Nothing"
     };

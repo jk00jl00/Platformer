@@ -4,10 +4,10 @@ import Actors.Creature;
 import Gfx.Camera;
 import LevelManagment.Level;
 import LevelManagment.LevelLoader;
-import Listeners.ButtonListener;
 import Listeners.MouseListener;
 import Objects.GameObject;
 import Objects.Platform;
+import Objects.SolidBlock;
 import States.GameStates.PauseMenuState;
 import States.GameStates.State;
 
@@ -24,7 +24,6 @@ public class LevelEditState extends State {
 
     private MouseListener ml;
     private Rectangle tempRect;
-    private Platform tempPlatform;
     private Level workingLevel;
 
     private int[] beforeMoveObjects;
@@ -60,8 +59,11 @@ public class LevelEditState extends State {
                     handleDeletion();
                     break;
                 case PLACING:
-                    if(toPlace != "")
-                        createPlatform();
+                    if(editItemSelection.equals("objects"))
+                        placeSelectedObject();
+                    else if(editItemSelection.equals("creatures"))
+                        placeSelectedCreature();
+
                     System.out.println(toPlace);
                     break;
 
@@ -76,12 +78,32 @@ public class LevelEditState extends State {
         if(!this.selectionEmpty() && ml.draggingSelection){
             drag();
         }
-        /*
 
-        if(ml.rectReady && tempRect != null){
-            createPlatform();
-        }*/
+    }
 
+    private void placeSelectedCreature() {
+    }
+
+    private void placeSelectedObject() {
+        switch (this.toPlace){
+            case "Platform":
+                Platform tempPlatform = new Platform(tempRect.x + game.getCamera().getX(), tempRect.y, tempRect.width, tempRect.height);
+                ChangeManager.push(1, 0, false);
+                ChangeManager.push(tempPlatform);
+                game.getLevel().addGameObject(tempPlatform);
+                tempRect = null;
+                ml.dragTangle.width = 0;
+                ml.rectReady = false;
+                break;
+            case "SolidBlock":
+                SolidBlock tempBlock = new SolidBlock(tempRect.x + game.getCamera().getX(), tempRect.y, tempRect.width, tempRect.height);
+                ChangeManager.push(1, 0, false);
+                ChangeManager.push(tempBlock);
+                game.getLevel().addGameObject(tempBlock);
+                tempRect = null;
+                ml.dragTangle.width = 0;
+                ml.rectReady = false;
+        }
     }
 
     private void checkPlaceble() {
@@ -94,7 +116,9 @@ public class LevelEditState extends State {
                 case "creatures":
                     break;
             }
-            this.changeTool(PLACING);
+            if (this.tool != PLACING) {
+                this.changeTool(PLACING);
+            }
         }
     }
 
@@ -103,6 +127,9 @@ public class LevelEditState extends State {
             case "Platform":
                 this.toPlace = game.getbl().getToPlace();
                 System.out.println(toPlace);
+                break;
+            case "SolidBlock":
+                this.toPlace = game.getbl().getToPlace();
                 break;
 
         }
@@ -324,16 +351,6 @@ public class LevelEditState extends State {
         this.tool = tool;
     }
 
-    private void createPlatform() {
-        tempPlatform = new Platform(tempRect.x + game.getCamera().getX(), tempRect.y, tempRect.width, tempRect.height, false);
-        ChangeManager.push(1, 0, false);
-        ChangeManager.push(tempPlatform);
-        game.getLevel().addGameObject(tempPlatform);
-        tempRect = null;
-        ml.dragTangle.width = 0;
-        ml.rectReady = false;
-    }
-
     private boolean leadLevel() {
         game.getkl().setControlMasked(KeyEvent.VK_L, false);
 
@@ -361,14 +378,17 @@ public class LevelEditState extends State {
 
             workingLevel.setName(tempName);
             workingLevel.saveLevel();
-            JOptionPane.showMessageDialog(null, "Level Saved");
+            JOptionPane.showMessageDialog(game.getDisplay(), "Level Saved");
+        } else {
+            workingLevel.saveLevel();
+            JOptionPane.showMessageDialog(game.getDisplay(), "Level Saved");
         }
     }
 
     private void enterMenu() {
         game.getkl().setKey(KeyEvent.VK_ESCAPE ,false);
 
-        State.push(new PauseMenuState());
+        State.push(new PauseMenuState(true));
         State.currentState.init();
         State.currentState.update();
         return;

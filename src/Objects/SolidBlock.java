@@ -1,19 +1,20 @@
 package Objects;
 
 import Gfx.Camera;
+import org.w3c.dom.css.RGBColor;
 
 import java.awt.*;
 
-public class Platform extends GameObject{
+public class SolidBlock extends GameObject{
     private int width;
     private int height;
 
-    public Platform(int x, int y, int width, int height) {
+    public SolidBlock(int x, int y, int width, int height) {
         super(x, y);
-        this.type = "platform";
+        this.type = "solidblock";
         this.width = width;
         this.height = height;
-        this.color = Color.BLACK;
+        this.color = Color.decode("#44240b");
         createHitBox();
     }
 

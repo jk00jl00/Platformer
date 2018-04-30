@@ -17,9 +17,10 @@ public class MenuText {
         this.text = text;
         this.y = y;
     }
-    public void init(Display d, Graphics2D g){
+    public void init(Display d, Graphics2D g, boolean edit){
         g.setFont(font);
         Rectangle2D r = g.getFontMetrics().getStringBounds(text , g);
-        this.clickBox = new Rectangle(d.getWidth()/2 - (int)r.getWidth()/2, y - (int) r.getHeight(), (int)r.getWidth(), (int)r.getHeight() + 10);
+        this.clickBox = new Rectangle( (edit) ? (d.getWidth() - d.getWidth()/10)/2 - (int)r.getWidth()/2 : d.getWidth()/2 - (int)r.getWidth()/2,
+                y - (int) r.getHeight(), (int)r.getWidth(), (int)r.getHeight() + 10);
     }
 }

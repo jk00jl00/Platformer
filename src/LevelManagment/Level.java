@@ -18,6 +18,9 @@ public class Level{
 
     private boolean darker = false;
 
+    private int playerStartx;
+    private int playerStarty;
+
     public void setDarker(boolean b){
         this.darker = b;
     }
@@ -34,11 +37,11 @@ public class Level{
     }
 
     public void instantiate(){
-        gameObjects.add(new Platform(0, 700, 2560, 20, false));
-        gameObjects.add(new Platform(100, 600, 50, 10, false));
-        gameObjects.add(new Platform(150, 500, 50, 10, false));
-        gameObjects.add(new Platform(200, 400, 50, 10, false));
-        gameObjects.add(new Platform(400, 400, 5, 200, false));
+        gameObjects.add(new Platform(0, 700, 2560, 20));
+        gameObjects.add(new Platform(100, 600, 50, 10));
+        gameObjects.add(new Platform(150, 500, 50, 10));
+        gameObjects.add(new Platform(200, 400, 50, 10));
+        gameObjects.add(new Platform(400, 400, 5, 200));
         gameCreatures.add(new Player(50, 600, 1));
         player = (Player) gameCreatures.get(0);
     }
@@ -94,7 +97,16 @@ public class Level{
 
     public void setPlayer(Player player) {
         this.player = player;
+        this.playerStartx = player.getX();
+        this.playerStarty = player.getY();
         gameCreatures.set(0, player);
+    }
+
+    public void resetPlayer(){
+        this.player.setX(this.playerStartx);
+        this.player.setY(this.playerStarty);
+        this.player.dx = 0;
+        this.player.dy = 0;
     }
 
     public String getName() {

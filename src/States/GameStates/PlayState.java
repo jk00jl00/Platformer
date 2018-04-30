@@ -15,7 +15,7 @@ public class PlayState extends State {
         keys = game.getkl().getKeysPressed();
         game.getLevel().getPlayer().setKeys(keys);
         if(keys[KeyEvent.VK_R]){
-            game.getLevel().getPlayer().resetPos();
+            game.getLevel().resetPlayer();
         } else if(keys[KeyEvent.VK_ESCAPE]){
             enterMenu();
             return;
@@ -25,7 +25,7 @@ public class PlayState extends State {
     }
 
     private void enterMenu() {
-        State.push(new PauseMenuState());
+        State.push(new PauseMenuState(false));
         game.getkl().setKey(KeyEvent.VK_ESCAPE, false);
         State.currentState.init();
         State.currentState.update();

@@ -5,7 +5,7 @@ import Utilities.Util;
 
 import java.awt.*;
 
-//The superclass of all objects in game
+//The superclass of all OBJECTS in game
 public class GameObject{
     protected int x;
     protected int y;
@@ -16,6 +16,11 @@ public class GameObject{
     protected String type;
     private int width;
     private int height;
+
+    public static final String[] OBJECTS ={
+            "Platform",
+            "SolidBlock"
+    };
 
     public String getType() {
         return type;

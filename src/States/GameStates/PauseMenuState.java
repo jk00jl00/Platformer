@@ -7,11 +7,16 @@ import java.awt.event.KeyEvent;
 
 public class PauseMenuState extends State{
     private boolean[] keys;
+    private boolean levelEdit;
     private MenuText[] menuTexts = new MenuText[]{
             new MenuText(200, new Font(Font.SANS_SERIF, Font.BOLD, 15), "Continue"),
             new MenuText(250, new Font(Font.SANS_SERIF, Font.BOLD, 15), "Exit to Menu"),
             new MenuText(300, new Font(Font.SANS_SERIF, Font.BOLD, 15), "Exit")
     };
+
+    public PauseMenuState(boolean b) {
+        this.levelEdit = b;
+    }
 
     @Override
     public void update() {
@@ -71,14 +76,14 @@ public class PauseMenuState extends State{
 
         game.getLevel().draw(g, game.getCamera());
         for (MenuText m: menuTexts) {
-            if(m.clickBox == null) m.init(game.getDisplay(), g);
+            if(m.clickBox == null) m.init(game.getDisplay(), g, this.levelEdit);
             g.setFont(m.font);
 
             g.setColor(Color.RED);
 
             if(m.highlighted)
                 g.setColor(Color.BLUE);
-            g.drawString(m.text, game.getWidth()/2 - (int)g.getFontMetrics().getStringBounds(m.text, g).getWidth()/2, m.y);
+            g.drawString(m.text, m.clickBox.x, m.y);
 
             g.setColor(Color.BLUE);
             g.drawRect(m.clickBox.x, m.clickBox.y, m.clickBox.width, m.clickBox.height);

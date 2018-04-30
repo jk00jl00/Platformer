@@ -61,15 +61,6 @@ public class Player extends Creature{
         this.keys = b;
     }
 
-    public void resetPos() {
-        this.x = 500;
-        this.y = 0;
-        this.hitBox.x = this.x;
-        this.hitBox.y = this.y;
-        this.dx = 0;
-        this.dy = 0;
-    }
-
     private void getState() {
         currentState = PlayerState.getCurrent();
     }

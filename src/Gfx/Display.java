@@ -17,9 +17,7 @@ public class Display extends Canvas{
     private String name;
     private JButton[] editorButtons = new JButton[4];
     private JPanel buttonPanel;
-    private static final String[] PLACEBLE_OBJECTS = new String[]{
-            "Platform"
-    };
+    private static final String[] PLACEBLE_OBJECTS = GameObject.OBJECTS;
     private static final String[] PLACEBLE_CREATURES = new String[]{
             "Nothing"
     };
@@ -176,11 +174,12 @@ public class Display extends Canvas{
         gbc.gridy = 0;
         gbc.gridx = 1;
 
-        this.setPreferredSize(new Dimension((this.width - this.buttonPanel.getWidth()), this.height));
+        this.setPreferredSize(new Dimension((this.width - this.width/10), this.height));
 
         this.frame.add(this, gbc);
         this.createBufferStrategy(2);
         this.frame.pack();
+        this.requestFocus();
 
     }
 
@@ -188,11 +187,12 @@ public class Display extends Canvas{
         this.frame.remove(this.buttonPanel);
         this.frame.remove(this);
 
-        this.setPreferredSize(new Dimension(this.width - this.width/10, this.height));
+        this.setPreferredSize(new Dimension(this.width, this.height));
 
         this.frame.add(this);
         this.createBufferStrategy(2);
         this.frame.pack();
+        this.requestFocus();
     }
 
     public JButton[] getButtons() {

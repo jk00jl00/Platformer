@@ -28,7 +28,7 @@ public class MainMenu extends State{
         g.setColor(Color.lightGray);
         g.clearRect(0, 0, game.getWidth(), game.getHeight());
         for (MenuText m: menuTexts) {
-            if(m.clickBox == null) m.init(game.getDisplay(), g);
+            if(m.clickBox == null) m.init(game.getDisplay(), g, false);
             g.setFont(m.font);
             if(!m.text.equals("Main Menu"))
                 g.setColor(Color.RED);
