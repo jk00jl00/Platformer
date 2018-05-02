@@ -17,6 +17,8 @@ public class Player extends Creature{
 
     public static final double grav = 0.5;
 
+    private static final Color defaultColor = Color.LIGHT_GRAY;
+
     private GameObject[] gos;
     private boolean[] keys;
     private CreatureState currentState;
@@ -92,5 +94,9 @@ public class Player extends Creature{
 
     public int getHealth() {
         return this.health;
+    }
+
+    public static Color getDefaultColor(){
+        return defaultColor;
     }
 }

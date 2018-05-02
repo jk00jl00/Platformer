@@ -85,6 +85,7 @@ public class Game implements Runnable{
                 //System.out.println("Frames: " + ticks * 4);
                 //if(PlayerState.getCurrent() != null)System.out.println("State: " + PlayerState.getCurrent());
                 //if(level != null)System.out.println("dx: " + level.getPlayer().dx + "  ||  dy: " + level.getPlayer().dy);
+                if(level != null) System.out.println("x: " + this.camera.getX() + ", y: " + this.camera.getY());
                 ticks = 0;
                 timer = 0;
             }
@@ -154,6 +155,7 @@ public class Game implements Runnable{
 
     public void setCamera(Camera camera) {
         this.camera = camera;
+        this.ml.setCamera(camera);
     }
 
     public ButtonListener getbl() {

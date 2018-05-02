@@ -18,9 +18,7 @@ public class Display extends Canvas{
     private JButton[] editorButtons = new JButton[4];
     private JPanel buttonPanel;
     private static final String[] PLACEBLE_OBJECTS = GameObject.OBJECTS;
-    private static final String[] PLACEBLE_CREATURES = new String[]{
-            "Nothing"
-    };
+    private static final String[] PLACEBLE_CREATURES = Creature.CREATURES;
     private JList itemArea;
     private String[] editItems = new String[]{
             "Objects",

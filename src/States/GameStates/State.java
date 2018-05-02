@@ -36,6 +36,5 @@ public class State{
     }
 
     public void exit() {
-
     }
 }

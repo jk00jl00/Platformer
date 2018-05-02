@@ -4,19 +4,23 @@ import Gfx.Camera;
 import Utilities.Util;
 
 import java.awt.*;
+import java.util.HashMap;
 
 //The superclass of all OBJECTS in game
 public class GameObject{
     protected int x;
     protected int y;
+    protected int dx;
+    protected int dy;
     protected Rectangle hitBox;
-    private static Color defaultColor;
     public Color color;
     public GameObject next;
     public boolean removed;
     protected String type;
     private int width;
     private int height;
+
+    protected HashMap<String, Integer> attributes = new HashMap<>();
 
     public static final String[] OBJECTS ={
             "Platform",
@@ -65,9 +69,5 @@ public class GameObject{
 
     public int getY() {
         return y;
-    }
-
-    public static Color getColor() {
-        return defaultColor;
     }
 }

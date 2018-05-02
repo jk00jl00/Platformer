@@ -72,7 +72,7 @@ public class PauseMenuState extends State{
     @Override
     public void draw(Graphics2D g) {
         g.setColor((game.getLevel().getDarker()) ? Color.DARK_GRAY.darker() : Color.DARK_GRAY);
-        g.fillRect(0, 0, game.getWidth(), game.getHeight());
+        g.fillRect(0, 0, game.getWidth() + 100, game.getHeight() + 100);
 
         game.getLevel().draw(g, game.getCamera());
         for (MenuText m: menuTexts) {

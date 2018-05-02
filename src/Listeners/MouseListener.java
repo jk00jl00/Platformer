@@ -1,13 +1,15 @@
 package Listeners;
 
 import Actors.Creature;
+import Actors.Player;
+import Gfx.Camera;
 import Objects.GameObject;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 
-public class MouseListener implements java.awt.event.MouseListener, MouseMotionListener {
+public class MouseListener implements java.awt.event.MouseListener, MouseMotionListener{
     public Rectangle lClick;
     public Rectangle rClick;
     public Rectangle cPos = new Rectangle(0, 0, 2, 3);
@@ -22,6 +24,9 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
     private int xDrag;
     private int yDrag;
     private Creature[] selectedCreatures;
+    public boolean placingPlayer;
+
+    private Camera camera;
 
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -37,7 +42,8 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
             dragTangle.height = 1;
             if (hasSelection) {
                 for (GameObject o : selectedObjects) {
-                    if (o.getHitBox().intersects(dragTangle)) {
+                    Rectangle tempBox = new Rectangle(dragTangle.x + camera.getX(), dragTangle.y - camera.getY(), dragTangle.width, dragTangle.height);
+                    if (o.getHitBox().intersects(tempBox)) {
                         draggingSelection = true;
                         xDrag = 0;
                         yDrag = 0;
@@ -54,6 +60,14 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
                         }
                     }
                 }
+
+            }
+            if(placingPlayer){
+                dragTangle.x = e.getX();
+                dragTangle.y = e.getY();
+                dragTangle.width = Player.getDefaultCreatureWidth();
+                dragTangle.height = Player.getDefaultCreatureHeight();
+                return;
             }
             dragging = true;
 
@@ -82,6 +96,14 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
 
     @Override
     public void mouseDragged(MouseEvent e) {
+        if(placingPlayer){
+            dragTangle.x = e.getX();
+            dragTangle.y = e.getY();
+            dragTangle.width = Player.getDefaultCreatureWidth();
+            dragTangle.height = Player.getDefaultCreatureHeight();
+            return;
+        }
+
         if(draggingSelection){
             xDrag += e.getX() - lClick.x;
             yDrag += e.getY() - lClick.y;
@@ -156,5 +178,13 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
 
     public void setRClick(Rectangle r) {
         this.rClick = r;
+    }
+
+    public void setCamera(Camera camera) {
+        this.camera = camera;
+    }
+
+    public Rectangle getDragTangle() {
+        return new Rectangle(dragTangle.x, dragTangle.y, dragTangle.width, dragTangle.height);
     }
 }

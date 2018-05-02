@@ -1,6 +1,7 @@
 package Gfx;
 
 import Actors.Creature;
+import Utilities.Util;
 
 //Keeps the offset in order to make centering the camera easier
 public class Camera {
@@ -31,5 +32,10 @@ public class Camera {
 
     public int getY() {
         return y;
+    }
+
+    public void move(int x, int y) {
+        this.x = Util.clamp(this.x + x, 0, 10000);
+        this.y = Util.clamp(this.y + y, -10000, 0);
     }
 }

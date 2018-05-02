@@ -16,6 +16,10 @@ public class Platform extends GameObject{
         this.width = width;
         this.height = height;
         this.color = Color.BLACK;
+        this.attributes.put("x", this.x);
+        this.attributes.put("y", this.y);
+        this.attributes.put("Width", this.width);
+        this.attributes.put("Height", this.height);
         createHitBox();
     }
 

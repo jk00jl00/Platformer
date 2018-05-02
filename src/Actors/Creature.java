@@ -15,6 +15,10 @@ public class Creature{
     protected int height;
     protected Rectangle hitBox;
 
+    public static final String[] CREATURES = new String[]{
+            "Player"
+    };
+
     //Used for drawing
     public Color color;
 

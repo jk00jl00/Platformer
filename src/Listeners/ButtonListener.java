@@ -1,5 +1,6 @@
 package Listeners;
 
+import Actors.Creature;
 import Gfx.Display;
 import Objects.GameObject;
 
@@ -22,9 +23,7 @@ public class ButtonListener implements ActionListener, ListSelectionListener{
     public static final int SHOW_GRID_ = 2;
     public static final int SNAP_TO_GRID_ = 3;
     private static final String[] PLACEBLE_OBJECTS = GameObject.OBJECTS;
-    private static final String[] PLACEBLE_CREATURES = new String[]{
-            "Nothing"
-    };
+    private static final String[] PLACEBLE_CREATURES = Creature.CREATURES;
 
     private Display display;
     @Override
@@ -94,6 +93,7 @@ public class ButtonListener implements ActionListener, ListSelectionListener{
                     toPlace = PLACEBLE_OBJECTS[i];
                     break;
                 case "creatures":
+                    toPlace = PLACEBLE_CREATURES[i];
                     break;
             }
         }

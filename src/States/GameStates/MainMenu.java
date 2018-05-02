@@ -26,7 +26,7 @@ public class MainMenu extends State{
     @Override
     public void draw(Graphics2D g) {
         g.setColor(Color.lightGray);
-        g.clearRect(0, 0, game.getWidth(), game.getHeight());
+        g.clearRect(0, 0, game.getWidth() + 100, game.getHeight() + 100);
         for (MenuText m: menuTexts) {
             if(m.clickBox == null) m.init(game.getDisplay(), g, false);
             g.setFont(m.font);
