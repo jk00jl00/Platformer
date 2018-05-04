@@ -5,16 +5,11 @@ import Gfx.Camera;
 import java.awt.*;
 
 public class Platform extends GameObject{
-    private int width;
-    private int height;
-
     private static Color defaultColor = Color.BLACK;
 
     public Platform(int x, int y, int width, int height) {
-        super(x, y);
-        this.type = "platform";
-        this.width = width;
-        this.height = height;
+        super(x, y, width, height);
+        this.type = "Platform";
         this.color = Color.BLACK;
         this.attributes.put("x", this.x);
         this.attributes.put("y", this.y);
@@ -46,7 +41,7 @@ public class Platform extends GameObject{
         return sb.toString();
     }
 
-    public static Color getColor(){
+    public static Color getDefaultColor(){
         return defaultColor;
     }
 }

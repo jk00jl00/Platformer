@@ -5,6 +5,7 @@ import Objects.GameObject;
 import States.PlayerStates.CreatureState;
 import States.PlayerStates.OnGroundStates;
 import States.PlayerStates.PlayerState;
+import com.sun.istack.internal.Nullable;
 
 import java.awt.*;
 
@@ -25,7 +26,7 @@ public class Player extends Creature{
 
     public Player(int x, int y, int health) {
         super(x, y, health);
-        this.type = "player";
+        this.type = "Player";
         this.width = Creature.DEFAULT_CREATURE_WIDTH_;
         this.height = Creature.DEFAULT_CREATURE_HEIGHT_;
         this.hitBox = new Rectangle(this.x, this.y,this.width, this.height);

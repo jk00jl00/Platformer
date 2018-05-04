@@ -43,6 +43,12 @@ public class Creature{
 
     }
 
+    public Creature(int x, int y){
+        this.x = x;
+        this.y = y;
+        this.health = 1;
+    }
+
     public Creature(int x, int y, int health){
         this.x = x;
         this.y = y;

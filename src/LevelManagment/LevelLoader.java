@@ -1,6 +1,7 @@
 package LevelManagment;
 
 import Actors.Player;
+import Objects.GameObject;
 import Objects.Platform;
 import Objects.SolidBlock;
 
@@ -8,6 +9,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 public class LevelLoader {
     public static Level loadLevel(String name){
@@ -28,14 +31,17 @@ public class LevelLoader {
             for(int a = 0; a < i; a++){
                 currentRead = br.readLine();
                 currentReadSplit = currentRead.split(" ");
-                switch (currentReadSplit[0]){
-                    case "platform":
-                        l.addGameObject(new Platform(Integer.parseInt(currentReadSplit[1]), Integer.parseInt(currentReadSplit[2]) , Integer.parseInt(currentReadSplit[3]),
-                                Integer.parseInt(currentReadSplit[4])));
-                        break;
-                    case "solidblock":
-                        l.addGameObject(new SolidBlock(Integer.parseInt(currentReadSplit[1]), Integer.parseInt(currentReadSplit[2]) , Integer.parseInt(currentReadSplit[3]),
-                                Integer.parseInt(currentReadSplit[4])));
+                try {
+                    Class<?> c = Class.forName("Objects." + currentReadSplit[0]);
+                    Constructor<?> constr = c.getConstructor(int.class, int.class, int.class, int.class);
+                    l.addGameObject((GameObject) constr.newInstance(new Object[]{
+                            Integer.parseInt(currentReadSplit[1]),
+                            Integer.parseInt(currentReadSplit[2]),
+                            Integer.parseInt(currentReadSplit[3]),
+                            Integer.parseInt(currentReadSplit[4])
+                    }));
+                } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+                    e.printStackTrace();
                 }
             }
 

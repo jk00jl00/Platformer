@@ -6,7 +6,9 @@ import Objects.GameObject;
 public class ChangeManager {
 
     static Change firstChange;
-    public static boolean isPushing;
+    public static boolean isPushing = false;
+    public static boolean firstObjectMove;
+    public static boolean firstCreatureMove;
 
 
     public static void push(GameObject o){
@@ -72,5 +74,44 @@ public class ChangeManager {
 
     public static void pop() {
         firstChange = firstChange.prev;
+    }
+
+    public static void moveStep(GameObject o, int x, int y) {
+        if(isPushing && !firstObjectMove) {
+            if(firstChange.dox[firstChange.oIndex] == 0 && firstChange.doy[firstChange.oIndex] == 0) push(o,x,y);
+            else{
+                firstChange.dox[firstChange.oIndex] += x;
+                firstChange.doy[firstChange.oIndex++] += y;
+            }
+        }
+        else if(isPushing){
+            firstChange.oIndex = 0;
+            if(firstChange.dox[firstChange.oIndex] == 0 && firstChange.doy[firstChange.oIndex] == 0) push(o,x,y);
+            else{
+                firstChange.dox[firstChange.oIndex] += x;
+                firstChange.doy[firstChange.oIndex++] += y;
+            }
+
+            firstObjectMove = false;
+        }
+    }
+    public static void moveStep(Creature c, int x, int y) {
+        if(isPushing && !firstCreatureMove) {
+            if(firstChange.dcx[firstChange.cIndex] == 0 && firstChange.dcy[firstChange.cIndex] == 0) push(c,x,y);
+            else{
+                firstChange.dcx[firstChange.cIndex] += x;
+                firstChange.dcy[firstChange.cIndex++] += y;
+            }
+        }
+        else if(isPushing){
+            firstChange.cIndex = 0;
+            if(firstChange.dcx[firstChange.cIndex] == 0 && firstChange.dcy[firstChange.cIndex] == 0) push(c,x,y);
+            else{
+                firstChange.dcx[firstChange.cIndex] += x;
+                firstChange.dcy[firstChange.cIndex++] += y;
+            }
+
+            firstCreatureMove = false;
+        }
     }
 }

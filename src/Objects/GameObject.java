@@ -10,6 +10,8 @@ import java.util.HashMap;
 public class GameObject{
     protected int x;
     protected int y;
+    protected int width;
+    protected int height;
     protected int dx;
     protected int dy;
     protected Rectangle hitBox;
@@ -17,8 +19,6 @@ public class GameObject{
     public GameObject next;
     public boolean removed;
     protected String type;
-    private int width;
-    private int height;
 
     protected HashMap<String, Integer> attributes = new HashMap<>();
 
@@ -31,9 +31,11 @@ public class GameObject{
         return type;
     }
 
-    public GameObject(int x, int y){
+    public GameObject(int x, int y, int width, int height){
         this.x = x;
         this.y = y;
+        this.width = width;
+        this.height = height;
     }
 
     public void update(){
@@ -70,4 +72,5 @@ public class GameObject{
     public int getY() {
         return y;
     }
+
 }

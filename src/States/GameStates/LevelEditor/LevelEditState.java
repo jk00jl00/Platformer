@@ -16,9 +16,14 @@ import Utilities.Util;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 import static Listeners.ButtonListener.*;
+
+//TODO - Add a attribute display when having an item selected.
+//TODO - Add movement with mouse.
 
 public class LevelEditState extends State {
 
@@ -88,67 +93,208 @@ public class LevelEditState extends State {
 
     }
 
+
+    /**
+     * This method is called early in the Update method.
+     * It checks whether arrow keys have benn pressed and then either moves a selection or moves the camera.
+     */
     private void checkArrowKeys() {
         if(selectionEmpty()){
+            //If the selection if empty it moves the camera by half the grid height.
             if(game.getkl().getKeysPressed()[KeyEvent.VK_UP]){
-                game.getCamera().move(0, 20);
+                game.getCamera().move(0, GRID_HEIGHT/2);
                 game.getkl().setKey(KeyEvent.VK_UP, false);
             }
             if(game.getkl().getKeysPressed()[KeyEvent.VK_RIGHT]){
-                game.getCamera().move(20, 0);                game.getkl().setKey(KeyEvent.VK_RIGHT, false);
+                game.getCamera().move(GRID_WIDTH/2, 0);
+                game.getkl().setKey(KeyEvent.VK_RIGHT, false);
             }
             if(game.getkl().getKeysPressed()[KeyEvent.VK_DOWN]){
-                game.getCamera().move(0, -20);                game.getkl().setKey(KeyEvent.VK_DOWN, false);
+                game.getCamera().move(0, -GRID_HEIGHT/2);
+                game.getkl().setKey(KeyEvent.VK_DOWN, false);
             }
             if(game.getkl().getKeysPressed()[KeyEvent.VK_LEFT]){
-                game.getCamera().move(-20, 0);                game.getkl().setKey(KeyEvent.VK_LEFT, false);
+                game.getCamera().move(-GRID_WIDTH/2, 0);
+                game.getkl().setKey(KeyEvent.VK_LEFT, false);
             }
         }
         if (!snapTo) {
             if(game.getkl().getKeysPressed()[KeyEvent.VK_UP]){
-                for(GameObject o :this.selectedGameObjects) o.move(0, -1);
+                if(!ChangeManager.isPushing){
+                    ChangeManager.isPushing = true;
+                    ChangeManager.push(selectedGameObjects.size(), selectedCreatures.size());
+                }
+                ChangeManager.firstObjectMove = true;
+                ChangeManager.firstCreatureMove = true;
+                for(GameObject o :this.selectedGameObjects){
+                    //Moves every GameObject one pixel on the screen
+                    o.move(0, -1);
+                    //Adds the movement to the current change.
+                    ChangeManager.moveStep(o,0, 1);
+                }
+                for(Creature c: this.selectedCreatures){
+                    //Moves every creature one pixel on the screen.
+                    c.move(0, -1);
+                    //Adds the movement to the current change.
+                    ChangeManager.moveStep(c, 0, 1);
+                }
                 game.getkl().setKey(KeyEvent.VK_UP, false);
             }
             if(game.getkl().getKeysPressed()[KeyEvent.VK_RIGHT]){
-                for(GameObject o :this.selectedGameObjects) o.move(1, 0);
+                if(!ChangeManager.isPushing){
+                    ChangeManager.isPushing = true;
+                    ChangeManager.push(selectedGameObjects.size(), selectedCreatures.size());
+                }
+                ChangeManager.firstObjectMove = true;
+                ChangeManager.firstCreatureMove = true;
+                for(GameObject o :this.selectedGameObjects){
+                    o.move(1, 0);
+                    ChangeManager.moveStep(o,-1, 0);
+                }
+                for(Creature c: this.selectedCreatures){
+                    c.move(1, 0);
+                    ChangeManager.moveStep(c, -1, 0);
+                }
                 game.getkl().setKey(KeyEvent.VK_RIGHT, false);
             }
             if(game.getkl().getKeysPressed()[KeyEvent.VK_DOWN]){
-                for(GameObject o :this.selectedGameObjects) o.move(0, 1);
+                if(!ChangeManager.isPushing){
+                    ChangeManager.isPushing = true;
+                    ChangeManager.push(selectedGameObjects.size(), selectedCreatures.size());
+                }
+                ChangeManager.firstObjectMove = true;
+                ChangeManager.firstCreatureMove = true;
+                for(GameObject o :this.selectedGameObjects){
+                    o.move(0, 1);
+                    ChangeManager.moveStep(o,0, -1);
+                }
+                for(Creature c: this.selectedCreatures){
+                    c.move(0, 1);
+                    ChangeManager.moveStep(c, 0, -1);
+                }
                 game.getkl().setKey(KeyEvent.VK_DOWN, false);
             }
             if(game.getkl().getKeysPressed()[KeyEvent.VK_LEFT]){
-                for(GameObject o :this.selectedGameObjects) o.move(-1,0);
+                if(!ChangeManager.isPushing){
+                    ChangeManager.isPushing = true;
+                    ChangeManager.push(selectedGameObjects.size(), selectedCreatures.size());
+                }
+                ChangeManager.firstObjectMove = true;
+                ChangeManager.firstCreatureMove = true;
+                for(GameObject o :this.selectedGameObjects){
+                    o.move(-1,0);
+                    ChangeManager.moveStep(o,1, 0);
+                }
+                for(Creature c: this.selectedCreatures){
+                    c.move(-1, 0);
+                    ChangeManager.moveStep(c, 1, 0);
+                }
                 game.getkl().setKey(KeyEvent.VK_LEFT, false);
             }
         } else{
             if(game.getkl().getKeysPressed()[KeyEvent.VK_UP]){
-                for(GameObject o :this.selectedGameObjects) o.move(0, snapToGridY(o.getY(), -1));
+                if(!ChangeManager.isPushing){
+                    ChangeManager.isPushing = true;
+                    ChangeManager.push(selectedGameObjects.size(), selectedCreatures.size());
+                }
+                ChangeManager.firstObjectMove = true;
+                ChangeManager.firstCreatureMove = true;
+                for(GameObject o :this.selectedGameObjects){
+                    int y = snapToGridY(o.getY(), -1);
+                    o.move(0, y);
+                    ChangeManager.moveStep(o, 0, -y);
+                }
+                for(Creature c :this.selectedCreatures){
+                    int y = snapToGridY(c.getY(), -1);
+                    c.move(0, y);
+                    ChangeManager.moveStep(c, 0, -y);
+                }
                 game.getkl().setKey(KeyEvent.VK_UP, false);
             }
             if(game.getkl().getKeysPressed()[KeyEvent.VK_RIGHT]){
-                for(GameObject o :this.selectedGameObjects) o.move(snapToGridX(o.getX(), 1), 0);
+                if(!ChangeManager.isPushing){
+                    ChangeManager.isPushing = true;
+                    ChangeManager.push(selectedGameObjects.size(), selectedCreatures.size());
+                }
+                ChangeManager.firstObjectMove = true;
+                ChangeManager.firstCreatureMove = true;
+                for(GameObject o :this.selectedGameObjects){
+                    int x = snapToGridX(o.getX(), 1);
+                    o.move(x, 0);
+                    ChangeManager.moveStep(o, -x, 0);
+                }
+                for(Creature c :this.selectedCreatures){
+                    int x = snapToGridX(c.getX(), 1);
+                    c.move(x, 0);
+                    ChangeManager.moveStep(c, -x, 0);
+                }
                 game.getkl().setKey(KeyEvent.VK_RIGHT, false);
             }
             if(game.getkl().getKeysPressed()[KeyEvent.VK_DOWN]){
-                for(GameObject o :this.selectedGameObjects) o.move(0, snapToGridY(o.getY(), 1));
+                if(!ChangeManager.isPushing){
+                    ChangeManager.isPushing = true;
+                    ChangeManager.push(selectedGameObjects.size(), selectedCreatures.size());
+                }
+                ChangeManager.firstObjectMove = true;
+                ChangeManager.firstCreatureMove = true;
+                for(GameObject o :this.selectedGameObjects){
+                    int y = snapToGridY(o.getY(), 1);
+                    o.move(0, y);
+                    ChangeManager.moveStep(o, 0, -y);
+                }
+                for(Creature c :this.selectedCreatures){
+                    int y = snapToGridY(c.getY(), 1);
+                    c.move(0, y);
+                    ChangeManager.moveStep(c, 0, -y);
+                }
                 game.getkl().setKey(KeyEvent.VK_DOWN, false);
             }
             if(game.getkl().getKeysPressed()[KeyEvent.VK_LEFT]){
-                for(GameObject o :this.selectedGameObjects) o.move(snapToGridX(o.getX(), -1),0);
+                if(!ChangeManager.isPushing){
+                    ChangeManager.isPushing = true;
+                    ChangeManager.push(selectedGameObjects.size(), selectedCreatures.size());
+                }
+                ChangeManager.firstObjectMove = true;
+                ChangeManager.firstCreatureMove = true;
+                for(GameObject o :this.selectedGameObjects) {
+                    int x = snapToGridX(o.getX(), -1);
+                    o.move(x, 0);
+                    ChangeManager.moveStep(o, -x, 0);
+                }
+                for(Creature c:this.selectedCreatures) {
+                    int x = snapToGridX(c.getX(), -1);
+                    c.move(x, 0);
+                    ChangeManager.moveStep(c, -x, 0);
+                }
                 game.getkl().setKey(KeyEvent.VK_LEFT, false);
             }
 
         }
     }
-
+    /**
+     * A method used to get the required pixels an object need to move in a specified direction in order to land on the grid's y axis.
+     * @param y Specifies where the object to be moved lies on the y axis.
+     * @param i Specifies whether to move the object up or down, negative being up.
+     * @return Returns the value in pixels for the object to be moved in order to land on the grid's y axis.
+     */
     private int snapToGridY(int y, int i) {
         return (y%GRID_HEIGHT == 0) ? i*GRID_HEIGHT : (i > 0) ? GRID_HEIGHT - y%GRID_HEIGHT : -(y%GRID_HEIGHT);
     }
+
+    /**
+     * A method used to get the required pixels an object need to move in a specified direction in order to land on the grid's x axis.
+     * @param x Specifies where the object to be moved lies on the x axis
+     * @param i Specifies whether to move the object left or right, negative being left.
+     * @return Returns the value in pixels for the object to be moved in order to land on the grid's x axis.
+     */
     private int snapToGridX(int x, int i) {
         return (x%GRID_WIDTH == 0) ? i*GRID_WIDTH : (i > 0) ? GRID_WIDTH - x%GRID_WIDTH : -(x%GRID_WIDTH);
     }
 
+    /**
+     * Is called when the user has right clicked.
+     * The click is handled dependent on which tool is currently selected.
+     */
     private void handleRightClick() {
         switch (this.tool){
             case SELECT_TOOL_:
@@ -167,38 +313,69 @@ public class LevelEditState extends State {
                 break;
         }
     }
-
+    /**
+     * Is called after a location has been specified using the Place tool.
+     * Places the currently selected creature at the specified location.
+     */
     private void placeSelectedCreature() {
-        switch (this.toPlace){
-            case "Player":
-                Player player = new Player(tempRect.x + game.getCamera().getX(), tempRect.y + game.getCamera().getY());
-                game.getLevel().setPlayer(player);
+        if(toPlace.equals("Player")) {
+            Player player = new Player(tempRect.x + game.getCamera().getX(), tempRect.y + game.getCamera().getY());
+            game.getLevel().setPlayer(player);
+        } else{
+            Creature c = new Creature(0, 0);
+            try {
+                Class<?> clazz = Class.forName("Actors." + toPlace);
+                Constructor<?> constr = clazz.getConstructor(int.class, int.class);
+                c = (Creature) constr.newInstance(new Object[]{
+                        tempRect.x + game.getCamera().getX(),
+                        tempRect.y - game.getCamera().getY(),
+                });
+            } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+                e.printStackTrace();
+            }
+            if(c.getClass() != Creature.class){
+                ChangeManager.push(1, 0, false);
+                ChangeManager.push(c);
+                game.getLevel().addCreature(c);
+                tempRect = null;
+                ml.dragTangle.width = 0;
+                ml.rectReady = false;
+            }
         }
     }
-
+    /**
+     * Is called after a location has been specified using the Place tool.
+     * Places the currently selected gameObject at the specified location.
+     */
     private void placeSelectedObject() {
-        switch (this.toPlace){
-            case "Platform":
-                Platform tempPlatform = new Platform(tempRect.x + game.getCamera().getX(), tempRect.y - game.getCamera().getY(), tempRect.width, tempRect.height);
-                System.out.println(game.getCamera().getY());
-                ChangeManager.push(1, 0, false);
-                ChangeManager.push(tempPlatform);
-                game.getLevel().addGameObject(tempPlatform);
-                tempRect = null;
-                ml.dragTangle.width = 0;
-                ml.rectReady = false;
-                break;
-            case "SolidBlock":
-                SolidBlock tempBlock = new SolidBlock(tempRect.x + game.getCamera().getX(), tempRect.y - game.getCamera().getY(), tempRect.width, tempRect.height);
-                ChangeManager.push(1, 0, false);
-                ChangeManager.push(tempBlock);
-                game.getLevel().addGameObject(tempBlock);
-                tempRect = null;
-                ml.dragTangle.width = 0;
-                ml.rectReady = false;
+        GameObject o = new GameObject(0, 0, 0, 0);
+        try {
+            Class<?> clazz = Class.forName("Objects." + toPlace);
+            Constructor<?> constr = clazz.getConstructor(int.class, int.class, int.class, int.class);
+            o = (GameObject) constr.newInstance(new Object[]{
+               tempRect.x + game.getCamera().getX(),
+               tempRect.y - game.getCamera().getY(),
+               tempRect.width,
+               tempRect.height
+            });
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+            e.printStackTrace();
         }
+        if(o.getClass() != GameObject.class){
+            ChangeManager.isPushing = true;
+            ChangeManager.push(1, 0, false);
+            ChangeManager.push(o);
+            game.getLevel().addGameObject(o);
+            tempRect = null;
+            ml.dragTangle.width = 0;
+            ml.rectReady = false;
+            ChangeManager.isPushing = false;
+        } else System.out.println("Object is null");
     }
-
+    /**
+     * This method is called in the update method.
+     * Checks if the user has clicked a placeble object within in the editors tool panel and then switches to the desired object.
+     */
     private void checkPlaceble() {
         if(!game.getbl().getToPlace().equals("") && !this.toPlace.equals(game.getbl().getToPlace())){
             System.out.println(this.toPlace + " " + game.getbl().getToPlace());
@@ -213,7 +390,7 @@ public class LevelEditState extends State {
             if (this.tool != PLACING) {
                 this.changeTool(PLACING);
             }
-            if(!this.toPlace.equals("Player")){
+            if(!game.getbl().getSelection().equals("creatures")){
                 ml.placingPlayer = false;
             } else{
                 ml.placingPlayer = true;
@@ -221,6 +398,9 @@ public class LevelEditState extends State {
         }
     }
 
+    /**
+     * This method is called when the player has clicked a creature in the tool panel and sets up the placement.
+     */
     private void selectCreatureToPlace() {
         switch (game.getbl().getToPlace()){
             case "Player":
@@ -228,21 +408,19 @@ public class LevelEditState extends State {
                 this.toPlaceColor = Player.getDefaultColor();
         }
     }
-
+    /**
+     * This method is called when the player has clicked a gameObject in the tool panel and sets up the placement.
+     */
     private void selectObjectToPlace() {
-        switch (game.getbl().getToPlace()){
-            case "Platform":
-                this.toPlace = game.getbl().getToPlace();
-                this.toPlaceColor = Platform.getColor();
-                System.out.println(toPlace);
-                break;
-            case "SolidBlock":
-                this.toPlace = game.getbl().getToPlace();
-                this.toPlaceColor = SolidBlock.getColor();
-                break;
-
+        this.toPlace = game.getbl().getToPlace();
+        try {
+            this.toPlaceColor =(Color) Class.forName("Objects." + toPlace).getMethod("getDefaultColor").invoke(new Object[0]);
+        } catch (IllegalAccessException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
         }
+        System.out.println(toPlace);
     }
+
 
     private void checkEditItemChange() {
         if(!this.editItemSelection.equals(game.getbl().getSelection())){
@@ -273,6 +451,7 @@ public class LevelEditState extends State {
             ChangeManager.push(c);
             game.getLevel().removeCreature(c);
         }
+        ChangeManager.isPushing = false;
         clearSelection();
         game.getkl().setKey(KeyEvent.VK_DELETE, false);
     }
@@ -335,11 +514,10 @@ public class LevelEditState extends State {
     private void handleSelection() {
         //if selection is dragged be prepared to handle multiple selections
         tempRect = ml.getDragTangle();
-        System.out.println("rxb: " + tempRect.x + ", ryb: " + tempRect.y);
         tempRect.x += game.getCamera().getX();
         tempRect.y -= game.getCamera().getY();
-        System.out.println("rxe: " + tempRect.x + ", rye: " + tempRect.y);
         if (selectionEmpty()) {
+            ChangeManager.isPushing = false;
             if(tempRect.width > 1){
                 for(GameObject o: game.getLevel().getObjects()){
                     if(o.getHitBox().intersects(tempRect)){
@@ -398,6 +576,7 @@ public class LevelEditState extends State {
                 ChangeManager.push(selectedCreatures.get(i), beforeMoveCreatures[i * 2] - selectedCreatures.get(i).getX(),
                         beforeMoveCreatures[i * 2 + 1] - selectedCreatures.get(i).getY());
             }
+            ChangeManager.isPushing = false;
             ml.draggingSelection = false;
         } else{
             clearSelection();
@@ -412,6 +591,7 @@ public class LevelEditState extends State {
     }
 
     private void undo() {
+        ChangeManager.isPushing = false;
         if (ChangeManager.firstChange != null) {
             if (!ChangeManager.wasMoved()) {
                 if(ChangeManager.wasDeleted()){
@@ -419,8 +599,14 @@ public class LevelEditState extends State {
                     for(Creature c: ChangeManager.getFirst().creature)game.getLevel().addCreature(c);
                     ChangeManager.pop();
                 } else{
-                    for(GameObject o: ChangeManager.getFirst().object) game.getLevel().removeObject(o);
-                    for(Creature c: ChangeManager.getFirst().creature)game.getLevel().removeCreature(c);
+                    for(GameObject o: ChangeManager.getFirst().object) {
+                        if(selectedGameObjects.contains(o)) selectedGameObjects.remove(o);
+                        game.getLevel().removeObject(o);
+                    }
+                    for(Creature c: ChangeManager.getFirst().creature){
+                        if(selectedCreatures.contains(c)) selectedCreatures.remove(c);
+                        game.getLevel().removeCreature(c);
+                    }
                     ChangeManager.pop();
                 }
             } else{
@@ -515,8 +701,8 @@ public class LevelEditState extends State {
 
         if(gridDisplayed){
             g.setColor(Color.BLACK);
-            for(int y = 0; y < game.getDisplay().getHeight(); y += GRID_HEIGHT){
-                for(int x = 0; x < game.getDisplay().getWidth(); x += GRID_WIDTH){
+            for(int y = game.getCamera().getY()%GRID_HEIGHT; y < game.getDisplay().getHeight(); y += GRID_HEIGHT){
+                for(int x = -(game.getCamera().getX()%GRID_WIDTH); x < game.getDisplay().getWidth(); x += GRID_WIDTH){
                     g.drawRect(x, y, GRID_WIDTH, GRID_HEIGHT);
                 }
             }
