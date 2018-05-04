@@ -24,7 +24,7 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
     private int xDrag;
     private int yDrag;
     private Creature[] selectedCreatures;
-    public boolean placingPlayer;
+    public boolean placingCreature;
 
     private Camera camera;
 
@@ -62,7 +62,7 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
                 }
 
             }
-            if(placingPlayer){
+            if(placingCreature){
                 dragTangle.x = e.getX();
                 dragTangle.y = e.getY();
                 dragTangle.width = Player.getDefaultCreatureWidth();
@@ -96,7 +96,7 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        if(placingPlayer){
+        if(placingCreature){
             dragTangle.x = e.getX();
             dragTangle.y = e.getY();
             dragTangle.width = Player.getDefaultCreatureWidth();
