@@ -2,8 +2,6 @@ package LevelManagment;
 
 import Actors.Player;
 import Objects.GameObject;
-import Objects.Platform;
-import Objects.SolidBlock;
 
 import java.io.BufferedReader;
 import java.io.File;
