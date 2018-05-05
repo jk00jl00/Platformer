@@ -1,7 +1,10 @@
 package States.PlayerStates;
 
+import Actors.Creature;
 import Actors.Player;
+import GameController.Game;
 import Objects.GameObject;
+import Projectiles.BasicShot;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -13,8 +16,8 @@ public class OnGroundStates extends PlayerState {
     protected double xMaxSpeed = 7.5;
     protected double jumpSpeed = 12.5;
 
-    public OnGroundStates(Player player) {
-        super(player);
+    public OnGroundStates(Player player, Game game) {
+        super(player, game);
     }
 
     @Override
@@ -39,7 +42,7 @@ public class OnGroundStates extends PlayerState {
             }
 
 
-        PlayerStateStack.push(new FallingState(player));
+        PlayerStateStack.push(new FallingState(player, game));
         PlayerStateStack.getCurrent().enter();
         PlayerStateStack.getCurrent().update();
     }
@@ -50,18 +53,29 @@ public class OnGroundStates extends PlayerState {
 
     public void handleKeys(){
         if(keys[KeyEvent.VK_D] || keys[KeyEvent.VK_A]){
-            PlayerStateStack.push(new WalkingState(player));
+            PlayerStateStack.push(new WalkingState(player, game));
             PlayerStateStack.getCurrent().enter();
             PlayerStateStack.getCurrent().update();
         }
         if(keys[KeyEvent.VK_W]){
-            PlayerStateStack.push(new InAirStates(player));
-            PlayerStateStack.push(new JumpingState(player));
+            PlayerStateStack.push(new InAirStates(player, game));
+            PlayerStateStack.push(new JumpingState(player, game));
             PlayerStateStack.getCurrent().enter();
             PlayerStateStack.getCurrent().update();
         }
         if(!(keys[KeyEvent.VK_D] || keys[KeyEvent.VK_A])) {
             player.dx = 0;
+        }
+        if(keys[KeyEvent.VK_SPACE]){
+            shoot();
+        }
+    }
+
+    private void shoot() {
+        if(player.canShoot()) {
+            System.out.println(player.getFacing());
+            game.getLevel().addProjectile(new BasicShot(this.player, (this.player.getFacing() == Creature.Facing.Right) ? 1 : -1, 0, game));
+            player.shot();
         }
     }
 
@@ -88,6 +102,8 @@ public class OnGroundStates extends PlayerState {
             player.setX(nextPosition.x);
             player.setHitbox(nextPosition.x, nextPosition.y);
         }
+        if(player.dx > 0) player.setFacing(Creature.Facing.Right);
+        else if(player.dx < 0)player.setFacing(Creature.Facing.Left);
     }
 
     protected void collide(){

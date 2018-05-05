@@ -36,6 +36,7 @@ public class PlayerStateStack {
         void pop(){
             first = first.next;
         }
+
         PlayerState getCurrent(){
             return first.item;
         }

@@ -1,6 +1,7 @@
 package States.PlayerStates;
 
 import Actors.Player;
+import GameController.Game;
 import Objects.GameObject;
 import Utilities.Util;
 
@@ -18,8 +19,8 @@ public class InAirStates extends PlayerState {
     protected double maxAirSpeed = 20;
 
 
-    InAirStates(Player creature) {
-        super(creature);
+    InAirStates(Player creature, Game game) {
+        super(creature, game);
     }
 
     @Override

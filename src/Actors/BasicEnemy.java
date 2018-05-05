@@ -2,10 +2,7 @@ package Actors;
 
 import Gfx.Camera;
 import Objects.GameObject;
-import States.GameStates.CreatureStates.BasicEnemyBehavior;
-import States.GameStates.CreatureStates.CreatureBehavior;
-import States.PlayerStates.PlayerState;
-import States.PlayerStates.PlayerStateStack;
+import States.CreatureStates.BasicEnemyBehavior;
 
 import java.awt.*;
 
@@ -58,6 +55,12 @@ public class BasicEnemy extends Creature{
                 c.damage(this.dmg);
             }
         }
+    }
+
+    @Override
+    public void damage(int dmg) {
+        this.health -= dmg;
+        this.color.darker();
     }
 
     public void draw(Graphics2D g, Camera camera){

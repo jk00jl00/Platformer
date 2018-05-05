@@ -1,10 +1,11 @@
 package States.PlayerStates;
 
 import Actors.Player;
+import GameController.Game;
 
 public class JumpingState extends InAirStates{
-    JumpingState(Player creature) {
-        super(creature);
+    JumpingState(Player creature, Game game) {
+        super(creature, game);
     }
 
     @Override
@@ -12,7 +13,7 @@ public class JumpingState extends InAirStates{
         super.update();
         if(player.dy > 0){
             exit();
-            PlayerStateStack.push(new FallingState(player));
+            PlayerStateStack.push(new FallingState(player, game));
             PlayerStateStack.getCurrent().update();
         }
     }

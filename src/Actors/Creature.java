@@ -16,10 +16,27 @@ public class Creature{
     protected Rectangle hitBox;
     public static final double grav = 0.5;
 
+    public Facing getFacing() {
+        return facing;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setFacing(Facing facing) {
+        this.facing = facing;
+    }
+
+    public enum Facing{
+        Right, Left
+    }
+
     protected GameObject[] gos;
     protected Creature[] cs;
 
     protected int dmg;
+    protected Facing facing;
 
     public static final String[] CREATURES = new String[]{
             "Player",
@@ -96,6 +113,8 @@ public class Creature{
     }
 
     public void move(int xDrag, int yDrag) {
+        if(xDrag > 0) facing = Facing.Right;
+        else if(xDrag < 0)facing = Facing.Left;
         this.x = Util.clamp(x + xDrag, 0, 10000 - this.width);
         this.y = Util.clamp(y + yDrag, 0, 10000 - this.height);
         this.hitBox.x  = this.x;

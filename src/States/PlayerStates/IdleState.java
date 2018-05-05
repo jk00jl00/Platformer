@@ -1,11 +1,12 @@
 package States.PlayerStates;
 
 import Actors.Player;
+import GameController.Game;
 
 public class IdleState extends OnGroundStates{
 
-    public IdleState(Player player){
-        super(player);
+    public IdleState(Player player, Game game){
+        super(player, game);
     }
 
     @Override

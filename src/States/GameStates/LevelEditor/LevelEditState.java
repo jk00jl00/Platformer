@@ -830,11 +830,6 @@ public class LevelEditState extends State {
                 g.drawRect(r.x - game.getCamera().getX(), r.y + game.getCamera().getX(), r.width, r.height);
             }
         }
-
-        g.setColor(Color.WHITE);
-        g.drawString("Edit mode - Undo: ctrl z  ||  Place platform: click and drag", 0,
-                (int) g.getFontMetrics().getStringBounds("Edit mode - Undo: ctrl z  ||  Place platform: click and drag", g).getHeight());
-
     }
 
     /**

@@ -1,4 +1,4 @@
-package States.GameStates.CreatureStates;
+package States.CreatureStates;
 
 import Actors.Creature;
 

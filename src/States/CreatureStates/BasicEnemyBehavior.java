@@ -1,15 +1,10 @@
-package States.GameStates.CreatureStates;
+package States.CreatureStates;
 
 import Actors.Creature;
-import Actors.Player;
 import Objects.GameObject;
-import States.PlayerStates.FallingState;
-import States.PlayerStates.PlayerStateStack;
 import Utilities.Util;
 
 import java.awt.*;
-
-import static Utilities.Util.collide;
 
 public class BasicEnemyBehavior extends CreatureBehavior{
     private boolean movingRight = true;
@@ -20,6 +15,7 @@ public class BasicEnemyBehavior extends CreatureBehavior{
 
     @Override
     public void update() {
+        if(creature.getHealth() <= 0) return;
         if(isFalling()) {
             this.dx = 0;
             this.dy += Creature.grav;

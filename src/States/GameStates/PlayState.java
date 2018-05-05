@@ -2,6 +2,8 @@ package States.GameStates;
 
 import Gfx.Camera;
 import LevelManagment.LevelLoader;
+import States.PlayerStates.OnGroundStates;
+import States.PlayerStates.PlayerStateStack;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,6 +22,7 @@ public class PlayState extends State {
             enterMenu();
             return;
         }
+        if(game.getLevel().getPlayer().noState()) PlayerStateStack.push(new OnGroundStates(game.getLevel().getPlayer(), game));
         game.getLevel().update();
         game.getCamera().update();
     }

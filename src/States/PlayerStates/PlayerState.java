@@ -1,12 +1,15 @@
 package States.PlayerStates;
 
 import Actors.Player;
+import GameController.Game;
 
 public abstract class PlayerState {
     protected Player player;
+    protected Game game;
 
-    PlayerState(Player player){
+    PlayerState(Player player, Game game){
         this.player = player;
+        this.game = game;
     }
 
 

@@ -4,6 +4,7 @@ import Actors.Creature;
 import Actors.Player;
 import Gfx.Camera;
 import Objects.GameObject;
+import Projectiles.Projectile;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ public class Level{
     private Player player;
     private ArrayList<GameObject> gameObjects = new ArrayList<>();
     private ArrayList<Creature> gameCreatures = new ArrayList<>();
+    private ArrayList<Projectile> projectiles = new ArrayList<>();
     private String name;
 
     private boolean darker = false;
@@ -39,8 +41,12 @@ public class Level{
         for(GameObject o: gameObjects){
             o.update();
         }
-        for(Creature c: gameCreatures){
-            c.update(gameObjects.toArray(new GameObject[gameObjects.size()]), gameCreatures.toArray(new Creature[gameCreatures.size()]));
+        for(int i = 0; i < gameCreatures.size(); i++){
+            gameCreatures.get(i).update(gameObjects.toArray(new GameObject[gameObjects.size()]), gameCreatures.toArray(new Creature[gameCreatures.size()]));
+            if(!gameCreatures.get(i).getType().equals("Player") && gameCreatures.get(i).getHealth() <= 0) this.removeCreature(gameCreatures.get(i));
+        }
+        for(int i = 0; i < projectiles.size(); i++){
+                projectiles.get(i).update(gameObjects.toArray(new GameObject[gameObjects.size()]), gameCreatures.toArray(new Creature[gameCreatures.size()]));
         }
     }
 
@@ -52,6 +58,10 @@ public class Level{
         for(Creature c: gameCreatures){
             g.setColor((darker) ? c.color.darker() : c.color);
             c.draw(g, camera);
+        }
+        for(Projectile p: projectiles){
+            g.setColor(Color.BLACK);
+            p.draw(g, camera);
         }
     }
 
@@ -111,5 +121,13 @@ public class Level{
 
     public void addCreature(Creature c) {
         this.gameCreatures.add(c);
+    }
+
+    public void addProjectile(Projectile p) {
+        this.projectiles.add(p);
+    }
+
+    public void removeProjectile(Projectile p) {
+        this.projectiles.remove(p);
     }
 }

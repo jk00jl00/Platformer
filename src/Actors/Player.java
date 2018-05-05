@@ -20,6 +20,8 @@ public class Player extends Creature{
     private boolean[] keys;
     private PlayerState currentState;
     private long invisTime = 0;
+    private long lastShot;
+    private int shotCooldown = 500;
 
     public Player(int x, int y, int health) {
         super(x, y, health);
@@ -28,7 +30,6 @@ public class Player extends Creature{
         this.height = Creature.DEFAULT_CREATURE_HEIGHT_;
         this.hitBox = new Rectangle(this.x, this.y,this.width, this.height);
         this.color = Color.LIGHT_GRAY;
-        PlayerStateStack.push(new OnGroundStates(this));
         getState();
     }
 
@@ -39,7 +40,6 @@ public class Player extends Creature{
         this.height = Creature.DEFAULT_CREATURE_HEIGHT_;
         this.hitBox = new Rectangle(this.x, this.y,this.width, this.height);
         this.color = Color.LIGHT_GRAY;
-        PlayerStateStack.push(new OnGroundStates(this));
         getState();
     }
 
@@ -50,6 +50,7 @@ public class Player extends Creature{
             invisTime = 0;
             this.color = defaultColor;
         }
+        getState();
         currentState.update();
         getState();
         currentState.handleKeys();
@@ -109,4 +110,16 @@ public class Player extends Creature{
     }
     public static int getDefaultWidth(){return DEFAULT_CREATURE_WIDTH_;}
     public static int getDefaultHeight(){return DEFAULT_CREATURE_HEIGHT_;}
+
+    public boolean noState() {
+        return currentState == null;
+    }
+
+    public boolean canShoot(){
+        return (System.currentTimeMillis() - lastShot > shotCooldown);
+    }
+
+    public void shot() {
+        this.lastShot = System.currentTimeMillis();
+    }
 }

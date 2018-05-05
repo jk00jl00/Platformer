@@ -1,14 +1,15 @@
 package States.PlayerStates;
 
 import Actors.Player;
+import GameController.Game;
 import Utilities.Util;
 
 import java.awt.event.KeyEvent;
 
 public class WalkingState extends OnGroundStates {
 
-    WalkingState(Player player) {
-        super(player);
+    WalkingState(Player player, Game game) {
+        super(player, game);
     }
 
     @Override
