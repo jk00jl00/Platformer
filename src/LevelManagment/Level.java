@@ -40,7 +40,7 @@ public class Level{
             o.update();
         }
         for(Creature c: gameCreatures){
-            c.update(gameObjects.toArray(new GameObject[gameObjects.size()]));
+            c.update(gameObjects.toArray(new GameObject[gameObjects.size()]), gameCreatures.toArray(new Creature[gameCreatures.size()]));
         }
     }
 

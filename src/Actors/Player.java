@@ -19,6 +19,7 @@ public class Player extends Creature{
 
     private boolean[] keys;
     private PlayerState currentState;
+    private long invisTime = 0;
 
     public Player(int x, int y, int health) {
         super(x, y, health);
@@ -43,8 +44,12 @@ public class Player extends Creature{
     }
 
     @Override
-    public void update(GameObject[] go) {
-        super.update(go);
+    public void update(GameObject[] go, Creature[] creatures) {
+        super.update(go, creatures);
+        if(invisTime != 0 && (System.currentTimeMillis() - invisTime)/500 > 1){
+            invisTime = 0;
+            this.color = defaultColor;
+        }
         currentState.update();
         getState();
         currentState.handleKeys();
@@ -54,6 +59,16 @@ public class Player extends Creature{
 
     public void draw(Graphics2D g, Camera camera){
         g.fillRect(this.x - camera.getX(), this.y + camera.getY(), this.width, this.height);
+        g.drawString("Health: " + this.health, 0, (int)g.getFontMetrics().getStringBounds("Health: " + this.health, g).getHeight());
+    }
+
+    @Override
+    public void damage(int dmg) {
+        if (invisTime == 0) {
+            this.health -= dmg;
+            this.color = Color.BLUE;
+            this.invisTime = System.currentTimeMillis();
+        }
     }
 
     public void setKeys(boolean[] b) {

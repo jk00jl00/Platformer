@@ -27,6 +27,7 @@ public class BasicEnemy extends Creature{
         this.hitBox = new Rectangle(this.x, this.y,this.width, this.height);
         this.color = Color.RED;
         this.behavior = new BasicEnemyBehavior(this);
+        this.dmg = 1;
     }
 
     public BasicEnemy(int x, int y){
@@ -37,15 +38,26 @@ public class BasicEnemy extends Creature{
         this.hitBox = new Rectangle(this.x, this.y,this.width, this.height);
         this.color = Color.RED;
         this.behavior = new BasicEnemyBehavior(this);
+        this.dmg = 1;
     }
 
     @Override
-    public void update(GameObject[] go) {
-        super.update(go);
+    public void update(GameObject[] go, Creature[] creatures) {
+        super.update(go, creatures);
         this.behavior.update();
         //currentState.update();
         //currentState.handleKeys();
         //currentState.move();
+    }
+
+    @Override
+    public void collide() {
+        for(Creature c: cs){
+            if(c.equals(this)) continue;
+            if(this.hitBox.intersects(c.getHitBox())){
+                c.damage(this.dmg);
+            }
+        }
     }
 
     public void draw(Graphics2D g, Camera camera){

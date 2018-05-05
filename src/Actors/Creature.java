@@ -17,6 +17,9 @@ public class Creature{
     public static final double grav = 0.5;
 
     protected GameObject[] gos;
+    protected Creature[] cs;
+
+    protected int dmg;
 
     public static final String[] CREATURES = new String[]{
             "Player",
@@ -59,8 +62,9 @@ public class Creature{
         this.health = health;
     }
 
-    public void update(GameObject[] go){
+    public void update(GameObject[] go, Creature[] creatures){
         this.gos = go;
+        this.cs = creatures;
     }
 
     public void draw(Graphics2D g, Camera camera){
@@ -100,5 +104,20 @@ public class Creature{
 
     public GameObject[] getGos() {
         return gos;
+    }
+
+    public Creature[] getcs() {
+        return cs;
+    }
+
+    public void damage() {
+
+    }
+    public void damage(int dmg){
+
+    }
+
+    public void collide() {
+
     }
 }

@@ -5,6 +5,7 @@ import Actors.Player;
 import Objects.GameObject;
 import States.PlayerStates.FallingState;
 import States.PlayerStates.PlayerStateStack;
+import Utilities.Util;
 
 import java.awt.*;
 
@@ -26,6 +27,7 @@ public class BasicEnemyBehavior extends CreatureBehavior{
             this.checkMovement();
         }
         this.move((int)dx,(int)dy);
+        creature.collide();
         super.update();
     }
 
@@ -40,7 +42,7 @@ public class BasicEnemyBehavior extends CreatureBehavior{
                 nextPosition.x += Math.round(this.dx);
                 for(GameObject o: creature.getGos())
                     if (o.isSolid()) {
-                        if(!collide(o.getHitBox(), new Rectangle(nextPosition.x + nextPosition.width + 1, nextPosition.y + nextPosition.height + 1, 1, 5)) &&
+                        if(!Util.collide(o.getHitBox(), new Rectangle(nextPosition.x + nextPosition.width + 1, nextPosition.y + nextPosition.height + 1, 1, 5)) &&
                                 o.getHitBox().intersects(new Rectangle(creature.getX(), creature.getY() + 10, creature.getWidth(), creature.getHeight()))) {
                             this.dx -= 0.2;
                             movingRight = false;
@@ -58,7 +60,7 @@ public class BasicEnemyBehavior extends CreatureBehavior{
                 nextPosition.x += Math.round(this.dx);
                 for(GameObject o: creature.getGos())
                     if (o.isSolid()) {
-                        if(!collide(o.getHitBox(), new Rectangle(nextPosition.x - 1, nextPosition.y + nextPosition.height + 1, 1, 5)) &&
+                        if(!Util.collide(o.getHitBox(), new Rectangle(nextPosition.x - 1, nextPosition.y + nextPosition.height + 1, 1, 5)) &&
                                 o.getHitBox().intersects(new Rectangle(creature.getX(), creature.getY() + 1, creature.getWidth(), creature.getHeight()))) {
                             this.dx += 0.2;
                             movingRight = true;
@@ -79,7 +81,7 @@ public class BasicEnemyBehavior extends CreatureBehavior{
         nextPosition.y += Math.round(this.dy);
         for(GameObject o: creature.getGos())
             if (o.isSolid()) {
-                if(collide(o.getHitBox(), nextPosition)) {
+                if(Util.collide(o.getHitBox(), nextPosition)) {
                     this.dy = 0;
                     return false;
                 }
