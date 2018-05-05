@@ -36,9 +36,9 @@ public class LevelSaver {
             sb.append(level.getCreatures().length - 1).append("\n");
 
             for(Creature c: level.getCreatures()){
-                if(c.getType().equals("player")) continue;
+                if(c.getType().equals("Player")) continue;
 
-                sb.append(c.getType());
+                sb.append(c.getType()).append(" ");
                 sb.append(c.toLevelSave());
                 sb.append("\n");
             }

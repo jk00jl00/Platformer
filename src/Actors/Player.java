@@ -3,7 +3,6 @@ package Actors;
 import Gfx.Camera;
 import Objects.GameObject;
 import States.PlayerStates.PlayerState;
-import States.PlayerStates.OnGroundStates;
 import States.PlayerStates.PlayerStateStack;
 
 import java.awt.*;
@@ -21,11 +20,12 @@ public class Player extends Creature{
     private PlayerState currentState;
     private long invisTime = 0;
     private long lastShot;
-    private int shotCooldown = 500;
+    private int shotCooldown = 10;
 
     public Player(int x, int y, int health) {
         super(x, y, health);
         this.type = "Player";
+        this.facing = Facing.Right;
         this.width = Creature.DEFAULT_CREATURE_WIDTH_;
         this.height = Creature.DEFAULT_CREATURE_HEIGHT_;
         this.hitBox = new Rectangle(this.x, this.y,this.width, this.height);
@@ -36,6 +36,7 @@ public class Player extends Creature{
     public Player(int x, int y){
         super(x, y, 3);
         this.type = "Player";
+        this.facing = Facing.Right;
         this.width = Creature.DEFAULT_CREATURE_WIDTH_;
         this.height = Creature.DEFAULT_CREATURE_HEIGHT_;
         this.hitBox = new Rectangle(this.x, this.y,this.width, this.height);
@@ -115,8 +116,8 @@ public class Player extends Creature{
         return currentState == null;
     }
 
-    public boolean canShoot(){
-        return (System.currentTimeMillis() - lastShot > shotCooldown);
+    public boolean canShoot(boolean spaceReleased){
+        return (System.currentTimeMillis() - lastShot > shotCooldown) && spaceReleased;
     }
 
     public void shot() {

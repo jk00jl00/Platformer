@@ -38,8 +38,9 @@ public class BasicEnemyBehavior extends CreatureBehavior{
                 nextPosition.x += Math.round(this.dx);
                 for(GameObject o: creature.getGos())
                     if (o.isSolid()) {
-                        if(!Util.collide(o.getHitBox(), new Rectangle(nextPosition.x + nextPosition.width + 1, nextPosition.y + nextPosition.height + 1, 1, 5)) &&
-                                o.getHitBox().intersects(new Rectangle(creature.getX(), creature.getY() + 10, creature.getWidth(), creature.getHeight()))) {
+                        if((!Util.collide(o.getHitBox(), new Rectangle(nextPosition.x + nextPosition.width + 1, nextPosition.y + nextPosition.height + 1, 1, 1))&&
+                                o.getHitBox().intersects(new Rectangle(creature.getX(), creature.getY() + 10, creature.getWidth(), creature.getHeight()))) ||
+                                Util.collide(o.getHitBox(), new Rectangle(nextPosition.x + nextPosition.width + 1, nextPosition.y, 1, creature.getHeight()))) {
                             this.dx -= 0.2;
                             movingRight = false;
                             break doLoop;
@@ -56,8 +57,9 @@ public class BasicEnemyBehavior extends CreatureBehavior{
                 nextPosition.x += Math.round(this.dx);
                 for(GameObject o: creature.getGos())
                     if (o.isSolid()) {
-                        if(!Util.collide(o.getHitBox(), new Rectangle(nextPosition.x - 1, nextPosition.y + nextPosition.height + 1, 1, 5)) &&
-                                o.getHitBox().intersects(new Rectangle(creature.getX(), creature.getY() + 1, creature.getWidth(), creature.getHeight()))) {
+                        if((!Util.collide(o.getHitBox(), new Rectangle(nextPosition.x - 1, nextPosition.y + nextPosition.height + 1, 1, 1))&&
+                                o.getHitBox().intersects(new Rectangle(creature.getX(), creature.getY() + 1, creature.getWidth(), creature.getHeight()))) ||
+                                Util.collide(o.getHitBox(), new Rectangle(nextPosition.x  - 2, nextPosition.y, 1, creature.getHeight()))) {
                             this.dx += 0.2;
                             movingRight = true;
                             break doLoop;

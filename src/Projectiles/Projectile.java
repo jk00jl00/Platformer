@@ -7,6 +7,7 @@ import Objects.GameObject;
 import Utilities.Util;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Projectile {
     private final Game game;
@@ -51,13 +52,15 @@ public class Projectile {
         this.gameObjects = g;
         this.creatures = c;
         move();
-        collide();
     }
 
     private void collide() {
+        if(hitBox == null) return;
         for(GameObject o: gameObjects){
             if(Util.collide(o.getHitBox(), this.hitBox)){
                 game.getLevel().removeProjectile(this);
+                this.hitBox = null;
+                return;
             }
         }
         for(Creature c: creatures){
@@ -65,17 +68,43 @@ public class Projectile {
             if(Util.collide(c.getHitBox(), hitBox)){
                 c.damage(this.dmg);
                 game.getLevel().removeProjectile(this);
+                this.hitBox = null;
+                return;
             }
         }
     }
 
     private void move() {
-        this.x += this.dx;
-        this.y += this.dy;
-        this.hitBox.x = x;
-        this.hitBox.y = y;
-        int traveled = (this.shotPos[0] > this.x) ? this.shotPos[0] - this.x : this.x - this.shotPos[0];
-        if(traveled > this.range);
+        int traveledx = 0;
+        int traveledy = 0;
+        while(traveledx < ((dx > 0) ? dx:-dx) || traveledy < ((dy > 0) ? dy : -dy)){
+            if(dx > 0 && traveledx < ((dx > 0) ? dx:-dx)){
+                traveledx++;
+                this.x++;
+                if(hitBox == null) return;
+                this.hitBox.x++;
+                collide();
+            } else if(traveledx < ((dx > 0) ? dx:-dx)){
+                traveledx++;
+                this.x--;
+                if(hitBox == null) return;
+                this.hitBox.x--;
+                collide();
+            }
+            if(dy > 0 && traveledy < ((dy > 0) ? dy : -dy)){
+                traveledy++;
+                this.y++;
+                if(hitBox == null) return;
+                this.hitBox.y++;
+                collide();
+            } else if(traveledy < ((dy > 0) ? dy : -dy)){
+                traveledy++;
+                this.y--;
+                if(hitBox == null) return;
+                this.hitBox.y--;
+                collide();
+            }
+        }
     }
 
     public void draw(Graphics2D g, Camera camera) {

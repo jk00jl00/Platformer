@@ -1,6 +1,7 @@
 package States.GameStates;
 
 import States.GameStates.MainMenuTexts.MenuText;
+import States.PlayerStates.PlayerStateStack;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -55,6 +56,7 @@ public class PauseMenuState extends State{
                         State.pop();
                         State.currentState.exit();
                         State.currentState = new MainMenu();
+                        while(PlayerStateStack.getCurrent() != null) PlayerStateStack.pop();
                         game.getLevel().setDarker(false);
                         return true;
                     case "Continue":

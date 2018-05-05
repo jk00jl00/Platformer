@@ -68,14 +68,15 @@ public class OnGroundStates extends PlayerState {
         }
         if(keys[KeyEvent.VK_SPACE]){
             shoot();
+            game.getkl().setKey(KeyEvent.VK_SPACE, false);
         }
     }
 
     private void shoot() {
-        if(player.canShoot()) {
-            System.out.println(player.getFacing());
+        if(player.canShoot(game.getkl().spaceReleased)) {
             game.getLevel().addProjectile(new BasicShot(this.player, (this.player.getFacing() == Creature.Facing.Right) ? 1 : -1, 0, game));
             player.shot();
+            game.getkl().spaceReleased = false;
         }
     }
 

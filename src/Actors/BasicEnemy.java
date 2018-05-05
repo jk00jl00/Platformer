@@ -42,9 +42,6 @@ public class BasicEnemy extends Creature{
     public void update(GameObject[] go, Creature[] creatures) {
         super.update(go, creatures);
         this.behavior.update();
-        //currentState.update();
-        //currentState.handleKeys();
-        //currentState.move();
     }
 
     @Override
@@ -52,7 +49,9 @@ public class BasicEnemy extends Creature{
         for(Creature c: cs){
             if(c.equals(this)) continue;
             if(this.hitBox.intersects(c.getHitBox())){
-                c.damage(this.dmg);
+                if (c.getType().equals("Player")) {
+                    c.damage(this.dmg);
+                }
             }
         }
     }

@@ -1,8 +1,10 @@
 package States.PlayerStates;
 
+import Actors.Creature;
 import Actors.Player;
 import GameController.Game;
 import Objects.GameObject;
+import Projectiles.BasicShot;
 import Utilities.Util;
 
 import java.awt.*;
@@ -53,6 +55,19 @@ public class InAirStates extends PlayerState {
                 player.dx += 0.5;
             }
         }
+        if(keys[KeyEvent.VK_SPACE]){
+            shoot();
+            game.getkl().setKey(KeyEvent.VK_SPACE, false);
+        }
+    }
+
+    private void shoot() {
+        if(player.canShoot(game.getkl().spaceReleased)) {
+            System.out.println(player.getFacing());
+            game.getLevel().addProjectile(new BasicShot(this.player, (this.player.getFacing() == Creature.Facing.Right) ? 1 : -1, 0, game));
+            player.shot();
+            game.getkl().spaceReleased = false;
+        }
     }
 
     @Override
@@ -98,6 +113,9 @@ public class InAirStates extends PlayerState {
             player.setY(nextPosition.y);
             player.setHitbox(nextPosition.x, nextPosition.y);
         }
+
+        if(player.dx > 0) player.setFacing(Creature.Facing.Right);
+        else if(player.dx < 0)player.setFacing(Creature.Facing.Left);
     }
 
     @Override
