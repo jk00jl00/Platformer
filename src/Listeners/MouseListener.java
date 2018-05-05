@@ -21,6 +21,9 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
     private boolean inEdit;
     private GameObject[] selectedObjects;
 
+    private int creatureWidth = 0;
+    private int creatureHeight = 0;
+
     private int xDrag;
     private int yDrag;
     private Creature[] selectedCreatures;
@@ -65,9 +68,8 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
             if(placingCreature){
                 dragTangle.x = e.getX();
                 dragTangle.y = e.getY();
-                dragTangle.width = Player.getDefaultCreatureWidth();
-                dragTangle.height = Player.getDefaultCreatureHeight();
-                return;
+                dragTangle.width = creatureWidth;
+                dragTangle.height = creatureHeight;
             }
             dragging = true;
 
@@ -99,8 +101,8 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
         if(placingCreature){
             dragTangle.x = e.getX();
             dragTangle.y = e.getY();
-            dragTangle.width = Player.getDefaultCreatureWidth();
-            dragTangle.height = Player.getDefaultCreatureHeight();
+            dragTangle.width = creatureWidth;
+            dragTangle.height = creatureHeight;
             return;
         }
 
@@ -186,5 +188,10 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
 
     public Rectangle getDragTangle() {
         return new Rectangle(dragTangle.x, dragTangle.y, dragTangle.width, dragTangle.height);
+    }
+
+    public void setCreatureDims(int width, int height){
+        this.creatureWidth = width;
+        this.creatureHeight = height;
     }
 }

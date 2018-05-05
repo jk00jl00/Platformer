@@ -1,51 +1,19 @@
 package States.PlayerStates;
 
-public class PlayerState{
+import Actors.Player;
 
-    private static PlayerStateStack playerState = new PlayerStateStack();
+public abstract class PlayerState {
+    protected Player player;
 
-    public static CreatureState getCurrent(){
-        try {
-            return playerState.getCurrent();
-        } catch (NullPointerException e) {
-            return null;
-            
-        }
-    }
-
-    public static void push(CreatureState state){
-        playerState.push(state);
-    }
-    public static void pop(){
-        playerState.pop();
+    PlayerState(Player player){
+        this.player = player;
     }
 
 
+    public abstract void update();
+    public abstract void handleKeys();
+    public abstract void move();
+    public abstract void enter();
+    protected abstract void exit();
 
-    private static class PlayerStateStack{
-        PlayerStateStackItem first;
-
-        PlayerStateStack(){
-        }
-
-        void push(CreatureState state){
-            PlayerStateStackItem temp = new PlayerStateStackItem(state);
-            temp.next = first;
-            first = temp;
-        }
-        void pop(){
-            first = first.next;
-        }
-        CreatureState getCurrent(){
-            return first.item;
-        }
-
-        private class PlayerStateStackItem{
-            PlayerStateStackItem next;
-            CreatureState item;
-            PlayerStateStackItem(CreatureState state){
-                this.item = state;
-            }
-        }
-    }
 }

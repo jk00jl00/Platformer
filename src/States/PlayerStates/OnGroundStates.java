@@ -6,7 +6,7 @@ import Objects.GameObject;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
-public class OnGroundStates extends CreatureState{
+public class OnGroundStates extends PlayerState {
     protected boolean[] keys;
 
     protected double xAcceleration = 0.5;
@@ -39,9 +39,9 @@ public class OnGroundStates extends CreatureState{
             }
 
 
-        PlayerState.push(new FallingState(player));
-        PlayerState.getCurrent().enter();
-        PlayerState.getCurrent().update();
+        PlayerStateStack.push(new FallingState(player));
+        PlayerStateStack.getCurrent().enter();
+        PlayerStateStack.getCurrent().update();
     }
 
     private boolean collide(Rectangle r, Rectangle n) {
@@ -50,15 +50,15 @@ public class OnGroundStates extends CreatureState{
 
     public void handleKeys(){
         if(keys[KeyEvent.VK_D] || keys[KeyEvent.VK_A]){
-            PlayerState.push(new WalkingState(player));
-            PlayerState.getCurrent().enter();
-            PlayerState.getCurrent().update();
+            PlayerStateStack.push(new WalkingState(player));
+            PlayerStateStack.getCurrent().enter();
+            PlayerStateStack.getCurrent().update();
         }
         if(keys[KeyEvent.VK_W]){
-            PlayerState.push(new InAirStates(player));
-            PlayerState.push(new JumpingState(player));
-            PlayerState.getCurrent().enter();
-            PlayerState.getCurrent().update();
+            PlayerStateStack.push(new InAirStates(player));
+            PlayerStateStack.push(new JumpingState(player));
+            PlayerStateStack.getCurrent().enter();
+            PlayerStateStack.getCurrent().update();
         }
         if(!(keys[KeyEvent.VK_D] || keys[KeyEvent.VK_A])) {
             player.dx = 0;

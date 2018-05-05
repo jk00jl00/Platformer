@@ -12,8 +12,8 @@ public class JumpingState extends InAirStates{
         super.update();
         if(player.dy > 0){
             exit();
-            PlayerState.push(new FallingState(player));
-            PlayerState.getCurrent().update();
+            PlayerStateStack.push(new FallingState(player));
+            PlayerStateStack.getCurrent().update();
         }
     }
 
@@ -34,6 +34,6 @@ public class JumpingState extends InAirStates{
 
     @Override
     public void exit() {
-        PlayerState.pop();
+        PlayerStateStack.pop();
     }
 }

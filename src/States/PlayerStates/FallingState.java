@@ -22,6 +22,6 @@ public class FallingState extends InAirStates {
 
     @Override
     public void exit() {
-        PlayerState.pop();
+        PlayerStateStack.pop();
     }
 }

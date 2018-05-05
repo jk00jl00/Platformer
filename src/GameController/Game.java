@@ -8,7 +8,6 @@ import Listeners.KeyPress;
 import Listeners.MouseListener;
 import States.GameStates.MainMenu;
 import States.GameStates.State;
-import States.PlayerStates.PlayerState;
 
 import java.awt.*;
 import java.awt.image.BufferStrategy;
@@ -83,7 +82,7 @@ public class Game implements Runnable{
             }
             if(timer >= 250000000){
                 //System.out.println("Frames: " + ticks * 4);
-                //if(PlayerState.getCurrent() != null)System.out.println("State: " + PlayerState.getCurrent());
+                //if(PlayerStateStack.getCurrent() != null)System.out.println("State: " + PlayerStateStack.getCurrent());
                 //if(level != null)System.out.println("dx: " + level.getPlayer().dx + "  ||  dy: " + level.getPlayer().dy);
                 //if(level != null) System.out.println("x: " + this.camera.getX() + ", y: " + this.camera.getY());
                 ticks = 0;

@@ -21,6 +21,6 @@ public class IdleState extends OnGroundStates{
 
     @Override
     public void exit() {
-        PlayerState.pop();
+        PlayerStateStack.pop();
     }
 }

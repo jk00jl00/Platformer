@@ -1,5 +1,6 @@
 package LevelManagment;
 
+import Actors.Creature;
 import Actors.Player;
 import Objects.GameObject;
 
@@ -45,6 +46,22 @@ public class LevelLoader {
 
             currentRead = br.readLine();
             i = Integer.parseInt(currentRead);
+
+            for(int a = 0; a < i; a++){
+                currentRead = br.readLine();
+                currentReadSplit = currentRead.split(" ");
+                try {
+                    Class<?> c = Class.forName("Actors." + currentReadSplit[0]);
+                    Constructor<?> constr = c.getConstructor(int.class, int.class);
+                    l.addCreature((Creature) constr.newInstance(new Object[]{
+                            Integer.parseInt(currentReadSplit[1]),
+                            Integer.parseInt(currentReadSplit[2])
+                    }));
+                } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+                    e.printStackTrace();
+                }
+            }
+
 
         } catch (IOException e){
             l = null;

@@ -14,9 +14,13 @@ public class Creature{
     protected int width;
     protected int height;
     protected Rectangle hitBox;
+    public static final double grav = 0.5;
+
+    protected GameObject[] gos;
 
     public static final String[] CREATURES = new String[]{
-            "Player"
+            "Player",
+            "BasicEnemy"
     };
 
     //Used for drawing
@@ -56,7 +60,7 @@ public class Creature{
     }
 
     public void update(GameObject[] go){
-
+        this.gos = go;
     }
 
     public void draw(Graphics2D g, Camera camera){
@@ -92,5 +96,9 @@ public class Creature{
         this.y = Util.clamp(y + yDrag, 0, 10000 - this.height);
         this.hitBox.x  = this.x;
         this.hitBox.y = this.y;
+    }
+
+    public GameObject[] getGos() {
+        return gos;
     }
 }

@@ -83,6 +83,7 @@ public class LevelEditState extends State {
                 handleSelection();
                 break;
             case PLACING:
+                System.out.println(editItemSelection);
                 if(editItemSelection.equals("objects"))
                     placeSelectedObject();
                 else if(editItemSelection.equals("creatures"))
@@ -331,6 +332,7 @@ public class LevelEditState extends State {
      */
     //TODO - add a error message when a Creature was not added.
     private void placeSelectedCreature() {
+        System.out.println(1);
         //If it's the player character it replaces the player instead of placing a new one.
         if(toPlace.equals("Player")) {
             Player player = new Player(tempRect.x + game.getCamera().getX(), tempRect.y + game.getCamera().getY());
@@ -358,12 +360,12 @@ public class LevelEditState extends State {
                 ChangeManager.push(c);
                 //Add the creature to the level.
                 game.getLevel().addCreature(c);
-                //Resets all rectangles.
-                tempRect = null;
-                ml.dragTangle.width = 0;
-                ml.rectReady = false;
             }
         }
+        //Resets all rectangles.
+        tempRect = null;
+        ml.dragTangle.width = 0;
+        ml.rectReady = false;
     }
     /**
      * Is called after a location has been specified using the Place tool.
@@ -413,12 +415,8 @@ public class LevelEditState extends State {
             if (this.tool != PLACING) {
                 this.changeTool(PLACING);
             }
-            //If it's placing a creature it needs to to increase the dimensions of the rectangle but instead show a rectangle with the creatures dimensions.
-            if(!game.getbl().getSelection().equals("creatures")){
-                ml.placingCreature = false;
-            } else{
-                ml.placingCreature = true;
-            }
+            if(this.editItemSelection.equals("creatures") && this.tool == PLACING) ml.placingCreature = true;
+            else ml.placingCreature = false;
         }
     }
 
@@ -426,10 +424,16 @@ public class LevelEditState extends State {
      * This method is called when the player has clicked a creature in the tool panel and sets up the placement.
      */
     private void selectCreatureToPlace() {
-        switch (game.getbl().getToPlace()){
-            case "Player":
-                this.toPlace = game.getbl().getToPlace();
-                this.toPlaceColor = Player.getDefaultColor();
+        this.toPlace = game.getbl().getToPlace();
+        try {
+            //Gets the color of the object by getting the class and method and then invoking it.
+            //This is done in order to be able to easily add new objects without adding to this code.
+            Class<?> clazz = Class.forName("Actors." + toPlace);
+            this.toPlaceColor =(Color) clazz.getMethod("getDefaultColor").invoke(new Object[0]);
+            //Gets the dimensions of the selected creatures class
+            ml.setCreatureDims((int)clazz.getMethod("getDefaultWidth").invoke(new Object[0]),(int)clazz.getMethod("getDefaultHeight").invoke(new Object[0]));
+        } catch (IllegalAccessException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
         }
     }
     /**
@@ -452,7 +456,6 @@ public class LevelEditState extends State {
     private void checkEditItemChange() {
         if(!this.editItemSelection.equals(game.getbl().getSelection())){
             this.editItemSelection = game.getbl().getSelection();
-
             switch (this.editItemSelection){
                 case "objects":
                     //Changes the display to display creatures or objects in the itemArea.
@@ -704,8 +707,8 @@ public class LevelEditState extends State {
             case PLACING:
                 game.getDisplay().removeItemAreaSelection();
                 this.toPlace = "";
-                game.getbl().setToPlace("");
                 ml.placingCreature = false;
+                game.getbl().setToPlace("");
                 clearSelection();
                 break;
         }

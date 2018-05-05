@@ -2,10 +2,9 @@ package Actors;
 
 import Gfx.Camera;
 import Objects.GameObject;
-import States.PlayerStates.CreatureState;
-import States.PlayerStates.OnGroundStates;
 import States.PlayerStates.PlayerState;
-import com.sun.istack.internal.Nullable;
+import States.PlayerStates.OnGroundStates;
+import States.PlayerStates.PlayerStateStack;
 
 import java.awt.*;
 
@@ -16,13 +15,10 @@ public class Player extends Creature{
 
     public double jumpSpeed = 12.5;
 
-    public static final double grav = 0.5;
-
     private static final Color defaultColor = Color.LIGHT_GRAY;
 
-    private GameObject[] gos;
     private boolean[] keys;
-    private CreatureState currentState;
+    private PlayerState currentState;
 
     public Player(int x, int y, int health) {
         super(x, y, health);
@@ -31,24 +27,24 @@ public class Player extends Creature{
         this.height = Creature.DEFAULT_CREATURE_HEIGHT_;
         this.hitBox = new Rectangle(this.x, this.y,this.width, this.height);
         this.color = Color.LIGHT_GRAY;
-        PlayerState.push(new OnGroundStates(this));
+        PlayerStateStack.push(new OnGroundStates(this));
         getState();
     }
 
     public Player(int x, int y){
         super(x, y, 3);
-        this.type = "player";
+        this.type = "Player";
         this.width = Creature.DEFAULT_CREATURE_WIDTH_;
         this.height = Creature.DEFAULT_CREATURE_HEIGHT_;
         this.hitBox = new Rectangle(this.x, this.y,this.width, this.height);
         this.color = Color.LIGHT_GRAY;
-        PlayerState.push(new OnGroundStates(this));
+        PlayerStateStack.push(new OnGroundStates(this));
         getState();
     }
 
     @Override
     public void update(GameObject[] go) {
-        gos = go;
+        super.update(go);
         currentState.update();
         getState();
         currentState.handleKeys();
@@ -65,7 +61,7 @@ public class Player extends Creature{
     }
 
     private void getState() {
-        currentState = PlayerState.getCurrent();
+        currentState = PlayerStateStack.getCurrent();
     }
 
     public boolean[] getKeys() {
@@ -74,10 +70,6 @@ public class Player extends Creature{
 
     public Rectangle getHitBox() {
         return hitBox;
-    }
-
-    public GameObject[] getGos() {
-        return gos;
     }
 
     public void setX(int x) {
@@ -100,4 +92,6 @@ public class Player extends Creature{
     public static Color getDefaultColor(){
         return defaultColor;
     }
+    public static int getDefaultWidth(){return DEFAULT_CREATURE_WIDTH_;}
+    public static int getDefaultHeight(){return DEFAULT_CREATURE_HEIGHT_;}
 }

@@ -49,6 +49,6 @@ public class WalkingState extends OnGroundStates {
     @Override
     public void exit() {
         //stop
-        PlayerState.pop();
+        PlayerStateStack.pop();
     }
 }

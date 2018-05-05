@@ -9,7 +9,7 @@ import java.awt.event.KeyEvent;
 
 import static Utilities.Util.collide;
 
-public class InAirStates extends CreatureState{
+public class InAirStates extends PlayerState {
     protected boolean[] keys;
 
     protected double inAirXAcc= 0.2;
@@ -106,7 +106,7 @@ public class InAirStates extends CreatureState{
 
     @Override
     public void exit() {
-        PlayerState.pop();
+        PlayerStateStack.pop();
 
     }
 }
