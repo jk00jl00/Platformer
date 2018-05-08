@@ -7,10 +7,11 @@ import Objects.GameObject;
 import Utilities.Util;
 
 import java.awt.*;
-import java.util.ArrayList;
 
 public class Projectile {
+    //For removing itself.
     private final Game game;
+    //Positions and speeds.
     protected int x;
     protected int y;
     protected double dx;
@@ -18,18 +19,21 @@ public class Projectile {
     protected int width;
     protected int height;
 
-    protected Creature shooter;
-    protected Rectangle hitBox;
+    //The shoter and projectile hitbox.
+    Creature shooter;
+    Rectangle hitBox;
 
-    protected int dmg;
-    protected int range;
+    int dmg;
+    int range;
 
-    protected int[] shotPos = new int[2];
+    //Were it was shot for checking how far it has traveled.
+    int[] shotPos = new int[2];
 
-    protected GameObject[] gameObjects;
-    protected Creature[] creatures;
+    //The objects it can hit.
+    private GameObject[] gameObjects;
+    private Creature[] creatures;
 
-    public Projectile(Creature c, double dx, double dy, Game game) {
+    Projectile(Creature c, double dx, double dy, Game game) {
         this.game = game;
         this.shooter = c;
         this.dx = dx;
@@ -37,6 +41,9 @@ public class Projectile {
         generatePos();
     }
 
+    /**
+     * Called in the constructor in order to get were to spawn relative to the Creature.
+     */
     private void generatePos() {
         if(dx > 0){
             this.x = shooter.getX() + shooter.getWidth();
@@ -48,32 +55,21 @@ public class Projectile {
         shotPos[1] = this.y;
     }
 
+    /**
+     * The default projectile update function.
+     * @param g Objects to collide with.
+     * @param c Creawtures to collide with.
+     */
     public void update(GameObject[] g, Creature[] c){
         this.gameObjects = g;
         this.creatures = c;
         move();
     }
 
-    private void collide() {
-        if(hitBox == null) return;
-        for(GameObject o: gameObjects){
-            if(Util.collide(o.getHitBox(), this.hitBox)){
-                game.getLevel().removeProjectile(this);
-                this.hitBox = null;
-                return;
-            }
-        }
-        for(Creature c: creatures){
-            if(c.equals(shooter)) continue;
-            if(Util.collide(c.getHitBox(), hitBox)){
-                c.damage(this.dmg);
-                game.getLevel().removeProjectile(this);
-                this.hitBox = null;
-                return;
-            }
-        }
-    }
-
+    /**
+     * Called last in the update function.
+     * Moves the projectile pixel by pixel until either to move distance/frame is achieved or the projectile collides with a object.
+     */
     private void move() {
         int traveledx = 0;
         int traveledy = 0;
@@ -103,6 +99,29 @@ public class Projectile {
                 if(hitBox == null) return;
                 this.hitBox.y--;
                 collide();
+            }
+        }
+    }
+
+    /**
+     * Attempts to collide with the objects specified in the update function.
+     */
+    private void collide() {
+        if(hitBox == null) return;
+        for(GameObject o: gameObjects){
+            if(Util.collide(o.getHitBox(), this.hitBox)){
+                game.getLevel().removeProjectile(this);
+                this.hitBox = null;
+                return;
+            }
+        }
+        for(Creature c: creatures){
+            if(c.equals(shooter)) continue;
+            if(Util.collide(c.getHitBox(), hitBox)){
+                c.damage(this.dmg);
+                game.getLevel().removeProjectile(this);
+                this.hitBox = null;
+                return;
             }
         }
     }

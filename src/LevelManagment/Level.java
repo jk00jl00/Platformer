@@ -8,33 +8,67 @@ import Projectiles.Projectile;
 
 import java.awt.*;
 import java.util.ArrayList;
-
+//TODO - Only give the player the objects on screen in update.
 public class Level{
+    private String name;
 
-    private Player player;
     private ArrayList<GameObject> gameObjects = new ArrayList<>();
     private ArrayList<Creature> gameCreatures = new ArrayList<>();
     private ArrayList<Projectile> projectiles = new ArrayList<>();
-    private String name;
 
+    //If the game is paused darker will be true and the screen will darken.
     private boolean darker = false;
 
+    private Player player;
     private int playerStartX;
     private int playerStartY;
-
-    public void setDarker(boolean b){
-        this.darker = b;
-    }
 
     public Level(){
         player = new Player(640,360);
         gameCreatures.add(player);
     }
 
-    public Level(String name){
+    Level(String name){
         this.name = name;
         player = new Player(0,0);
         gameCreatures.add(player);
+    }
+
+    //Getters
+    public Player getPlayer() {
+        return player;
+    }
+
+    public boolean getDarker() {
+        return darker;
+    }
+
+    public Creature[] getCreatures() {
+        return gameCreatures.toArray(new Creature[gameCreatures.size()])    ;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public GameObject[] getObjects() {
+        return gameObjects.toArray(new GameObject[gameObjects.size()]);
+    }
+    //Setters
+
+    public void setDarker(boolean b){
+        this.darker = b;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+        this.playerStartX = player.getX();
+        this.playerStartY = player.getY();
+        gameCreatures.set(0, player);
+    }
+
+    public void setName(String tempName) {
+        this.name = tempName;
     }
 
     public void update(){
@@ -43,10 +77,11 @@ public class Level{
         }
         for(int i = 0; i < gameCreatures.size(); i++){
             gameCreatures.get(i).update(gameObjects.toArray(new GameObject[gameObjects.size()]), gameCreatures.toArray(new Creature[gameCreatures.size()]));
+            //Removes the creature if it has no hp
             if(!gameCreatures.get(i).getType().equals("Player") && gameCreatures.get(i).getHealth() <= 0) this.removeCreature(gameCreatures.get(i));
         }
         for(int i = 0; i < projectiles.size(); i++){
-                projectiles.get(i).update(gameObjects.toArray(new GameObject[gameObjects.size()]), gameCreatures.toArray(new Creature[gameCreatures.size()]));
+            projectiles.get(i).update(gameObjects.toArray(new GameObject[gameObjects.size()]), gameCreatures.toArray(new Creature[gameCreatures.size()]));
         }
     }
 
@@ -65,14 +100,14 @@ public class Level{
         }
     }
 
-    public Player getPlayer() {
-        return player;
+    public void resetPlayer(){
+        this.player.setX(this.playerStartX);
+        this.player.setY(this.playerStartY);
+        this.player.dx = 0;
+        this.player.dy = 0;
     }
 
-    public boolean getDarker() {
-        return darker;
-    }
-
+    //Used to add objects from the editor.
     public void addGameObject(GameObject o) {
         this.gameObjects.add(o);
     }
@@ -81,46 +116,12 @@ public class Level{
         gameObjects.remove(object);
     }
 
-    public GameObject[] getObjects() {
-        return gameObjects.toArray(new GameObject[gameObjects.size()]);
-    }
-
-    public void saveLevel(){
-        LevelSaver.saveLevel(this, this.name);
-    }
-
-    public Creature[] getCreatures() {
-        return gameCreatures.toArray(new Creature[gameCreatures.size()])    ;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
-        this.playerStartX = player.getX();
-        this.playerStartY = player.getY();
-        gameCreatures.set(0, player);
-    }
-
-    public void resetPlayer(){
-        this.player.setX(this.playerStartX);
-        this.player.setY(this.playerStartY);
-        this.player.dx = 0;
-        this.player.dy = 0;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String tempName) {
-        this.name = tempName;
+    public void addCreature(Creature c) {
+        this.gameCreatures.add(c);
     }
 
     public void removeCreature(Creature c) {
         gameCreatures.remove(c);
-    }
-
-    public void addCreature(Creature c) {
-        this.gameCreatures.add(c);
     }
 
     public void addProjectile(Projectile p) {
@@ -129,5 +130,9 @@ public class Level{
 
     public void removeProjectile(Projectile p) {
         this.projectiles.remove(p);
+    }
+
+    public void saveLevel(){
+        LevelSaver.saveLevel(this, this.name);
     }
 }

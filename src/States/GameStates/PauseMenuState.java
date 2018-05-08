@@ -27,8 +27,9 @@ public class PauseMenuState extends State{
         if(keys[KeyEvent.VK_ESCAPE]){
             exitMenu();
         }
+        //Makes sure the menu is drawn before actions can be made and also returns if the user has not pressed left click.
         if(menuTexts[0].clickBox == null || game.getml().lClick == null) return;
-
+        //Returns if a menutext was clicked.
         if (checkClicks()) return;
 
         for(MenuText m: menuTexts){
@@ -38,12 +39,20 @@ public class PauseMenuState extends State{
         }
     }
 
+    /**
+     * Called when the user presses the escape key.
+     * Exits this state and returns to whatever state can before it.
+     */
     private void exitMenu() {
         game.getkl().setKey(KeyEvent.VK_ESCAPE, false);
         game.getLevel().setDarker(false);
         State.pop();
     }
 
+    /**
+     * Checks if the user has clicked on one of the menu texts.
+     * @return true if a text has been pressed.
+     */
     private boolean checkClicks() {
         for (MenuText m : menuTexts) {
             if(m.clickBox.intersects(game.getml().lClick)){
@@ -56,6 +65,8 @@ public class PauseMenuState extends State{
                         State.pop();
                         State.currentState.exit();
                         State.currentState = new MainMenu();
+                        State.currentState.init();
+                        //Makes sure the player does not have a state in the stack.
                         while(PlayerStateStack.getCurrent() != null) PlayerStateStack.pop();
                         game.getLevel().setDarker(false);
                         return true;

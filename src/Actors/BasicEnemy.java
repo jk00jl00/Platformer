@@ -11,8 +11,6 @@ public class BasicEnemy extends Creature{
     public double dy;
     public double dx;
 
-    public static final double grav = 0.5;
-
     private static final Color defaultColor = Color.RED;
     private BasicEnemyBehavior behavior;
 
@@ -37,6 +35,39 @@ public class BasicEnemy extends Creature{
         this.behavior = new BasicEnemyBehavior(this);
         this.dmg = 1;
     }
+    //Getters
+    public Rectangle getHitBox() {
+        return hitBox;
+    }
+
+    public GameObject[] getGos() {
+        return gos;
+    }
+
+    public static int getDefaultWidth(){return DEFAULT_CREATURE_HEIGHT_;}
+
+    public static int getDefaultHeight(){return DEFAULT_CREATURE_WIDTH_;}
+
+    public static Color getDefaultColor(){
+        return defaultColor;
+    }
+
+    public int getHealth() {
+        return this.health;
+    }
+    //Setters
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public void setHitbox(int x, int y) {
+        this.hitBox.x = x;
+        this.hitBox.y = y;
+    }
 
     @Override
     public void update(GameObject[] go, Creature[] creatures) {
@@ -46,6 +77,7 @@ public class BasicEnemy extends Creature{
 
     @Override
     public void collide() {
+        //Checks for collision with player.
         for(Creature c: cs){
             if(c.equals(this)) continue;
             if(this.hitBox.intersects(c.getHitBox())){
@@ -65,45 +97,12 @@ public class BasicEnemy extends Creature{
     public void draw(Graphics2D g, Camera camera){
         g.fillRect(this.x - camera.getX(), this.y + camera.getY(), this.width, this.height);
     }
-
-    public Rectangle getHitBox() {
-        return hitBox;
-    }
-
-    public GameObject[] getGos() {
-        return gos;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
-    public void setHitbox(int x, int y) {
-        this.hitBox.x = x;
-        this.hitBox.y = y;
-    }
-
     @Override
     public String toLevelSave() {
-        StringBuilder sb = new StringBuilder();
+        String s = "";
 
-        sb.append(this.x).append(" ").append(this.y).append(" ");
+        s += this.x + " "+ this.y + " "
 
-        return sb.toString();
+        return s;
     }
-
-    public int getHealth() {
-        return this.health;
-    }
-
-    public static Color getDefaultColor(){
-        return defaultColor;
-    }
-
-    public static int getDefaultWidth(){return DEFAULT_CREATURE_HEIGHT_;}
-    public static int getDefaultHeight(){return DEFAULT_CREATURE_WIDTH_;}
 }
