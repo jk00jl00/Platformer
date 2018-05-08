@@ -101,7 +101,7 @@ public class BasicEnemy extends Creature{
     public String toLevelSave() {
         String s = "";
 
-        s += this.x + " "+ this.y + " "
+        s += this.x + " "+ this.y + " ";
 
         return s;
     }
