@@ -3,11 +3,14 @@ package GameController;
 import Gfx.Camera;
 import Gfx.Display;
 import LevelManagment.Level;
+import LevelManagment.LevelLoader;
 import Listeners.ButtonListener;
 import Listeners.KeyPress;
 import Listeners.MouseListener;
 import States.GameStates.MainMenu;
+import States.GameStates.PlayState;
 import States.GameStates.State;
+import States.PlayerStates.PlayerStateStack;
 
 import java.awt.*;
 import java.awt.image.BufferStrategy;
@@ -16,6 +19,8 @@ public class Game implements Runnable{
     //GameLoop variables
     private Thread thread;
     private boolean running = false;
+    //Used when the level loads so that updates don't fall behind.
+    private boolean justLoaded = false;
 
     private int fps;
 
@@ -70,6 +75,11 @@ public class Game implements Runnable{
         //GameLoop
         while (running){
             //While updates are needed update;
+            //Checks if the game just loaded a level and skips extra frames.
+            if(justLoaded){
+                dt = 0;
+                justLoaded = false;
+            }
             now = System.nanoTime();
             dt += (now - start)/ timePerFrame;
             timer += now - start;
@@ -148,6 +158,10 @@ public class Game implements Runnable{
         return camera;
     }
 
+    public void setJustLoaded(boolean justLoaded) {
+        this.justLoaded = justLoaded;
+    }
+
     public void setLevel(Level level) {
         this.level = level;
     }
@@ -159,5 +173,12 @@ public class Game implements Runnable{
 
     public ButtonListener getbl() {
         return bl;
+    }
+
+    public void resetLevel() {
+        State.pop();
+        while(PlayerStateStack.getCurrent() != null) PlayerStateStack.pop();
+        State.push(new PlayState());
+        State.currentState.init(this.level.getName());
     }
 }

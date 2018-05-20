@@ -3,9 +3,13 @@ package Gfx;
 import Actors.Creature;
 import GameController.Game;
 import Objects.GameObject;
+import jdk.internal.util.xml.impl.Input;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
@@ -15,8 +19,9 @@ public class Display extends Canvas{
     private int width;
     private int height;
     private String name;
-    private JButton[] editorButtons = new JButton[4];
+    private JMenuItem[] editorButtons = new JMenuItem[4];
     private JPanel buttonPanel;
+    private JPanel attriutes;
     private static final String[] PLACEBLE_OBJECTS = GameObject.OBJECTS;
     private static final String[] PLACEBLE_CREATURES = Creature.CREATURES;
     private JList itemArea;
@@ -25,6 +30,8 @@ public class Display extends Canvas{
             "Creatures"
     };
     private JComboBox editItemTypeSelector;
+    private JMenuBar menuBar;
+    private JMenu editMenu;
 
     //Constructor for the game display
     public Display(int width, int height, String name){
@@ -78,57 +85,49 @@ public class Display extends Canvas{
 
         this.frame.add(this.buttonPanel, gbc);
 
+        menuBar = new  JMenuBar();
+
+        editMenu = new JMenu("Edit");
+        editMenu.setMnemonic(KeyEvent.VK_E);
+
+        menuBar.add(editMenu);
+        frame.setJMenuBar(menuBar);
+
         //Select tool button
-        editorButtons[0] = new JButton("S");
+        editorButtons[0] = new JMenuItem("Select");
 
         editorButtons[0].setToolTipText("Select tool");
-        editorButtons[0].setBorder(BorderFactory.createBevelBorder(0));
         editorButtons[0].addActionListener(game.getbl());
 
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(0,0,0,0);
-        gbc.ipady = this.height/80;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.CENTER;
 
-        this.buttonPanel.add(editorButtons[0], gbc);
+        this.editMenu.add(editorButtons[0]);
 
         //Delete tool button
-        editorButtons[1] = new JButton("D");
+        editorButtons[1] = new JMenuItem("Undo");
 
-        editorButtons[1].setToolTipText("Delete tool");
-        editorButtons[1].setBorder(BorderFactory.createBevelBorder(0));
+        editorButtons[1].setToolTipText("Undo the latest change");
         editorButtons[1].addActionListener(game.getbl());
 
-        gbc.gridx = 1;
-        gbc.gridy = 0;
 
-        this.buttonPanel.add(editorButtons[1], gbc);
+        this.editMenu.add(editorButtons[1]);
 
         //Show grid button
-        editorButtons[2] = new JButton("G");
+        editorButtons[2] = new JMenuItem("Show Grid");
 
-        editorButtons[2].setToolTipText("Show Grid");
-        editorButtons[2].setBorder(BorderFactory.createBevelBorder(0));
+        editorButtons[2].setToolTipText("Shows grid");
         editorButtons[2].addActionListener(game.getbl());
 
-        gbc.gridx = 0;
-        gbc.gridy = 1;
 
-        this.buttonPanel.add(editorButtons[2], gbc);
+        this.editMenu.add(editorButtons[2]);
 
         //Snap to grid button
-        editorButtons[3] = new JButton("SG");
+        editorButtons[3] = new JMenuItem("Snap to grid");
 
-        editorButtons[3].setToolTipText("Snap to Grid");
-        editorButtons[3].setBorder(BorderFactory.createBevelBorder(0));
+        editorButtons[3].setToolTipText("Toggles snapping to grid");
         editorButtons[3].addActionListener(game.getbl());
 
-        gbc.gridx = 1;
-        gbc.gridy = 1;
 
-        this.buttonPanel.add(editorButtons[3], gbc);
+        this.editMenu.add(editorButtons[3]);
         gbc = new GridBagConstraints();
 
         //Edit item type selector menu
@@ -193,7 +192,7 @@ public class Display extends Canvas{
         this.requestFocus();
     }
 
-    public JButton[] getButtons() {
+    public JMenuItem[] getButtons() {
         return this.editorButtons;
     }
 
@@ -241,5 +240,37 @@ public class Display extends Canvas{
 
     public void removeItemAreaSelection() {
         this.itemArea.clearSelection();
+    }
+
+    /**
+     * Called when a single object has been selected in the editor.
+     * Opens a display below the the itemArea with the objects attributes
+     * @param o The object which attributes will be displayed.
+     */
+    public void displayAttributes(GameObject o) {
+        this.attriutes = new JPanel();
+        this.attriutes.setLayout(new GridBagLayout());
+        GridBagConstraints gbc;
+
+        attriutes.setPreferredSize(new Dimension(300, 300));
+        int i = 0;
+        for(String s : o.getAttributes().keySet()){
+            JLabel l = new JLabel();
+            l.setText(s + " " + o.getAttributes().get(s));
+            gbc = new GridBagConstraints();
+            gbc.gridx = 0;
+            gbc.gridy = i++;
+            attriutes.add(l, gbc);
+        }
+
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+
+        this.frame.add(attriutes);
+        this.frame.pack();
+    }
+    public void displayAttributes(Creature c) {
+
     }
 }

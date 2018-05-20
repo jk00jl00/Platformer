@@ -5,6 +5,7 @@ import Objects.GameObject;
 import Utilities.Util;
 
 import java.awt.*;
+import java.util.HashMap;
 
 public class Creature{
     //The position and health of the player, used by all subclasses of player
@@ -27,7 +28,7 @@ public class Creature{
     int dmg;
     String type;
     public Color color;
-
+    protected HashMap<String, Integer> attributes = new HashMap<>();
 
     //Static constants
     //Creatures that can be placed.
@@ -47,12 +48,16 @@ public class Creature{
         this.x = x;
         this.y = y;
         this.health = 1;
+        this.attributes.put("x", this.x);
+        this.attributes.put("y", this.y);
     }
 
     public Creature(int x, int y, int health){
         this.x = x;
         this.y = y;
         this.health = health;
+        this.attributes.put("x", this.x);
+        this.attributes.put("y", this.y);
     }
     //Getters
     public static int getDefaultCreatureWidth() {

@@ -19,7 +19,7 @@ public class ButtonListener implements ActionListener, ListSelectionListener{
     //Constants
     public static final int PLACING = -1;
     public static final int SELECT_TOOL_ = 0;
-    public static final int DELETE_TOOL_ = 1;
+    public static final int UNDO = 1;
     public static final int SHOW_GRID_ = 2;
     public static final int SNAP_TO_GRID_ = 3;
     private static final String[] PLACEBLE_OBJECTS = GameObject.OBJECTS;
@@ -31,8 +31,8 @@ public class ButtonListener implements ActionListener, ListSelectionListener{
         if(e.getSource() == display.getButtons()[SELECT_TOOL_]){
             buttonsPressed[SELECT_TOOL_] = true;
         }
-        if(e.getSource() == display.getButtons()[DELETE_TOOL_]){
-            buttonsPressed[DELETE_TOOL_] = true;
+        if(e.getSource() == display.getButtons()[UNDO]){
+            buttonsPressed[UNDO] = true;
         }
         if(e.getSource() == display.getButtons()[SHOW_GRID_]){
             buttonsPressed[SHOW_GRID_] = true;

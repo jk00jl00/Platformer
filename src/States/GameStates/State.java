@@ -34,6 +34,9 @@ public class State{
     public void init(){
 
     }
+    public void init(String name){
+
+    }
 
     public void exit() {
     }

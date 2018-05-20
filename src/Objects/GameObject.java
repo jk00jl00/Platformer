@@ -31,11 +31,19 @@ public class GameObject{
         return type;
     }
 
+    public HashMap<String, Integer> getAttributes() {
+        return attributes;
+    }
+
     public GameObject(int x, int y, int width, int height){
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+        this.attributes.put("x", this.x);
+        this.attributes.put("y", this.y);
+        this.attributes.put("Width", this.width);
+        this.attributes.put("Height", this.height);
     }
 
     public void update(){
@@ -72,5 +80,4 @@ public class GameObject{
     public int getY() {
         return y;
     }
-
 }

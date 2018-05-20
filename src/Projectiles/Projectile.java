@@ -19,7 +19,7 @@ public class Projectile {
     protected int width;
     protected int height;
 
-    //The shoter and projectile hitbox.
+    //The shooter and projectile hitbox.
     Creature shooter;
     Rectangle hitBox;
 
@@ -58,45 +58,54 @@ public class Projectile {
     /**
      * The default projectile update function.
      * @param g Objects to collide with.
-     * @param c Creawtures to collide with.
+     * @param c Creatures to collide with.
      */
     public void update(GameObject[] g, Creature[] c){
         this.gameObjects = g;
         this.creatures = c;
         move();
+        checkRange();
+    }
+
+    protected void checkRange() {
+        if(this.hitBox != null){
+            if (Math.abs(this.x - this.shotPos[0]) > this.range)
+                game.getLevel().removeProjectile(this);
+
+        }
     }
 
     /**
      * Called last in the update function.
      * Moves the projectile pixel by pixel until either to move distance/frame is achieved or the projectile collides with a object.
      */
-    private void move() {
+    protected void move() {
         int traveledx = 0;
         int traveledy = 0;
-        while(traveledx < ((dx > 0) ? dx:-dx) || traveledy < ((dy > 0) ? dy : -dy)){
-            if(dx > 0 && traveledx < ((dx > 0) ? dx:-dx)){
+        while (traveledx < ((dx > 0) ? dx : -dx) || traveledy < ((dy > 0) ? dy : -dy)) {
+            if (dx > 0 && traveledx < ((dx > 0) ? dx : -dx)) {
                 traveledx++;
                 this.x++;
-                if(hitBox == null) return;
+                if (hitBox == null) return;
                 this.hitBox.x++;
                 collide();
-            } else if(traveledx < ((dx > 0) ? dx:-dx)){
+            } else if (traveledx < ((dx > 0) ? dx : -dx)) {
                 traveledx++;
                 this.x--;
-                if(hitBox == null) return;
+                if (hitBox == null) return;
                 this.hitBox.x--;
                 collide();
             }
-            if(dy > 0 && traveledy < ((dy > 0) ? dy : -dy)){
+            if (dy > 0 && traveledy < ((dy > 0) ? dy : -dy)) {
                 traveledy++;
                 this.y++;
-                if(hitBox == null) return;
+                if (hitBox == null) return;
                 this.hitBox.y++;
                 collide();
-            } else if(traveledy < ((dy > 0) ? dy : -dy)){
+            } else if (traveledy < ((dy > 0) ? dy : -dy)) {
                 traveledy++;
                 this.y--;
-                if(hitBox == null) return;
+                if (hitBox == null) return;
                 this.hitBox.y--;
                 collide();
             }
