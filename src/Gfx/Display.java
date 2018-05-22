@@ -137,7 +137,7 @@ public class Display extends Canvas{
         editItemTypeSelector.addActionListener(game.getbl());
 
         gbc.gridx = 0;
-        gbc.gridy = 2;
+        gbc.gridy = 0;
         gbc.weighty = 0;
         gbc.weightx = 1;
         gbc.gridwidth = 2;
@@ -147,7 +147,7 @@ public class Display extends Canvas{
         this.buttonPanel.add(editItemTypeSelector, gbc);
         gbc = new GridBagConstraints();
 
-        //The scrollPanel for selecting what to place;
+        //The JList for selecting what to place;
 
         this.itemArea = new JList(editItems);
 
@@ -158,7 +158,7 @@ public class Display extends Canvas{
         this.itemArea.addListSelectionListener(game.getbl());
 
         gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weighty = 1;
@@ -227,7 +227,7 @@ public class Display extends Canvas{
         this.itemArea.addListSelectionListener(game.getbl());
 
         gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weighty = 1;
@@ -250,24 +250,40 @@ public class Display extends Canvas{
     public void displayAttributes(GameObject o) {
         this.attriutes = new JPanel();
         this.attriutes.setLayout(new GridBagLayout());
+        this.attriutes.setBorder(BorderFactory.createMatteBorder(5,0,5,0, Color.BLACK));
         GridBagConstraints gbc;
 
-        attriutes.setPreferredSize(new Dimension(300, 300));
+
         int i = 0;
         for(String s : o.getAttributes().keySet()){
-            JLabel l = new JLabel();
-            l.setText(s + " " + o.getAttributes().get(s));
             gbc = new GridBagConstraints();
+            gbc.anchor = GridBagConstraints.EAST;
+            gbc.fill = GridBagConstraints.NONE;
+            JLabel l = new JLabel();
+            l.setText(s + ": ");
             gbc.gridx = 0;
-            gbc.gridy = i++;
+            gbc.gridy = i;
             attriutes.add(l, gbc);
+            JTextField f = new JTextField();
+            gbc.fill = GridBagConstraints.BOTH;
+            gbc.anchor = GridBagConstraints.CENTER;
+            gbc.weightx = 0.5;
+            gbc.gridx = 1;
+
+            attriutes.add(f, gbc);
+            f.setColumns(5);
+            f.setText("" + o.getAttributes().get(s));
+            i++;
         }
 
         gbc = new GridBagConstraints();
+        gbc.anchor = GridBagConstraints.CENTER;
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
 
-        this.frame.add(attriutes);
+        this.buttonPanel.add(attriutes, gbc);
         this.frame.pack();
     }
     public void displayAttributes(Creature c) {
