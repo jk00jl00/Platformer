@@ -247,7 +247,7 @@ public class Display extends Canvas{
      * Opens a display below the the itemArea with the objects attributes
      * @param o The object which attributes will be displayed.
      */
-    public void displayAttributes(GameObject o) {
+    public void displayAttributes(GameObject o, Game game) {
         this.attriutes = new JPanel();
         this.attriutes.setLayout(new GridBagLayout());
         this.attriutes.setBorder(BorderFactory.createMatteBorder(5,0,5,0, Color.BLACK));
@@ -264,7 +264,7 @@ public class Display extends Canvas{
             gbc.gridx = 0;
             gbc.gridy = i;
             attriutes.add(l, gbc);
-            JTextField f = new JTextField();
+            LEIntAtr f = new LEIntAtr(o.getAttributes().get(s), s ,game.getbl());
             gbc.fill = GridBagConstraints.BOTH;
             gbc.anchor = GridBagConstraints.CENTER;
             gbc.weightx = 0.5;
@@ -272,7 +272,6 @@ public class Display extends Canvas{
 
             attriutes.add(f, gbc);
             f.setColumns(5);
-            f.setText("" + o.getAttributes().get(s));
             i++;
         }
 

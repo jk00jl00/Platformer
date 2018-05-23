@@ -476,6 +476,13 @@ public class LevelEditState extends State {
             else snapTo = true;
             game.getbl().disableButton(SNAP_TO_GRID_);
         }
+        //Changes an attribute on a selected object
+        if(game.getbl().intAtrChanged){
+            if(selectionEmpty() || this.selectedCreatures.size() + this.selectedGameObjects.size() > 1) game.getbl().intAtrChanged = false;
+            if(selectedGameObjects.size() > 0){
+                selectedGameObjects.get(0).changeAttribute(game.getbl().getAtrName(), game.getbl().getAtrChange());
+            }
+        }
     }
     /**
      * Called when the user is dragging a selection and moves the objects.
@@ -545,7 +552,7 @@ public class LevelEditState extends State {
 
                 if (!selectionEmpty()) {
                     if (object)
-                        game.getDisplay().displayAttributes(selectedGameObjects.get(0)); //Checks if the selection is an object else it gets the creature.
+                        game.getDisplay().displayAttributes(selectedGameObjects.get(0), game); //Checks if the selection is an object else it gets the creature.
                     else
                         game.getDisplay().displayAttributes(selectedCreatures.get(0));
                 }

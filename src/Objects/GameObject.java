@@ -71,6 +71,8 @@ public class GameObject{
         this.y = Util.clamp(this.y + y, 0, 10000 - this.height);
         this.hitBox.x = this.x;
         this.hitBox.y = this.y;
+        this.attributes.replace("x", this.x);
+        this.attributes.replace("y", this.y);
     }
 
     public int getX() {
@@ -79,5 +81,18 @@ public class GameObject{
 
     public int getY() {
         return y;
+    }
+
+    public void changeAttribute(String name, int change) {
+        this.attributes.replace(name, change);
+
+        this.x = this.attributes.get("x");
+        this.y = this.attributes.get("y");
+        this.height = this.attributes.get("Height");
+        this.width = this.attributes.get("Width");
+        this.hitBox.x = this.attributes.get("x");
+        this.hitBox.y = this.attributes.get("y");
+        this.hitBox.height = this.attributes.get("Height");
+        this.hitBox.width = this.attributes.get("Width");
     }
 }
