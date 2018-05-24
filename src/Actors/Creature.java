@@ -16,6 +16,20 @@ public class Creature{
     int health;
     Rectangle hitBox;
     Facing facing;
+
+    public HashMap<String, Integer> getAttributes() {
+        return attributes;
+    }
+
+    public void changeAttribute(String name, int change) {
+        this.attributes.replace(name, change);
+
+        this.x = this.attributes.get("x");
+        this.y = this.attributes.get("y");
+        this.hitBox.x = this.attributes.get("x");
+        this.hitBox.y = this.attributes.get("y");
+    }
+
     public enum Facing{
         Right, Left
 
@@ -125,7 +139,8 @@ public class Creature{
     }
 
     public void draw(Graphics2D g, Camera camera){
-
+        g.fillRect((int)Math.round((this.x - camera.getX()) * camera.getZoom()), (int)Math.round((this.y + camera.getY()) * camera.getZoom()),
+                (int)Math.round(this.width * camera.getZoom()), (int)Math.round(this.height * camera.getZoom()));
     }
 
     public String toLevelSave() {
@@ -145,6 +160,8 @@ public class Creature{
         this.y = Util.clamp(this.y + y, 0, 10000 - this.height);
         this.hitBox.x  = this.x;
         this.hitBox.y = this.y;
+        this.attributes.replace("x", this.x);
+        this.attributes.replace("y", this.y);
     }
 
     /**Called when the creature should be damaged.

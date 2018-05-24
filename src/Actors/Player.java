@@ -60,7 +60,7 @@ public class Player extends Creature{
     }
 
     public void draw(Graphics2D g, Camera camera){
-        g.fillRect(this.x - camera.getX(), this.y + camera.getY(), this.width, this.height);
+        super.draw(g, camera);
         g.drawString("Health: " + this.health, 0, (int)g.getFontMetrics().getStringBounds("Health: " + this.health, g).getHeight());
     }
 

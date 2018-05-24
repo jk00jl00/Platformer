@@ -51,7 +51,8 @@ public class GameObject{
     }
 
     public void draw(Graphics2D g, Camera camera){
-
+        g.fillRect((int)Math.round((this.x -  camera.getX()) * camera.getZoom()),(int)Math.round((this.y + camera.getY()) * camera.getZoom()),
+                (int)Math.round(this.width * camera.getZoom()), (int)Math.round(this.height * camera.getZoom()));
     }
 
     public boolean isSolid(){

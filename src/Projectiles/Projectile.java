@@ -7,6 +7,7 @@ import Objects.GameObject;
 import Utilities.Util;
 
 import java.awt.*;
+import java.rmi.MarshalException;
 
 public class Projectile {
     //For removing itself.
@@ -136,6 +137,7 @@ public class Projectile {
     }
 
     public void draw(Graphics2D g, Camera camera) {
-        g.fillRect(this.x - camera.getX(), this.y + camera.getY(), this.width, this.height);
+        g.fillRect((int)Math.round((this.x - camera.getX()) * camera.getZoom()),(int)Math.round((this.y + camera.getY()) * camera.getZoom()),
+                (int) Math.round(this.width * camera.getZoom()),(int)Math.round(this.height * camera.getZoom()));
     }
 }

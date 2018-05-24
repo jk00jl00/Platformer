@@ -290,8 +290,45 @@ public class Display extends Canvas{
         this.buttonPanel.add(attriutes, gbc);
         this.frame.pack();
     }
-    public void displayAttributes(Creature c) {
+    public void displayAttributes(Creature c, Game game) {
+        this.attriutes = new JPanel();
+        this.intAtr = new HashMap<>();
+        this.attriutes.setLayout(new GridBagLayout());
+        this.attriutes.setBorder(BorderFactory.createMatteBorder(5,0,5,0, Color.BLACK));
+        GridBagConstraints gbc;
 
+
+        int i = 0;
+        for(String s : c.getAttributes().keySet()){
+            gbc = new GridBagConstraints();
+            gbc.anchor = GridBagConstraints.EAST;
+            gbc.fill = GridBagConstraints.NONE;
+            JLabel l = new JLabel();
+            l.setText(s + ": ");
+            gbc.gridx = 0;
+            gbc.gridy = i;
+            attriutes.add(l, gbc);
+            LEIntAtr f = new LEIntAtr(c.getAttributes().get(s), s ,game.getbl());
+            intAtr.put(s, f);
+            gbc.fill = GridBagConstraints.BOTH;
+            gbc.anchor = GridBagConstraints.CENTER;
+            gbc.weightx = 0.5;
+            gbc.gridx = 1;
+
+            attriutes.add(f, gbc);
+            f.setColumns(5);
+            i++;
+        }
+
+        gbc = new GridBagConstraints();
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+
+        this.buttonPanel.add(attriutes, gbc);
+        this.frame.pack();
     }
 
     public void removeAtrDisplay() {
@@ -306,6 +343,13 @@ public class Display extends Canvas{
         for(String s: intAtr.keySet()){
             if(intAtr.get(s).getCurrentValue() != o.getAttributes().get(s)){
                 intAtr.get(s).setValue(o.getAttributes().get(s));
+            }
+        }
+    }
+    public void updateAtrDisplay(Creature c) {
+        for(String s: intAtr.keySet()){
+            if(intAtr.get(s).getCurrentValue() != c.getAttributes().get(s)){
+                intAtr.get(s).setValue(c.getAttributes().get(s));
             }
         }
     }

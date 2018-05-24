@@ -16,12 +16,17 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.rmi.MarshalException;
+import java.security.Key;
 import java.util.ArrayList;
 
 import static Listeners.ButtonListener.*;
 
 //TODO - Add a attribute display when having an item selected.
 //TODO - Add movement with mouse.
+//TODO - Undo when editing attributes.
+//TODO - Redo.
+//TODO - Zoom level.
 
 public class LevelEditState extends State {
 
@@ -261,7 +266,8 @@ public class LevelEditState extends State {
         System.out.println(1);
         //If it's the player character it replaces the player instead of placing a new one.
         if(toPlace.equals("Player")) {
-            Player player = new Player(tempRect.x + game.getCamera().getX(), tempRect.y + game.getCamera().getY());
+            Player player = new Player((int)Math.round((tempRect.x + game.getCamera().getX()) * game.getCamera().getZoom()),
+                    (int)Math.round((tempRect.y + game.getCamera().getY()) * game.getCamera().getZoom()));
             game.getLevel().setPlayer(player);
         } else{
             //Stores a generic Creature to replace with the placement.
@@ -273,8 +279,8 @@ public class LevelEditState extends State {
                 Constructor<?> constr = clazz.getConstructor(int.class, int.class);
                 //Creates a new Creature using the gathered constructor.
                 c = (Creature) constr.newInstance(new Object[]{
-                        tempRect.x + game.getCamera().getX(),
-                        tempRect.y - game.getCamera().getY(),
+                        (int)Math.round((tempRect.x + game.getCamera().getX()) * game.getCamera().getZoom()),
+                        (int)Math.round((tempRect.y - game.getCamera().getY()) * game.getCamera().getZoom()),
                 });
             } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
                 e.printStackTrace();
@@ -304,10 +310,10 @@ public class LevelEditState extends State {
             Class<?> clazz = Class.forName("Objects." + toPlace);
             Constructor<?> constr = clazz.getConstructor(int.class, int.class, int.class, int.class);
             o = (GameObject) constr.newInstance(new Object[]{
-               tempRect.x + game.getCamera().getX(),
-               tempRect.y - game.getCamera().getY(),
-               tempRect.width,
-               tempRect.height
+                    (int)Math.round((tempRect.x + game.getCamera().getX()) * game.getCamera().getZoom()),
+                    (int)Math.round((tempRect.y - game.getCamera().getY()) * game.getCamera().getZoom()),
+                    (int)Math.round(tempRect.width * game.getCamera().getZoom()),
+                    (int)Math.round(tempRect.height * game.getCamera().getZoom())
             });
         } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
             e.printStackTrace();
@@ -442,6 +448,14 @@ public class LevelEditState extends State {
         if(game.getkl().getKeysPressed()[KeyEvent.VK_DELETE]){
             handleDeletion();
         }
+        if(game.getkl().getControlMasked()[KeyEvent.VK_MINUS]){
+            game.getkl().setControlMasked(KeyEvent.VK_MINUS, false);
+            game.getCamera().zoomOut(1);
+        }
+        if(game.getkl().getControlMasked()[KeyEvent.VK_PLUS]){
+            game.getkl().setControlMasked(KeyEvent.VK_PLUS, false);
+            game.getCamera().zoomIn(1);
+        }
         return false;
     }
 
@@ -475,9 +489,15 @@ public class LevelEditState extends State {
         }
         //Changes an attribute on a selected object
         if(game.getbl().intAtrChanged){
-            if(selectionEmpty() || this.selectedCreatures.size() + this.selectedGameObjects.size() > 1) game.getbl().intAtrChanged = false;
+            if(selectionEmpty() || this.selectedCreatures.size() + this.selectedGameObjects.size() > 1) {
+                game.getbl().intAtrChanged = false;
+                return;
+            }
             if(selectedGameObjects.size() > 0){
                 selectedGameObjects.get(0).changeAttribute(game.getbl().getAtrName(), game.getbl().getAtrChange());
+                game.getbl().intAtrChanged = false;
+            } else{
+                selectedCreatures.get(0).changeAttribute(game.getbl().getAtrName(), game.getbl().getAtrChange());
             }
         }
     }
@@ -491,6 +511,7 @@ public class LevelEditState extends State {
         }
         for(Creature c: selectedCreatures){
             c.move(ml.getXDrag(), ml.getYDrag());
+            if(atrDisplayed) game.getDisplay().updateAtrDisplay(c);
         }
         //Resets the drag so that the selection doesn't "slide".
         ml.setXDrag(0);
@@ -503,8 +524,10 @@ public class LevelEditState extends State {
     private void handleSelection() {
         //Gets the rectangle and adds the camera offsets.
         tempRect = ml.getDragTangle();
-        tempRect.x += game.getCamera().getX();
-        tempRect.y -= game.getCamera().getY();
+        tempRect.x = (int)Math.round((tempRect.x + game.getCamera().getX()) * game.getCamera().getInvertedZoom());
+        tempRect.y = (int)Math.round((tempRect.y - game.getCamera().getY()) * game.getCamera().getInvertedZoom());
+        tempRect.width = (int)Math.round(tempRect.width * game.getCamera().getInvertedZoom());
+        tempRect.height = (int)Math.round(tempRect.height * game.getCamera().getInvertedZoom());
         //Checks if the selection is empty.
         if (selectionEmpty()) {
             ChangeManager.isPushing = false;
@@ -524,6 +547,9 @@ public class LevelEditState extends State {
                 if(!selectionEmpty() && selectedGameObjects.size() + selectedCreatures.size() == 1){
                     if(selectedGameObjects.size() > 0){
                         game.getDisplay().displayAttributes(selectedGameObjects.get(0), game);
+                        atrDisplayed = true;
+                    } else {
+                        game.getDisplay().displayAttributes(selectedCreatures.get(0), game);
                         atrDisplayed = true;
                     }
                 }
@@ -561,7 +587,7 @@ public class LevelEditState extends State {
                         atrDisplayed = true;
                     }
                     else {
-                        game.getDisplay().displayAttributes(selectedCreatures.get(0));
+                        game.getDisplay().displayAttributes(selectedCreatures.get(0), game);
                         atrDisplayed = true;
                     }
                 }
@@ -758,11 +784,12 @@ public class LevelEditState extends State {
     public void draw(Graphics2D g) {
         //Clears the screen.
         g.setColor((game.getLevel().getDarker()) ? Color.DARK_GRAY.darker() : Color.DARK_GRAY);
-        g.fillRect(0, 0, game.getWidth() + 100, game.getHeight() +100);
+        g.fillRect(0, 0, (int)Math.round((game.getWidth() + 100) * game.getCamera().getInvertedZoom()),
+                (int)Math.round((game.getHeight() +100) * game.getCamera().getInvertedZoom()));
         //Draws the level.
         game.getLevel().draw(g, game.getCamera());
         //Draws the grid if it is displayed.
-        if(gridDisplayed){
+        if(gridDisplayed && game.getCamera().getZoom() == 1){
             g.setColor(Color.BLACK);
             for(int y = game.getCamera().getY()%GRID_HEIGHT; y < game.getDisplay().getHeight(); y += GRID_HEIGHT){
                 for(int x = -(game.getCamera().getX()%GRID_WIDTH); x < game.getDisplay().getWidth(); x += GRID_WIDTH){
@@ -774,10 +801,12 @@ public class LevelEditState extends State {
         if (tempRect != null) {
             if(tool == SELECT_TOOL_){
                 g.setColor(Color.RED);
-                g.drawRect(tempRect.x, tempRect.y, tempRect.width, tempRect.height);
+                g.drawRect(tempRect.x ,tempRect.y,
+                        tempRect.width ,tempRect.height);
             } else if(tool == PLACING){
                 g.setColor(toPlaceColor);
-                g.fillRect(tempRect.x, tempRect.y, tempRect.width, tempRect.height);
+                g.fillRect(tempRect.x,tempRect.y,
+                        tempRect.width,tempRect.height);
             }
         }
         //Draws out highlights on selected objects.
@@ -786,11 +815,15 @@ public class LevelEditState extends State {
 
             for(GameObject o: selectedGameObjects){
                 Rectangle r = o.getHitBox();
-                g.drawRect(r.x - game.getCamera().getX(), r.y + game.getCamera().getY(), r.width, r.height);
+                g.drawRect((int)Math.round((r.x - game.getCamera().getX()) * game.getCamera().getZoom()),
+                        (int)Math.round((r.y + game.getCamera().getY())* game.getCamera().getZoom()),
+                        (int)Math.round(r.width * game.getCamera().getZoom()), (int)Math.round(r.height * game.getCamera().getZoom()));
             }
             for(Creature c: selectedCreatures){
                 Rectangle r = c.getHitBox();
-                g.drawRect(r.x - game.getCamera().getX(), r.y + game.getCamera().getX(), r.width, r.height);
+                g.drawRect((int) Math.round((r.x - game.getCamera().getX()) * game.getCamera().getZoom()),
+                        (int)Math.round((r.y + game.getCamera().getX()) * game.getCamera().getZoom()),
+                        (int)Math.round(r.width * game.getCamera().getZoom()),(int)Math.round( r.height * game.getCamera().getZoom()));
             }
         }
     }

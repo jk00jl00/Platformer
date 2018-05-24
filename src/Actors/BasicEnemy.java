@@ -94,9 +94,6 @@ public class BasicEnemy extends Creature{
         this.color.darker();
     }
 
-    public void draw(Graphics2D g, Camera camera){
-        g.fillRect(this.x - camera.getX(), this.y + camera.getY(), this.width, this.height);
-    }
     @Override
     public String toLevelSave() {
         String s = "";

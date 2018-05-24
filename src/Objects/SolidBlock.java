@@ -24,10 +24,6 @@ public class SolidBlock extends GameObject{
         return true;
     }
 
-    @Override
-    public void draw(Graphics2D g, Camera camera) {
-        g.fillRect(this.x -  camera.getX(),this.y + camera.getY(), this.width, this.height);
-    }
 
     @Override
     public String toLevelSave() {
