@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.util.HashMap;
 
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
@@ -32,6 +33,8 @@ public class Display extends Canvas{
     private JComboBox editItemTypeSelector;
     private JMenuBar menuBar;
     private JMenu editMenu;
+
+    HashMap<String , LEIntAtr> intAtr = new HashMap<>();
 
     //Constructor for the game display
     public Display(int width, int height, String name){
@@ -249,6 +252,7 @@ public class Display extends Canvas{
      */
     public void displayAttributes(GameObject o, Game game) {
         this.attriutes = new JPanel();
+        this.intAtr = new HashMap<>();
         this.attriutes.setLayout(new GridBagLayout());
         this.attriutes.setBorder(BorderFactory.createMatteBorder(5,0,5,0, Color.BLACK));
         GridBagConstraints gbc;
@@ -265,6 +269,7 @@ public class Display extends Canvas{
             gbc.gridy = i;
             attriutes.add(l, gbc);
             LEIntAtr f = new LEIntAtr(o.getAttributes().get(s), s ,game.getbl());
+            intAtr.put(s, f);
             gbc.fill = GridBagConstraints.BOTH;
             gbc.anchor = GridBagConstraints.CENTER;
             gbc.weightx = 0.5;
@@ -287,5 +292,21 @@ public class Display extends Canvas{
     }
     public void displayAttributes(Creature c) {
 
+    }
+
+    public void removeAtrDisplay() {
+        if(attriutes != null) {
+            this.buttonPanel.remove(this.attriutes);
+            this.frame.pack();
+            this.attriutes = null;
+        }
+    }
+
+    public void updateAtrDisplay(GameObject o) {
+        for(String s: intAtr.keySet()){
+            if(intAtr.get(s).getCurrentValue() != o.getAttributes().get(s)){
+                intAtr.get(s).setValue(o.getAttributes().get(s));
+            }
+        }
     }
 }

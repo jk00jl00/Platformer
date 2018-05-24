@@ -42,6 +42,8 @@ public class LevelEditState extends State {
     private boolean gridDisplayed;
     private boolean snapTo;
 
+    private boolean atrDisplayed = false;
+
     private int tool = SELECT_TOOL_;
     private String editItemSelection = " ";
 
@@ -233,7 +235,6 @@ public class LevelEditState extends State {
      * Is called when the user has right clicked.
      * The click is handled dependent on which tool is currently selected.
      */
-    //TODO - remove the delete tool section of handleRightClick.
     private void handleRightClick() {
         switch (this.tool){
             //Clears the current selection if the right click does not intersect with a selected object.
@@ -243,15 +244,11 @@ public class LevelEditState extends State {
                     clearSelection();
                 }
                 break;
-            //Cancels the deletion (No longer used);
-            case UNDO:
-                ml.dragging = false;
-                ml.dragTangle.width = 0;
-                break;
             //Cancels the placement.
             case PLACING:
                 ml.dragging = false;
                 ml.dragTangle.width = 0;
+                changeTool(SELECT_TOOL_);
                 break;
         }
     }
@@ -490,6 +487,7 @@ public class LevelEditState extends State {
     private void drag() {
         for(GameObject o: selectedGameObjects){
             o.move(ml.getXDrag(), ml.getYDrag());
+            if(atrDisplayed) game.getDisplay().updateAtrDisplay(o);
         }
         for(Creature c: selectedCreatures){
             c.move(ml.getXDrag(), ml.getYDrag());
@@ -523,6 +521,13 @@ public class LevelEditState extends State {
                         selectedCreatures.add(c);
                     }
                 }
+                if(!selectionEmpty() && selectedGameObjects.size() + selectedCreatures.size() == 1){
+                    if(selectedGameObjects.size() > 0){
+                        game.getDisplay().displayAttributes(selectedGameObjects.get(0), game);
+                        atrDisplayed = true;
+                    }
+                }
+
                 //Sets up the mouseListener to know that a selection has been made in order to check if the user is dragging the selection.
                 ml.setHasSelection(true);
                 ml.setSelectedObjects(this.selectedGameObjects.toArray(new GameObject[this.selectedGameObjects.size()]));
@@ -551,10 +556,14 @@ public class LevelEditState extends State {
                 //Open the object on the left hand side;
 
                 if (!selectionEmpty()) {
-                    if (object)
+                    if (object) {
                         game.getDisplay().displayAttributes(selectedGameObjects.get(0), game); //Checks if the selection is an object else it gets the creature.
-                    else
+                        atrDisplayed = true;
+                    }
+                    else {
                         game.getDisplay().displayAttributes(selectedCreatures.get(0));
+                        atrDisplayed = true;
+                    }
                 }
             }
             if(!selectionEmpty()){
@@ -678,6 +687,8 @@ public class LevelEditState extends State {
         this.selectedCreatures.removeAll(selectedCreatures);
         ml.setHasSelection(false);
         ml.draggingSelection = false;
+        game.getDisplay().removeAtrDisplay();
+        atrDisplayed = false;
     }
 
     /**

@@ -79,4 +79,9 @@ public class LEIntAtr extends JTextField{
     public String getAtrName() {
         return atrName;
     }
+
+    public void setValue(int value) {
+        this.setText(String.valueOf(value));
+        this.defaultValue = value;
+    }
 }
