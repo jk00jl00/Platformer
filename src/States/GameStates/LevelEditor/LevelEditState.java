@@ -21,10 +21,8 @@ import java.util.ArrayList;
 import static Listeners.ButtonListener.*;
 
 //TODO - Add a attribute display when having an item selected.
-//TODO - Add movement with mouse.
 //TODO - Undo when editing attributes.
 //TODO - Redo.
-//TODO - Zoom level.
 
 public class LevelEditState extends State {
 
@@ -58,9 +56,12 @@ public class LevelEditState extends State {
         checkPlaceble();
         checkArrowKeys();
 
-        if(ml.getRClick() != null){
+        if(ml.rClicked){
             handleRightClick();
-            ml.setRClick(null);
+            ml.rClicked = false;
+        }
+        if(selectionEmpty() && this.tool == SELECT_TOOL_ && ml.rDrag){
+            cameraDrag();
         }
 
         if(ml.dragTangle.width == 0){
@@ -76,6 +77,13 @@ public class LevelEditState extends State {
             drag();
         }
 
+
+    }
+
+    private void cameraDrag() {
+        game.getCamera().move(-ml.getXDrag(), ml.getYDrag());
+        ml.setXDrag(0);
+        ml.setYDrag(0);
     }
 
     /**

@@ -34,10 +34,12 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
     public boolean placingCreature;
 
     //How much the user has dragged the mouse.
-    private int xDrag;
-    private int yDrag;
+    private int xDrag = 0;
+    private int yDrag = 0;
 
     private Camera camera;
+    public boolean rDrag;
+    public boolean rClicked;
 
     public int getXDrag() {
         return xDrag;
@@ -143,8 +145,12 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
             }
             dragging = true;
 
-        } else if(e.getButton() == MouseEvent.BUTTON3){
+        }
+        if(e.getButton() == MouseEvent.BUTTON3){
             this.rClick = new Rectangle(e.getX(), e.getY(), 2, 3);
+            xDrag = 0;
+            yDrag = 0;
+            this.rDrag = true;
         }
     }
 
@@ -152,6 +158,9 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
     public void mouseReleased(MouseEvent e) {
         if (e.getButton() ==  MouseEvent.BUTTON1 && dragging) {
             rectReady = true;
+        } else if(e.getButton() == MouseEvent.BUTTON3){
+            rDrag = false;
+            rClicked = true;
         }
         dragging = false;
     }
@@ -182,6 +191,15 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
                 yDrag += e.getY() - lClick.y;
                 lClick.x += xDrag;
                 lClick.y += yDrag;
+                xDrag *= camera.getInvertedZoom();
+                yDrag *= camera.getInvertedZoom();
+                return;
+            }
+            if(rDrag){
+                xDrag += e.getX() - rClick.x;
+                yDrag += e.getY() - rClick.y;
+                rClick.x += xDrag;
+                rClick.y += yDrag;
                 xDrag *= camera.getInvertedZoom();
                 yDrag *= camera.getInvertedZoom();
                 return;
