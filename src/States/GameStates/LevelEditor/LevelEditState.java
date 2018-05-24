@@ -179,6 +179,10 @@ public class LevelEditState extends State {
                     //Adds the movement to the current change.
                     ChangeManager.moveStep(c,(int)Math.ceil(-x * game.getCamera().getInvertedZoom()),(int)Math.ceil(-y * game.getCamera().getInvertedZoom()));
                 }
+                if(selectedCreatures.size() + selectedGameObjects.size() == 1){
+                    if(selectedGameObjects.size() > 0) game.getDisplay().updateAtrDisplay(selectedGameObjects.get(0));
+                    else game.getDisplay().updateAtrDisplay(selectedCreatures.get(0));
+                }
             }
         } else{
             int dx = 0, dy = 0;
@@ -218,6 +222,10 @@ public class LevelEditState extends State {
                     if(dx != 0) x = snapToGridX(c.getX(), dx);
                     c.move(x, y);
                     ChangeManager.moveStep(c, -x, -y);
+                }
+                if(selectedCreatures.size() + selectedGameObjects.size() == 1){
+                    if(selectedGameObjects.size() > 0) game.getDisplay().updateAtrDisplay(selectedGameObjects.get(0));
+                    else game.getDisplay().updateAtrDisplay(selectedCreatures.get(0));
                 }
             }
         }
