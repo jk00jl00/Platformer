@@ -10,6 +10,7 @@ import Objects.GameObject;
 import States.GameStates.PauseMenuState;
 import States.GameStates.State;
 import Utilities.Util;
+import javafx.collections.MapChangeListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,8 +21,6 @@ import java.util.ArrayList;
 
 import static Listeners.ButtonListener.*;
 
-//TODO - Add a attribute display when having an item selected.
-//TODO - Undo when editing attributes.
 //TODO - Redo.
 
 public class LevelEditState extends State {
@@ -509,10 +508,21 @@ public class LevelEditState extends State {
                 return;
             }
             if(selectedGameObjects.size() > 0){
+                int changed = selectedGameObjects.get(0).getAttributes().get(game.getbl().getAtrName()) - game.getbl().getAtrChange();
                 selectedGameObjects.get(0).changeAttribute(game.getbl().getAtrName(), game.getbl().getAtrChange());
+                ChangeManager.isPushing = true;
+                ChangeManager.push(1, 0, game.getbl().getAtrName(), changed);
+                ChangeManager.push(selectedGameObjects.get(0));
+                ChangeManager.isPushing = false;
                 game.getbl().intAtrChanged = false;
             } else{
+                int changed = selectedGameObjects.get(0).getAttributes().get(game.getbl().getAtrName()) - game.getbl().getAtrChange();
                 selectedCreatures.get(0).changeAttribute(game.getbl().getAtrName(), game.getbl().getAtrChange());
+                ChangeManager.isPushing = true;
+                ChangeManager.push(0, 1, game.getbl().getAtrName(), changed);
+                ChangeManager.push(selectedCreatures.get(0));
+                ChangeManager.isPushing = false;
+                game.getbl().intAtrChanged = false;
             }
         }
     }
@@ -660,15 +670,8 @@ public class LevelEditState extends State {
         ChangeManager.isPushing = false;
         //Makes sure that a change exists to be undone.
         if (ChangeManager.firstChange != null) {
-            //Checks if the Change was a movement.
-            if (!ChangeManager.wasMoved()) {
-                //Checks if the Change was a deletion or addition.
-                if(ChangeManager.wasDeleted()){
-                    //Restores the removed objects and pops the Change of the stack.
-                    for (GameObject o: ChangeManager.getFirst().object) game.getLevel().addGameObject(o);
-                    for(Creature c: ChangeManager.getFirst().creature)game.getLevel().addCreature(c);
-                    ChangeManager.pop();
-                } else{
+            switch (ChangeManager.firstChange.getClass().getName().replaceAll("States.GameStates.LevelEditor.", "")){
+                case "AdditionChange":
                     //Removes the added objects and pops the Change of the stack.
                     for(GameObject o: ChangeManager.getFirst().object) {
                         if(selectedGameObjects.contains(o)) selectedGameObjects.remove(o);
@@ -679,18 +682,38 @@ public class LevelEditState extends State {
                         game.getLevel().removeCreature(c);
                     }
                     ChangeManager.pop();
-                }
-            } else{
-                //Moves the objects back into their original position and pops the Change of the stack.
-                GameObject[] objects = ChangeManager.getFirst().object;
-                Creature[] creatures = ChangeManager.getFirst().creature;
-                for(int i = 0; i < objects.length; i++){
-                    objects[i].move(ChangeManager.getFirst().dox[i], ChangeManager.getFirst().doy[i]);
-                }
-                for(int i = 0; i < creatures.length; i++){
-                    creatures[i].move(ChangeManager.getFirst().dcx[i], ChangeManager.getFirst().dcy[i]);
-                }
-                ChangeManager.pop();
+                    break;
+                case "RemovalChange":
+                    //Restores the removed objects and pops the Change of the stack.
+                    for (GameObject o: ChangeManager.getFirst().object) game.getLevel().addGameObject(o);
+                    for(Creature c: ChangeManager.getFirst().creature)game.getLevel().addCreature(c);
+                    ChangeManager.pop();
+                    break;
+                case "MovementChange":
+                    //Moves the objects back into their original position and pops the Change of the stack.
+                    GameObject[] objects = ChangeManager.getFirst().object;
+                    Creature[] creatures = ChangeManager.getFirst().creature;
+                    for(int i = 0; i < objects.length; i++){
+                        objects[i].move(ChangeManager.getFirst().dox[i], ChangeManager.getFirst().doy[i]);
+                    }
+                    for(int i = 0; i < creatures.length; i++){
+                        creatures[i].move(ChangeManager.getFirst().dcx[i], ChangeManager.getFirst().dcy[i]);
+                    }
+                    ChangeManager.pop();
+                    break;
+                case "AttributeChange":
+                    objects = ChangeManager.getFirst().object;
+                    creatures = ChangeManager.getFirst().creature;
+                    for(int i = 0; i < objects.length; i++){
+                        objects[i].changeAttribute(ChangeManager.getFirst().name, -ChangeManager.getFirst().change);
+                        game.getDisplay().updateAtrDisplay(objects[i]);
+                    }
+                    for(int i = 0; i < creatures.length; i++){
+                        creatures[i].changeAttribute(ChangeManager.getFirst().name, -ChangeManager.getFirst().change);
+                        game.getDisplay().updateAtrDisplay(creatures[i]);
+                    }
+                    ChangeManager.pop();
+                    break;
             }
         }
         game.getkl().setControlMasked(KeyEvent.VK_Z, false);

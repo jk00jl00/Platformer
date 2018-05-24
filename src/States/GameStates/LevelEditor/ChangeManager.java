@@ -19,22 +19,43 @@ public class ChangeManager {
         if (isPushing) firstChange.creature[firstChange.cIndex++] = c;
     }
 
-    public static void push(int o, int c) {
+    public static void push(int o, int c, String s, int i) {
         if(firstChange == null) {
-            firstChange = new Change(o, c);
+            firstChange = new AttributeChange(o, c);
             return;
         }
-        Change temp = new Change(o, c);
+        Change temp = new AttributeChange(o, c);
+        temp.prev = firstChange;
+        firstChange = temp;
+
+        firstChange.name = s;
+        firstChange.change = i;
+    }
+
+    public static void push(int o, int c) {
+        if(firstChange == null) {
+            firstChange = new MovementChange(o, c);
+            return;
+        }
+        Change temp = new MovementChange(o, c);
         temp.prev = firstChange;
         firstChange = temp;
     }
 
     public static void push(int o, int c, boolean deleted) {
         if(firstChange == null) {
-            firstChange = new Change(o, c, deleted);
+            if(deleted)
+                firstChange = new RemovalChange(o, c);
+            else
+                firstChange = new AdditionChange(o, c);
             return;
         }
-        Change temp = new Change(o, c, deleted);
+        Change temp;
+        if(deleted)
+            temp = new RemovalChange(o, c);
+        else
+            temp = new AdditionChange(o, c);
+
         temp.prev = firstChange;
         firstChange = temp;
     }
