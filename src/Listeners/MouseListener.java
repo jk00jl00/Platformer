@@ -111,9 +111,9 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
             dragTangle.height = 1;
             if (hasSelection) {
                 //Checks if trying to drag.
-                Rectangle tempBox = new Rectangle((int)Math.round((dragTangle.x + camera.getX()) * camera.getInvertedZoom()),
-                        (int)Math.round((dragTangle.y - camera.getY()) * camera.getInvertedZoom()),(int)Math.round(dragTangle.width * camera.getInvertedZoom()),
-                        (int)Math.round(dragTangle.height * camera.getInvertedZoom()));
+                Rectangle tempBox = new Rectangle((int)Math.ceil((dragTangle.x * camera.getInvertedZoom()) + camera.getX()),
+                        (int)Math.ceil((dragTangle.y * camera.getInvertedZoom()) - camera.getY()),(int)Math.ceil(dragTangle.width * camera.getInvertedZoom()),
+                        (int)Math.ceil(dragTangle.height * camera.getInvertedZoom()));
                 for (GameObject o : selectedObjects) {
                     if (o.getHitBox().intersects(tempBox)) {
                         draggingSelection = true;

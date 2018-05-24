@@ -16,8 +16,6 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.rmi.MarshalException;
-import java.security.Key;
 import java.util.ArrayList;
 
 import static Listeners.ButtonListener.*;
@@ -132,7 +130,8 @@ public class LevelEditState extends State {
                 x--;
                 game.getkl().setKey(KeyEvent.VK_LEFT, false);
             }
-            game.getCamera().move(x * GRID_WIDTH/2, y * GRID_HEIGHT/2);
+            game.getCamera().move((int)Math.ceil((x * GRID_WIDTH/2) * game.getCamera().getInvertedZoom()) ,
+                    (int)Math.ceil((y * GRID_HEIGHT/2) * game.getCamera().getInvertedZoom()));
         }
         if (!snapTo) {
             x = y = 0;
@@ -162,15 +161,15 @@ public class LevelEditState extends State {
                 ChangeManager.firstCreatureMove = true;
                 for(GameObject o :this.selectedGameObjects){
                     //Moves every GameObject one pixel on the screen
-                    o.move(x, y);
+                    o.move((int)Math.ceil(x * game.getCamera().getInvertedZoom()),(int)Math.ceil(y * game.getCamera().getInvertedZoom()));
                     //Adds the movement to the current change.
-                    ChangeManager.moveStep(o,-x, -y);
+                    ChangeManager.moveStep(o,(int)Math.ceil(-x * game.getCamera().getInvertedZoom()),(int)Math.ceil(-y * game.getCamera().getInvertedZoom()));
                 }
                 for(Creature c: this.selectedCreatures){
                     //Moves every creature one pixel on the screen.
-                    c.move(x, y);
+                    c.move((int)Math.ceil(x * game.getCamera().getInvertedZoom()),(int)Math.ceil(y * game.getCamera().getInvertedZoom()));
                     //Adds the movement to the current change.
-                    ChangeManager.moveStep(c, -x, -y);
+                    ChangeManager.moveStep(c,(int)Math.ceil(-x * game.getCamera().getInvertedZoom()),(int)Math.ceil(-y * game.getCamera().getInvertedZoom()));
                 }
             }
         } else{
@@ -266,8 +265,8 @@ public class LevelEditState extends State {
         System.out.println(1);
         //If it's the player character it replaces the player instead of placing a new one.
         if(toPlace.equals("Player")) {
-            Player player = new Player((int)Math.round((tempRect.x + game.getCamera().getX()) * game.getCamera().getZoom()),
-                    (int)Math.round((tempRect.y + game.getCamera().getY()) * game.getCamera().getZoom()));
+            Player player = new Player((int)Math.ceil((tempRect.x* game.getCamera().getInvertedZoom()) + game.getCamera().getX()),
+                    (int)Math.ceil((tempRect.y + game.getCamera().getY()) * game.getCamera().getInvertedZoom()));
             game.getLevel().setPlayer(player);
         } else{
             //Stores a generic Creature to replace with the placement.
@@ -279,8 +278,8 @@ public class LevelEditState extends State {
                 Constructor<?> constr = clazz.getConstructor(int.class, int.class);
                 //Creates a new Creature using the gathered constructor.
                 c = (Creature) constr.newInstance(new Object[]{
-                        (int)Math.round((tempRect.x + game.getCamera().getX()) * game.getCamera().getZoom()),
-                        (int)Math.round((tempRect.y - game.getCamera().getY()) * game.getCamera().getZoom()),
+                        (int)Math.ceil((tempRect.x* game.getCamera().getInvertedZoom()) + game.getCamera().getX()),
+                        (int)Math.ceil((tempRect.y* game.getCamera().getInvertedZoom()) - game.getCamera().getY()),
                 });
             } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
                 e.printStackTrace();
@@ -310,10 +309,10 @@ public class LevelEditState extends State {
             Class<?> clazz = Class.forName("Objects." + toPlace);
             Constructor<?> constr = clazz.getConstructor(int.class, int.class, int.class, int.class);
             o = (GameObject) constr.newInstance(new Object[]{
-                    (int)Math.round((tempRect.x + game.getCamera().getX()) * game.getCamera().getZoom()),
-                    (int)Math.round((tempRect.y - game.getCamera().getY()) * game.getCamera().getZoom()),
-                    (int)Math.round(tempRect.width * game.getCamera().getZoom()),
-                    (int)Math.round(tempRect.height * game.getCamera().getZoom())
+                    (int)Math.ceil((tempRect.x* game.getCamera().getInvertedZoom()) + game.getCamera().getX()),
+                    (int)Math.ceil((tempRect.y* game.getCamera().getInvertedZoom()) - game.getCamera().getY()),
+                    (int)Math.ceil(tempRect.width * game.getCamera().getInvertedZoom()),
+                    (int)Math.ceil(tempRect.height * game.getCamera().getInvertedZoom())
             });
         } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
             e.printStackTrace();
@@ -524,10 +523,10 @@ public class LevelEditState extends State {
     private void handleSelection() {
         //Gets the rectangle and adds the camera offsets.
         tempRect = ml.getDragTangle();
-        tempRect.x = (int)Math.round((tempRect.x + game.getCamera().getX()) * game.getCamera().getInvertedZoom());
-        tempRect.y = (int)Math.round((tempRect.y - game.getCamera().getY()) * game.getCamera().getInvertedZoom());
-        tempRect.width = (int)Math.round(tempRect.width * game.getCamera().getInvertedZoom());
-        tempRect.height = (int)Math.round(tempRect.height * game.getCamera().getInvertedZoom());
+        tempRect.x = (int)Math.ceil((tempRect.x* game.getCamera().getInvertedZoom()) + game.getCamera().getX());
+        tempRect.y = (int)Math.ceil((tempRect.y* game.getCamera().getInvertedZoom()) - game.getCamera().getY());
+        tempRect.width = (int)Math.ceil(tempRect.width * game.getCamera().getInvertedZoom());
+        tempRect.height = (int)Math.ceil(tempRect.height * game.getCamera().getInvertedZoom());
         //Checks if the selection is empty.
         if (selectionEmpty()) {
             ChangeManager.isPushing = false;
@@ -784,8 +783,8 @@ public class LevelEditState extends State {
     public void draw(Graphics2D g) {
         //Clears the screen.
         g.setColor((game.getLevel().getDarker()) ? Color.DARK_GRAY.darker() : Color.DARK_GRAY);
-        g.fillRect(0, 0, (int)Math.round((game.getWidth() + 100) * game.getCamera().getInvertedZoom()),
-                (int)Math.round((game.getHeight() +100) * game.getCamera().getInvertedZoom()));
+        g.fillRect(0, 0, (int)Math.ceil((game.getWidth() + 100) * game.getCamera().getInvertedZoom(true)),
+                (int)Math.ceil((game.getHeight() +100) * game.getCamera().getInvertedZoom(true)));
         //Draws the level.
         game.getLevel().draw(g, game.getCamera());
         //Draws the grid if it is displayed.
@@ -815,17 +814,20 @@ public class LevelEditState extends State {
 
             for(GameObject o: selectedGameObjects){
                 Rectangle r = o.getHitBox();
-                g.drawRect((int)Math.round((r.x - game.getCamera().getX()) * game.getCamera().getZoom()),
-                        (int)Math.round((r.y + game.getCamera().getY())* game.getCamera().getZoom()),
-                        (int)Math.round(r.width * game.getCamera().getZoom()), (int)Math.round(r.height * game.getCamera().getZoom()));
+                g.drawRect((int)Math.ceil((r.x - game.getCamera().getX()) * game.getCamera().getZoom()),
+                        (int)Math.ceil((r.y + game.getCamera().getY())* game.getCamera().getZoom()),
+                        (int)Math.ceil(r.width * game.getCamera().getZoom()), (int)Math.ceil(r.height * game.getCamera().getZoom()));
             }
             for(Creature c: selectedCreatures){
                 Rectangle r = c.getHitBox();
-                g.drawRect((int) Math.round((r.x - game.getCamera().getX()) * game.getCamera().getZoom()),
-                        (int)Math.round((r.y + game.getCamera().getX()) * game.getCamera().getZoom()),
-                        (int)Math.round(r.width * game.getCamera().getZoom()),(int)Math.round( r.height * game.getCamera().getZoom()));
+                g.drawRect((int) Math.ceil((r.x - game.getCamera().getX()) * game.getCamera().getZoom()),
+                        (int)Math.ceil((r.y + game.getCamera().getX()) * game.getCamera().getZoom()),
+                        (int)Math.ceil(r.width * game.getCamera().getZoom()),(int)Math.ceil( r.height * game.getCamera().getZoom()));
             }
         }
+        g.setColor(Color.BLUE.brighter().brighter().brighter());
+        g.drawString("Zoom: " + game.getCamera().getZoomLevel() + ", x: " + game.getCamera().getX() + ", y: " + -game.getCamera().getY(),
+                2, game.getHeight() - 2);
     }
 
     /**

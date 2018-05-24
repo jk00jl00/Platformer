@@ -57,4 +57,12 @@ public class Camera {
     public double getInvertedZoom() {
         return (zoomlevel < 0) ? -zoomlevel : 1d / zoomlevel;
     }
+
+    public double getInvertedZoom(boolean b) {
+        return (zoomlevel < 0) ? -zoomlevel : 1;
+    }
+
+    public int getZoomLevel() {
+        return zoomlevel;
+    }
 }
