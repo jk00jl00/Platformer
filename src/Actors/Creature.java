@@ -5,6 +5,8 @@ import Objects.GameObject;
 import Utilities.Util;
 
 import java.awt.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 public class Creature{
@@ -30,6 +32,23 @@ public class Creature{
         this.hitBox.y = this.attributes.get("y");
     }
 
+    public Creature copyOf(){
+        Creature c = new Creature(0, 0);
+
+        try {
+            Class<?> cl = this.getClass();
+            Constructor<?> constr = cl.getConstructor(int.class, int.class);
+            c = (Creature) constr.newInstance(new Object[]{
+                    this.x,
+                    this.y
+            });
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+            e.printStackTrace();
+        }
+
+        return c;
+    }
+
     public enum Facing{
         Right, Left
 
@@ -41,7 +60,7 @@ public class Creature{
 
     int dmg;
     String type;
-    public Color color;
+    public Color color = Color.BLUE;
     protected HashMap<String, Integer> attributes = new HashMap<>();
 
     //Static constants

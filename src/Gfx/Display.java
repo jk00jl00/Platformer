@@ -2,6 +2,7 @@ package Gfx;
 
 import Actors.Creature;
 import GameController.Game;
+import Listeners.ButtonListener;
 import Objects.GameObject;
 import jdk.internal.util.xml.impl.Input;
 
@@ -10,8 +11,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.security.Key;
 import java.util.HashMap;
 
+import static Listeners.ButtonListener.*;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public class Display extends Canvas{
@@ -20,7 +23,7 @@ public class Display extends Canvas{
     private int width;
     private int height;
     private String name;
-    private JMenuItem[] editorButtons = new JMenuItem[4];
+    private JMenuItem[] editorButtons = new JMenuItem[9];
     private JPanel buttonPanel;
     private JPanel attriutes;
     private static final String[] PLACEBLE_OBJECTS = GameObject.OBJECTS;
@@ -97,40 +100,77 @@ public class Display extends Canvas{
         frame.setJMenuBar(menuBar);
 
         //Select tool button
-        editorButtons[0] = new JMenuItem("Select");
+        editorButtons[SELECT_TOOL_] = new JMenuItem("Select");
 
-        editorButtons[0].setToolTipText("Select tool");
-        editorButtons[0].addActionListener(game.getbl());
-
-
-        this.editMenu.add(editorButtons[0]);
-
-        //Delete tool button
-        editorButtons[1] = new JMenuItem("Undo");
-
-        editorButtons[1].setToolTipText("Undo the latest change");
-        editorButtons[1].addActionListener(game.getbl());
+        editorButtons[SELECT_TOOL_].setToolTipText("Select tool");
+        editorButtons[SELECT_TOOL_].addActionListener(game.getbl());
 
 
-        this.editMenu.add(editorButtons[1]);
+        this.editMenu.add(editorButtons[SELECT_TOOL_]);
+
+        //Save button.
+        editorButtons[SAVE] = new JMenuItem("Save");
+
+        editorButtons[SAVE].setToolTipText("Save current level");
+        editorButtons[SAVE].addActionListener(game.getbl());
+        editorButtons[SAVE].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
+
+        this.editMenu.add(editorButtons[SAVE]);
+
+        //Load button.
+        editorButtons[LOAD] = new JMenuItem("Load");
+
+        editorButtons[LOAD].setToolTipText("Load a selected level");
+        editorButtons[LOAD].addActionListener(game.getbl());
+        editorButtons[LOAD].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.CTRL_DOWN_MASK));
+
+        this.editMenu.add(editorButtons[LOAD]);
+        this.editMenu.addSeparator();
+
+        //Copy button.
+        editorButtons[COPY] = new JMenuItem("Copy");
+
+        editorButtons[COPY].setToolTipText("Copy selection");
+        editorButtons[COPY].addActionListener(game.getbl());
+        editorButtons[COPY].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_DOWN_MASK));
+
+        this.editMenu.add(editorButtons[COPY]);
+
+        //Paste button.
+        editorButtons[PASTE] = new JMenuItem("Paste");
+
+        editorButtons[PASTE].setToolTipText("Paste a copy from clipboard");
+        editorButtons[PASTE].addActionListener(game.getbl());
+        editorButtons[PASTE].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK));
+
+        this.editMenu.add(editorButtons[PASTE]);
+
+        //Undo button.
+        editorButtons[UNDO] = new JMenuItem("Undo");
+
+        editorButtons[UNDO].setToolTipText("Undo the latest change");
+        editorButtons[UNDO].addActionListener(game.getbl());
+        editorButtons[UNDO].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_DOWN_MASK));
+
+        this.editMenu.add(editorButtons[UNDO]);
 
         //Show grid button
-        editorButtons[2] = new JMenuItem("Show Grid");
+        editorButtons[SHOW_GRID_] = new JMenuItem("Show Grid");
 
-        editorButtons[2].setToolTipText("Shows grid");
-        editorButtons[2].addActionListener(game.getbl());
+        editorButtons[SHOW_GRID_].setToolTipText("Shows grid");
+        editorButtons[SHOW_GRID_].addActionListener(game.getbl());
 
 
-        this.editMenu.add(editorButtons[2]);
+        this.editMenu.add(editorButtons[SHOW_GRID_]);
 
         //Snap to grid button
-        editorButtons[3] = new JMenuItem("Snap to grid");
+        editorButtons[SNAP_TO_GRID_] = new JMenuItem("Snap to grid");
 
-        editorButtons[3].setToolTipText("Toggles snapping to grid");
-        editorButtons[3].addActionListener(game.getbl());
+        editorButtons[SNAP_TO_GRID_].setToolTipText("Toggles snapping to grid");
+        editorButtons[SNAP_TO_GRID_].addActionListener(game.getbl());
 
 
-        this.editMenu.add(editorButtons[3]);
+        this.editMenu.add(editorButtons[SNAP_TO_GRID_]);
         gbc = new GridBagConstraints();
 
         //Edit item type selector menu

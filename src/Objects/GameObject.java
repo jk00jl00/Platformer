@@ -4,6 +4,8 @@ import Gfx.Camera;
 import Utilities.Util;
 
 import java.awt.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 //The superclass of all OBJECTS in game
@@ -95,5 +97,24 @@ public class GameObject{
         this.hitBox.y = this.attributes.get("y");
         this.hitBox.height = this.attributes.get("Height");
         this.hitBox.width = this.attributes.get("Width");
+    }
+
+    public GameObject copyOf(){
+        GameObject o = new GameObject(0, 0, 0, 0);
+
+        try {
+            Class<?> c = this.getClass();
+            Constructor<?> constr = c.getConstructor(int.class, int.class, int.class, int.class);
+            o = (GameObject) constr.newInstance(new Object[]{
+                    this.x,
+                    this.y,
+                    this.width,
+                    this.height
+            });
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+            e.printStackTrace();
+        }
+
+        return o;
     }
 }

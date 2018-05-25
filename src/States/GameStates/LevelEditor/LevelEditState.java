@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import static Listeners.ButtonListener.*;
 
 //TODO - Redo.
+//TODO - Copy, paste.
 
 public class LevelEditState extends State {
 
@@ -33,6 +34,8 @@ public class LevelEditState extends State {
 
     private int[] beforeMoveObjects;
     private int[] beforeMoveCreatures;
+    private GameObject[] copiedObjects = new GameObject[0];
+    private Creature[] copiedCreatures = new Creature[0];
     private ArrayList<GameObject> selectedGameObjects = new ArrayList<>();
     private ArrayList<Creature> selectedCreatures = new ArrayList<>();
 
@@ -450,15 +453,6 @@ public class LevelEditState extends State {
             enterMenu();
             return true;
         }
-        if(game.getkl().getControlMasked()[KeyEvent.VK_S]){
-            saveLevel();
-        }
-        if(game.getkl().getControlMasked()[KeyEvent.VK_L]){
-            if (loadLevel()) return true;
-        }
-        if(game.getkl().getControlMasked()[KeyEvent.VK_Z]){
-            undo();
-        }
         if(game.getkl().getKeysPressed()[KeyEvent.VK_DELETE]){
             handleDeletion();
         }
@@ -488,6 +482,26 @@ public class LevelEditState extends State {
             game.getbl().disableButton(UNDO);
             undo();
             System.out.println("Undone");
+        }
+        if(game.getbl().getButtonsPressed()[SAVE]){
+            game.getbl().disableButton(SAVE);
+            saveLevel();
+            System.out.println("Save");
+        }
+        if(game.getbl().getButtonsPressed()[LOAD]){
+            game.getbl().disableButton(LOAD);
+            loadLevel();
+            System.out.println("Load");
+        }
+        if(game.getbl().getButtonsPressed()[COPY]){
+            game.getbl().disableButton(COPY);
+            copy();
+            System.out.println("Copy");
+        }
+        if(game.getbl().getButtonsPressed()[PASTE]){
+            game.getbl().disableButton(PASTE);
+            paste();
+            System.out.println("Paste");
         }
         //Toggles the grid.
         if(game.getbl().getButtonsPressed()[SHOW_GRID_]){
@@ -526,6 +540,45 @@ public class LevelEditState extends State {
             }
         }
     }
+
+    private void paste() {
+        if(copiedObjects.length + copiedCreatures.length < 1) return;
+        clearSelection();
+        ChangeManager.push(copiedObjects.length, copiedCreatures.length, false);
+        ChangeManager.isPushing = true;
+        for(GameObject o: copiedObjects){
+            workingLevel.addGameObject(o);
+            selectedGameObjects.add(o);
+            ChangeManager.push(o);
+        }
+        for(Creature c: copiedCreatures){
+            workingLevel.addCreature(c);
+            selectedCreatures.add(c);
+            ChangeManager.push(c);
+        }
+        ml.setSelectedObjects(selectedGameObjects.toArray(new GameObject[selectedGameObjects.size()]));
+        ml.setSelectedCreatures(selectedCreatures.toArray(new Creature[selectedCreatures.size()]));
+        ml.setHasSelection(true);
+        ChangeManager.isPushing = false;
+        copy();
+    }
+
+    private void copy() {
+        if(selectionEmpty()) return;
+        copiedObjects = new GameObject[selectedGameObjects.size()];
+        copiedCreatures = new Creature[selectedCreatures.size()];
+
+        for(int i = 0; i < selectedGameObjects.size(); i++){
+            copiedObjects[i] = selectedGameObjects.get(i).copyOf();
+            copiedObjects[i].move(15, 15);
+        }
+        for(int i = 0; i < selectedCreatures.size(); i++){
+            if(selectedCreatures.get(i).getType().equals("Player")) continue;
+            copiedCreatures[i] = selectedCreatures.get(i).copyOf();
+            copiedCreatures[i].move(15, 15);
+        }
+    }
+
     /**
      * Called when the user is dragging a selection and moves the objects.
      */
