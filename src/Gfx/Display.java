@@ -154,6 +154,15 @@ public class Display extends Canvas{
 
         this.editMenu.add(editorButtons[UNDO]);
 
+        //Redo button.
+        editorButtons[REDO] = new JMenuItem("Redo");
+
+        editorButtons[REDO].setToolTipText("Redoes the the latest undo");
+        editorButtons[REDO].addActionListener(game.getbl());
+        editorButtons[REDO].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.SHIFT_DOWN_MASK|InputEvent.CTRL_DOWN_MASK));
+
+        this.editMenu.add(editorButtons[REDO]);
+
         //Show grid button
         editorButtons[SHOW_GRID_] = new JMenuItem("Show Grid");
 

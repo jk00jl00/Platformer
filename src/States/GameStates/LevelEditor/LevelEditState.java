@@ -481,6 +481,10 @@ public class LevelEditState extends State {
             undo();
             System.out.println("Undone");
         }
+        if(game.getbl().getButtonsPressed()[REDO]){
+            game.getbl().disableButton(REDO);
+            redo();
+        }
         if(game.getbl().getButtonsPressed()[SAVE]){
             game.getbl().disableButton(SAVE);
             saveLevel();
@@ -713,6 +717,59 @@ public class LevelEditState extends State {
         return selectedCreatures.isEmpty() && selectedGameObjects.isEmpty();
     }
 
+    private void redo() {
+        ChangeManager.isPushing = false;
+
+        if(ChangeManager.firstRedo != null){
+            switch (ChangeManager.firstRedo.getClass().getName().replaceAll("States.GameStates.LevelEditor.", "")){
+                case "AdditionChange":
+                    for(GameObject o: ChangeManager.firstRedo.object) {
+                        if(selectedGameObjects.contains(o)) selectedGameObjects.remove(o);
+                        game.getLevel().removeObject(o);
+                    }
+                    for(Creature c: ChangeManager.firstRedo.creature){
+                        if(selectedCreatures.contains(c)) selectedCreatures.remove(c);
+                        game.getLevel().removeCreature(c);
+                    }
+                    ChangeManager.popRedo();
+                    break;
+                case "RemovalChange":
+                    for (GameObject o: ChangeManager.firstRedo.object){
+                        game.getLevel().addGameObject(o);
+                    }
+                    for(Creature c: ChangeManager.firstRedo.creature){
+                        game.getLevel().addCreature(c);
+                    }
+                    ChangeManager.popRedo();
+                    break;
+                case "MovementChange":
+                    GameObject[] objects = ChangeManager.firstRedo.object;
+                    Creature[] creatures = ChangeManager.firstRedo.creature;
+                    for(int i = 0; i < objects.length; i++){
+                        objects[i].move(ChangeManager.firstRedo.dox[i], ChangeManager.firstRedo.doy[i]);
+                    }
+                    for(int i = 0; i < creatures.length; i++){
+                        creatures[i].move(ChangeManager.firstRedo.dcx[i], ChangeManager.firstRedo.dcy[i]);
+                    }
+                    ChangeManager.popRedo();
+                    break;
+                case "AttributeChange":
+                    objects = ChangeManager.firstRedo.object;
+                    creatures = ChangeManager.firstRedo.creature;
+                    for(int i = 0; i < objects.length; i++){
+                        objects[i].changeAttribute(ChangeManager.firstRedo.name, -ChangeManager.firstRedo.change);
+                        game.getDisplay().updateAtrDisplay(objects[i]);
+                    }
+                    for(int i = 0; i < creatures.length; i++){
+                        creatures[i].changeAttribute(ChangeManager.firstRedo.name, -ChangeManager.firstRedo.change);
+                        game.getDisplay().updateAtrDisplay(creatures[i]);
+                    }
+                    ChangeManager.popRedo();
+                    break;
+            }
+        }
+    }
+
     /**
      * This method is called when the user presses the undo button combination (Default ctrl z).
      * Undoes the latest change made by the user.
@@ -762,11 +819,11 @@ public class LevelEditState extends State {
                     ChangeManager.isPushing = true;
                     for(int i = 0; i < objects.length; i++){
                         objects[i].move(ChangeManager.getFirst().dox[i], ChangeManager.getFirst().doy[i]);
-                        ChangeManager.pushRedo(objects[i] , ChangeManager.getFirst().dox[i], ChangeManager.getFirst().doy[i]);
+                        ChangeManager.pushRedo(objects[i] , -ChangeManager.getFirst().dox[i], -ChangeManager.getFirst().doy[i]);
                     }
                     for(int i = 0; i < creatures.length; i++){
                         creatures[i].move(ChangeManager.getFirst().dcx[i], ChangeManager.getFirst().dcy[i]);
-                        ChangeManager.pushRedo(creatures[i] , ChangeManager.getFirst().dcx[i], ChangeManager.getFirst().dcy[i]);
+                        ChangeManager.pushRedo(creatures[i] , -ChangeManager.getFirst().dcx[i], -ChangeManager.getFirst().dcy[i]);
                     }
                     ChangeManager.isPushing = false;
                     ChangeManager.pop();

@@ -52,6 +52,9 @@ public class ButtonListener implements ActionListener, ListSelectionListener{
         if(e.getSource() == display.getButtons()[UNDO]){
             buttonsPressed[UNDO] = true;
         }
+        if(e.getSource() == display.getButtons()[REDO]){
+            buttonsPressed[REDO] = true;
+        }
         if(e.getSource() == display.getButtons()[SAVE]){
             buttonsPressed[SAVE] = true;
         }

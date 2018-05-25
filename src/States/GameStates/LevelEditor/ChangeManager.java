@@ -193,4 +193,8 @@ public class ChangeManager {
             firstCreatureMove = false;
         }
     }
+
+    public static void popRedo() {
+        firstRedo = firstRedo.prev;
+    }
 }
