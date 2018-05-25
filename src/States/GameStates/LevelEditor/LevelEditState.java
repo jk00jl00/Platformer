@@ -10,7 +10,6 @@ import Objects.GameObject;
 import States.GameStates.PauseMenuState;
 import States.GameStates.State;
 import Utilities.Util;
-import javafx.collections.MapChangeListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,7 +21,6 @@ import java.util.ArrayList;
 import static Listeners.ButtonListener.*;
 
 //TODO - Redo.
-//TODO - Copy, paste.
 
 public class LevelEditState extends State {
 
@@ -722,36 +720,55 @@ public class LevelEditState extends State {
     private void undo() {
         ChangeManager.isPushing = false;
         //Makes sure that a change exists to be undone.
-        if (ChangeManager.firstChange != null) {
-            switch (ChangeManager.firstChange.getClass().getName().replaceAll("States.GameStates.LevelEditor.", "")){
+        if (ChangeManager.firstUndo != null) {
+            switch (ChangeManager.firstUndo.getClass().getName().replaceAll("States.GameStates.LevelEditor.", "")){
                 case "AdditionChange":
                     //Removes the added objects and pops the Change of the stack.
+                    ChangeManager.pushRedo(ChangeManager.getFirst().object.length, ChangeManager.getFirst().creature.length, true);
+                    ChangeManager.isPushing = true;
                     for(GameObject o: ChangeManager.getFirst().object) {
                         if(selectedGameObjects.contains(o)) selectedGameObjects.remove(o);
                         game.getLevel().removeObject(o);
+                        ChangeManager.pushRedo(o);
                     }
                     for(Creature c: ChangeManager.getFirst().creature){
                         if(selectedCreatures.contains(c)) selectedCreatures.remove(c);
                         game.getLevel().removeCreature(c);
+                        ChangeManager.pushRedo(c);
                     }
+                    ChangeManager.isPushing = false;
                     ChangeManager.pop();
                     break;
                 case "RemovalChange":
                     //Restores the removed objects and pops the Change of the stack.
-                    for (GameObject o: ChangeManager.getFirst().object) game.getLevel().addGameObject(o);
-                    for(Creature c: ChangeManager.getFirst().creature)game.getLevel().addCreature(c);
+                    ChangeManager.pushRedo(ChangeManager.getFirst().object.length, ChangeManager.getFirst().creature.length, false);
+                    ChangeManager.isPushing = true;
+                    for (GameObject o: ChangeManager.getFirst().object){
+                        game.getLevel().addGameObject(o);
+                        ChangeManager.pushRedo(o);
+                    }
+                    for(Creature c: ChangeManager.getFirst().creature){
+                        game.getLevel().addCreature(c);
+                        ChangeManager.pushRedo(c);
+                    }
+                    ChangeManager.isPushing = false;
                     ChangeManager.pop();
                     break;
                 case "MovementChange":
                     //Moves the objects back into their original position and pops the Change of the stack.
                     GameObject[] objects = ChangeManager.getFirst().object;
                     Creature[] creatures = ChangeManager.getFirst().creature;
+                    ChangeManager.pushRedo(objects.length, creatures.length);
+                    ChangeManager.isPushing = true;
                     for(int i = 0; i < objects.length; i++){
                         objects[i].move(ChangeManager.getFirst().dox[i], ChangeManager.getFirst().doy[i]);
+                        ChangeManager.pushRedo(objects[i] , ChangeManager.getFirst().dox[i], ChangeManager.getFirst().doy[i]);
                     }
                     for(int i = 0; i < creatures.length; i++){
                         creatures[i].move(ChangeManager.getFirst().dcx[i], ChangeManager.getFirst().dcy[i]);
+                        ChangeManager.pushRedo(creatures[i] , ChangeManager.getFirst().dcx[i], ChangeManager.getFirst().dcy[i]);
                     }
+                    ChangeManager.isPushing = false;
                     ChangeManager.pop();
                     break;
                 case "AttributeChange":
@@ -760,11 +777,18 @@ public class LevelEditState extends State {
                     for(int i = 0; i < objects.length; i++){
                         objects[i].changeAttribute(ChangeManager.getFirst().name, -ChangeManager.getFirst().change);
                         game.getDisplay().updateAtrDisplay(objects[i]);
+                        ChangeManager.pushRedo(objects.length, creatures.length, ChangeManager.getFirst().name, -ChangeManager.getFirst().change);
+                        ChangeManager.isPushing = true;
+                        ChangeManager.push(objects[i]);
                     }
                     for(int i = 0; i < creatures.length; i++){
                         creatures[i].changeAttribute(ChangeManager.getFirst().name, -ChangeManager.getFirst().change);
                         game.getDisplay().updateAtrDisplay(creatures[i]);
+                        ChangeManager.pushRedo(objects.length, creatures.length, ChangeManager.getFirst().name, -ChangeManager.getFirst().change);
+                        ChangeManager.isPushing = true;
+                        ChangeManager.push(creatures[i]);
                     }
+                    ChangeManager.isPushing = false;
                     ChangeManager.pop();
                     break;
             }

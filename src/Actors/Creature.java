@@ -51,8 +51,6 @@ public class Creature{
 
     public enum Facing{
         Right, Left
-
-
     }
 
     GameObject[] gos;
