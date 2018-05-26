@@ -35,23 +35,28 @@ public class LevelEditState extends State {
     private final ArrayList<GameObject> selectedGameObjects = new ArrayList<>();
     private final ArrayList<Creature> selectedCreatures = new ArrayList<>();
 
+    //Contains the name of the place object's class .
     private String toPlace = "";
     private Color toPlaceColor;
 
     private boolean gridDisplayed;
     private boolean snapTo;
 
-    private boolean atrDisplayed = false;
+    private boolean attrDisplayed = false;
 
     private int tool = SELECT_TOOL_;
     private String editItemSelection = " ";
 
     @Override
     public void update() {
+        //Checks buttons pressed on the keyboard.
         if (checkKeyButtons()) return;
+        //Checks buttons pressed in the editor.
         checkButtonsPressed();
         checkEditItemChange();
+        //Checks if the object toPlace changed.
         checkPlaceble();
+        //Checks if arrow keys has been pressed.
         checkArrowKeys();
 
         if(ml.rClicked){
@@ -77,7 +82,9 @@ public class LevelEditState extends State {
 
 
     }
-
+    /**
+     * Drags the camera using input from the user's mouse.
+     */
     private void cameraDrag() {
         game.getCamera().move(-ml.getXDrag(), ml.getYDrag());
         ml.setXDrag(0);
@@ -136,6 +143,7 @@ public class LevelEditState extends State {
                 x--;
                 game.getkl().setKey(KeyEvent.VK_LEFT, false);
             }
+            //Multiplies the movement by the camera zoom and then moves the camera.
             game.getCamera().move((int)Math.ceil((x * GRID_WIDTH/2) * game.getCamera().getInvertedZoom()) ,
                     (int)Math.ceil((y * GRID_HEIGHT/2) * game.getCamera().getInvertedZoom()));
         }
@@ -166,7 +174,7 @@ public class LevelEditState extends State {
                 ChangeManager.firstObjectMove = true;
                 ChangeManager.firstCreatureMove = true;
                 for(GameObject o :this.selectedGameObjects){
-                    //Moves every GameObject one pixel on the screen
+                    //Moves every GameObject one pixel on the screen.
                     o.move((int)Math.ceil(x * game.getCamera().getInvertedZoom()),(int)Math.ceil(y * game.getCamera().getInvertedZoom()));
                     //Adds the movement to the current change.
                     ChangeManager.moveStep(o,(int)Math.ceil(-x * game.getCamera().getInvertedZoom()),(int)Math.ceil(-y * game.getCamera().getInvertedZoom()));
@@ -181,6 +189,7 @@ public class LevelEditState extends State {
                     if(selectedGameObjects.size() > 0) game.getDisplay().updateAtrDisplay(selectedGameObjects.get(0));
                     else game.getDisplay().updateAtrDisplay(selectedCreatures.get(0));
                 }
+                ChangeManager.firstRedo = null;
             }
         } else{
             int dx = 0, dy = 0;
@@ -225,6 +234,7 @@ public class LevelEditState extends State {
                     if(selectedGameObjects.size() > 0) game.getDisplay().updateAtrDisplay(selectedGameObjects.get(0));
                     else game.getDisplay().updateAtrDisplay(selectedCreatures.get(0));
                 }
+                ChangeManager.firstRedo = null;
             }
         }
     }
@@ -275,6 +285,7 @@ public class LevelEditState extends State {
      * Places the currently selected creature at the specified location.
      */
     //TODO - add a error message when a Creature was not added.
+    //TODO - Add undo for replacing player.
     private void placeSelectedCreature() {
         System.out.println(1);
         //If it's the player character it replaces the player instead of placing a new one.
@@ -305,6 +316,7 @@ public class LevelEditState extends State {
                 ChangeManager.push(c);
                 //Add the creature to the level.
                 game.getLevel().addCreature(c);
+                ChangeManager.firstRedo = null;
             }
         }
         //Resets all rectangles.
@@ -340,6 +352,7 @@ public class LevelEditState extends State {
             ml.dragTangle.width = 0;
             ml.rectReady = false;
             ChangeManager.isPushing = false;
+            ChangeManager.firstRedo = null;
         } else System.out.println("Object is null");
     }
     /**
@@ -419,6 +432,7 @@ public class LevelEditState extends State {
     private void handleDeletion() {
         int a = this.selectedGameObjects.size();
         int b = this.selectedCreatures.size();
+        if(a+b == 0) return;
         ChangeManager.isPushing = true;
         //Creates a Change objects with the required array sizes for the selected GameObjects and Creatures and flags the Change object as a deletion.
         ChangeManager.push(a, b, true);
@@ -435,6 +449,7 @@ public class LevelEditState extends State {
         }
         ChangeManager.isPushing = false;
         clearSelection();
+        ChangeManager.firstRedo = null;
         game.getkl().setKey(KeyEvent.VK_DELETE, false);
     }
 
@@ -472,7 +487,6 @@ public class LevelEditState extends State {
             changeTool(SELECT_TOOL_);
             System.out.println("SelectTool");
         }
-        //Undoes the latest change.
         if(game.getbl().getButtonsPressed()[UNDO]){
             game.getbl().disableButton(UNDO);
             undo();
@@ -514,10 +528,12 @@ public class LevelEditState extends State {
         }
         //Changes an attribute on a selected object
         if(game.getbl().intAtrChanged){
+            //Makes sure a object is still selected.
             if(selectionEmpty() || this.selectedCreatures.size() + this.selectedGameObjects.size() > 1) {
                 game.getbl().intAtrChanged = false;
                 return;
             }
+            //Check if the selection is a object.
             if(selectedGameObjects.size() > 0){
                 ChangeManager.isPushing = true;
                 ChangeManager.push(1, 0, game.getbl().getAtrName(), selectedGameObjects.get(0).getAttributes().get(game.getbl().getAtrName()));
@@ -525,6 +541,7 @@ public class LevelEditState extends State {
                 ChangeManager.push(selectedGameObjects.get(0));
                 ChangeManager.isPushing = false;
                 game.getbl().intAtrChanged = false;
+                ChangeManager.firstRedo = null;
             } else{
                 ChangeManager.isPushing = true;
                 ChangeManager.push(0, 1, game.getbl().getAtrName(), selectedGameObjects.get(0).getAttributes().get(game.getbl().getAtrName()));
@@ -532,10 +549,15 @@ public class LevelEditState extends State {
                 ChangeManager.push(selectedCreatures.get(0));
                 ChangeManager.isPushing = false;
                 game.getbl().intAtrChanged = false;
+                ChangeManager.firstRedo = null;
             }
         }
     }
 
+    /**
+     * Pastes the copied objects and creatures.
+     * Called when the user presses ctrl + v or the paste button in the editMenu.
+     */
     private void paste() {
         if(copiedObjects.length + copiedCreatures.length < 1) return;
         clearSelection();
@@ -558,11 +580,15 @@ public class LevelEditState extends State {
         copy();
     }
 
+    /**
+     * Copies the selected objects and creatures.
+     * Called when the user presses crtl + c or the copy button in the editMenu.
+     */
     private void copy() {
         if(selectionEmpty()) return;
         copiedObjects = new GameObject[selectedGameObjects.size()];
         copiedCreatures = new Creature[selectedCreatures.size()];
-
+        //Copies the objects and moves them down and right 15 pixels.
         for(int i = 0; i < selectedGameObjects.size(); i++){
             copiedObjects[i] = selectedGameObjects.get(i).copyOf();
             copiedObjects[i].move(15, 15);
@@ -580,11 +606,11 @@ public class LevelEditState extends State {
     private void drag() {
         for(GameObject o: selectedGameObjects){
             o.move(ml.getXDrag(), ml.getYDrag());
-            if(atrDisplayed) game.getDisplay().updateAtrDisplay(o);
+            if(attrDisplayed) game.getDisplay().updateAtrDisplay(o);
         }
         for(Creature c: selectedCreatures){
             c.move(ml.getXDrag(), ml.getYDrag());
-            if(atrDisplayed) game.getDisplay().updateAtrDisplay(c);
+            if(attrDisplayed) game.getDisplay().updateAtrDisplay(c);
         }
         //Resets the drag so that the selection doesn't "slide".
         ml.setXDrag(0);
@@ -620,10 +646,10 @@ public class LevelEditState extends State {
                 if(!selectionEmpty() && selectedGameObjects.size() + selectedCreatures.size() == 1){
                     if(selectedGameObjects.size() > 0){
                         game.getDisplay().displayAttributes(selectedGameObjects.get(0), game);
-                        atrDisplayed = true;
+                        attrDisplayed = true;
                     } else {
                         game.getDisplay().displayAttributes(selectedCreatures.get(0), game);
-                        atrDisplayed = true;
+                        attrDisplayed = true;
                     }
                 }
 
@@ -657,11 +683,11 @@ public class LevelEditState extends State {
                 if (!selectionEmpty()) {
                     if (object) {
                         game.getDisplay().displayAttributes(selectedGameObjects.get(0), game); //Checks if the selection is an object else it gets the creature.
-                        atrDisplayed = true;
+                        attrDisplayed = true;
                     }
                     else {
                         game.getDisplay().displayAttributes(selectedCreatures.get(0), game);
-                        atrDisplayed = true;
+                        attrDisplayed = true;
                     }
                 }
             }
@@ -698,8 +724,6 @@ public class LevelEditState extends State {
             clearSelection();
             this.handleSelection();
         }
-
-        //if single selection open attributes on the left and allow movement when dragging;
     }
 
     /**
@@ -710,10 +734,16 @@ public class LevelEditState extends State {
         return selectedCreatures.isEmpty() && selectedGameObjects.isEmpty();
     }
 
+    /**
+     * Redoes the latest undo.
+     * Called when the user presses ctrl+shift+Z or the redo button in the editMenu.
+     */
+    //TODO - move the redoes to the Change objects themselfs.
     private void redo() {
         ChangeManager.isPushing = false;
-
+        //Makes sure there is a change to be redone.
         if(ChangeManager.firstRedo != null){
+            //Checkes what kind of change was made.
             switch (ChangeManager.firstRedo.getClass().getName().replaceAll("States.GameStates.LevelEditor.", "")){
                 case "AdditionChange":
                     ChangeManager.push(ChangeManager.firstRedo.object.length, ChangeManager.firstRedo.creature.length, true);
@@ -905,7 +935,7 @@ public class LevelEditState extends State {
         ml.setHasSelection(false);
         ml.draggingSelection = false;
         game.getDisplay().removeAtrDisplay();
-        atrDisplayed = false;
+        attrDisplayed = false;
     }
 
     /**

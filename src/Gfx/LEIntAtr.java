@@ -8,7 +8,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-
+//Class for the text boxes for the attributes of a selected object.
 public class LEIntAtr extends JTextField{
     private int defaultValue;
     private final String atrName;
@@ -30,6 +30,9 @@ public class LEIntAtr extends JTextField{
         resetValue();
     }
 
+    /**
+     * Makes sure only numbers can be typed and only 5.
+     */
     private void overRideInsert() {
         this.setDocument(new DefaultStyledDocument() {
             @Override
@@ -40,6 +43,9 @@ public class LEIntAtr extends JTextField{
             }});
     }
 
+    /**
+     * Sets the actions when pressing enter or escape.
+     */
     private void setAction() {
         KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
         KeyStroke escape = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
@@ -65,12 +71,20 @@ public class LEIntAtr extends JTextField{
         });
     }
 
+    /**
+     * Gives itself to the buttonListener to be handled and updates it's value.
+     * Called when the user presses enter.
+     */
     private void onEnter() {
-        if(this.getText().isEmpty()) this.setText(String.valueOf(1));
+        if(this.getText().isEmpty()) this.setText(String.valueOf(5));
         bl.attributeChange(this);
         this.defaultValue = this.getCurrentValue();
     }
 
+    /**
+     * Resets the value of the text field.
+     * Called when the user presses escape.
+     */
     private void resetValue(){
         this.setText(String.valueOf(defaultValue));
     }

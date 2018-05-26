@@ -22,7 +22,6 @@ class LEditItemDisplay extends JLabel implements ListCellRenderer<String>{
             setForeground(list.getForeground());
         }
 
-
         setText(value);
 
         return this;
