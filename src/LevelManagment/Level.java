@@ -64,7 +64,11 @@ public class Level{
         this.player = player;
         this.playerStartX = player.getX();
         this.playerStartY = player.getY();
-        gameCreatures.set(0, player);
+        if (gameCreatures.size() > 0) {
+            gameCreatures.set(0, player);
+        } else{
+            gameCreatures.add(player);
+        }
     }
 
     public void setName(String tempName) {

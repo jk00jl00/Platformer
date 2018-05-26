@@ -1,31 +1,49 @@
-false 18 665
-17
-SolidBlock 0 0 13 716 
-SolidBlock 0 705 1012 16 
-SolidBlock 325 177 74 533 
-Platform 143 521 182 17 
-Platform 13 619 215 18 
-Platform 13 433 215 14 
-Platform 127 335 199 13 
-Platform 12 246 208 11 
-SolidBlock 394 509 773 216 
-SolidBlock 1065 0 1205 792 
-Platform 399 190 157 15 
-Platform 579 231 181 19 
-Platform 855 288 211 16 
-Platform 625 363 207 18 
-SolidBlock 0 720 1322 655 
-SolidBlock 1175 755 1026 620 
-Platform 424 413 122 17 
-11
-BasicEnemy 63 598 
-BasicEnemy 258 501 
-BasicEnemy 56 412 
-BasicEnemy 252 317 
-BasicEnemy 36 229 
-BasicEnemy 423 476 
-BasicEnemy 1018 470 
-BasicEnemy 956 270 
-BasicEnemy 489 172 
-BasicEnemy 615 482 
-BasicEnemy 825 487 
+false 632 2071
+37
+SolidBlock 2058 8273 7942 1727 
+SolidBlock 2899 3887 2028 260 
+SolidBlock 312 2106 2652 2041 
+SolidBlock 4737 639 2548 2561 
+SolidBlock 1651 5161 5811 988 
+SolidBlock 5538 3705 2496 273 
+SolidBlock 8000 1183 2000 2769 
+SolidBlock 4589 26 6903 637 
+SolidBlock -442 -416 936 4563 
+Platform 834 2009 145 19 
+Platform 1072 1915 145 19 
+Platform 1312 1837 145 19 
+SolidBlock 1604 1869 175 246 
+SolidBlock 961 2092 33 22 
+Platform 1895 1955 145 19 
+Platform 2227 1955 145 19 
+Platform 2557 1951 145 19 
+Platform 2864 1945 145 19 
+SolidBlock 2956 2600 1300 600 
+Platform 3056 2016 145 19 
+Platform 3232 2111 145 19 
+Platform 3055 2208 145 19 
+Platform 3231 2303 145 19 
+Platform 3056 2400 145 19 
+Platform 3232 2496 145 19 
+Platform 4319 2691 145 19 
+Platform 4495 2786 145 19 
+Platform 4318 2883 145 19 
+Platform 4494 2978 145 19 
+Platform 4319 3075 145 19 
+Platform 4495 3171 145 19 
+Platform 4316 3282 145 19 
+Platform 4492 3377 145 19 
+Platform 4315 3474 145 19 
+Platform 4491 3569 145 19 
+Platform 4316 3666 145 19 
+Platform 4492 3762 145 19 
+9
+BasicEnemy 1034 2087 
+BasicEnemy 1454 2087 
+BasicEnemy 1272 2083 
+BasicEnemy 1901 2086 
+BasicEnemy 2069 2084 
+BasicEnemy 2236 2089 
+BasicEnemy 2436 2088 
+BasicEnemy 2609 2088 
+BasicEnemy 2729 2086 

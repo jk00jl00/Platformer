@@ -31,6 +31,8 @@ public class ChangeManager {
     public static void push(int o, int c, String s, int i) {
         if(firstUndo == null) {
             firstUndo = new AttributeChange(o, c);
+            firstUndo.name = s;
+            firstUndo.change = i;
             return;
         }
         Change temp = new AttributeChange(o, c);
@@ -44,6 +46,8 @@ public class ChangeManager {
     public static void pushRedo(int o, int c, String s, int i) {
         if(firstRedo == null) {
             firstRedo = new AttributeChange(o, c);
+            firstRedo.name = s;
+            firstRedo.change = i;
             return;
         }
         Change temp = new AttributeChange(o, c);

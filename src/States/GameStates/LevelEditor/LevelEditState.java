@@ -20,7 +20,6 @@ import java.util.ArrayList;
 
 import static Listeners.ButtonListener.*;
 
-//TODO - Redo.
 
 public class LevelEditState extends State {
 
@@ -524,18 +523,16 @@ public class LevelEditState extends State {
                 return;
             }
             if(selectedGameObjects.size() > 0){
-                int changed = selectedGameObjects.get(0).getAttributes().get(game.getbl().getAtrName()) - game.getbl().getAtrChange();
-                selectedGameObjects.get(0).changeAttribute(game.getbl().getAtrName(), game.getbl().getAtrChange());
                 ChangeManager.isPushing = true;
-                ChangeManager.push(1, 0, game.getbl().getAtrName(), changed);
+                ChangeManager.push(1, 0, game.getbl().getAtrName(), selectedGameObjects.get(0).getAttributes().get(game.getbl().getAtrName()));
+                selectedGameObjects.get(0).changeAttribute(game.getbl().getAtrName(), game.getbl().getAtrChange());
                 ChangeManager.push(selectedGameObjects.get(0));
                 ChangeManager.isPushing = false;
                 game.getbl().intAtrChanged = false;
             } else{
-                int changed = selectedGameObjects.get(0).getAttributes().get(game.getbl().getAtrName()) - game.getbl().getAtrChange();
-                selectedCreatures.get(0).changeAttribute(game.getbl().getAtrName(), game.getbl().getAtrChange());
                 ChangeManager.isPushing = true;
-                ChangeManager.push(0, 1, game.getbl().getAtrName(), changed);
+                ChangeManager.push(0, 1, game.getbl().getAtrName(), selectedGameObjects.get(0).getAttributes().get(game.getbl().getAtrName()));
+                selectedCreatures.get(0).changeAttribute(game.getbl().getAtrName(), game.getbl().getAtrChange());
                 ChangeManager.push(selectedCreatures.get(0));
                 ChangeManager.isPushing = false;
                 game.getbl().intAtrChanged = false;
@@ -723,53 +720,77 @@ public class LevelEditState extends State {
         if(ChangeManager.firstRedo != null){
             switch (ChangeManager.firstRedo.getClass().getName().replaceAll("States.GameStates.LevelEditor.", "")){
                 case "AdditionChange":
+                    ChangeManager.push(ChangeManager.firstRedo.object.length, ChangeManager.firstRedo.creature.length, true);
+                    ChangeManager.isPushing = true;
                     for(GameObject o: ChangeManager.firstRedo.object) {
                         if(selectedGameObjects.contains(o)) selectedGameObjects.remove(o);
                         game.getLevel().removeObject(o);
+                        ChangeManager.push(o);
                     }
                     for(Creature c: ChangeManager.firstRedo.creature){
                         if(selectedCreatures.contains(c)) selectedCreatures.remove(c);
+                        ChangeManager.push(c);
                         game.getLevel().removeCreature(c);
                     }
+                    ChangeManager.isPushing = false;
                     ChangeManager.popRedo();
                     break;
                 case "RemovalChange":
+                    ChangeManager.push(ChangeManager.firstRedo.object.length, ChangeManager.firstRedo.creature.length, false);
+                    ChangeManager.isPushing = true;
                     for (GameObject o: ChangeManager.firstRedo.object){
                         game.getLevel().addGameObject(o);
+                        ChangeManager.push(o);
                     }
                     for(Creature c: ChangeManager.firstRedo.creature){
                         game.getLevel().addCreature(c);
+                        ChangeManager.push(c);
                     }
+                    ChangeManager.isPushing = false;
                     ChangeManager.popRedo();
                     break;
                 case "MovementChange":
                     GameObject[] objects = ChangeManager.firstRedo.object;
                     Creature[] creatures = ChangeManager.firstRedo.creature;
+
+                    ChangeManager.push(objects.length, creatures.length);
+                    ChangeManager.isPushing = true;
+
                     for(int i = 0; i < objects.length; i++){
                         objects[i].move(ChangeManager.firstRedo.dox[i], ChangeManager.firstRedo.doy[i]);
+                        ChangeManager.push(objects[i], -ChangeManager.firstRedo.dox[i], -ChangeManager.firstRedo.doy[i]);
                     }
                     for(int i = 0; i < creatures.length; i++){
                         creatures[i].move(ChangeManager.firstRedo.dcx[i], ChangeManager.firstRedo.dcy[i]);
+                        ChangeManager.push(creatures[i], -ChangeManager.firstRedo.dcx[i], -ChangeManager.firstRedo.dcy[i]);
                     }
+                    ChangeManager.isPushing = false;
                     ChangeManager.popRedo();
                     break;
                 case "AttributeChange":
                     objects = ChangeManager.firstRedo.object;
                     creatures = ChangeManager.firstRedo.creature;
+
                     for(int i = 0; i < objects.length; i++){
-                        objects[i].changeAttribute(ChangeManager.firstRedo.name, -ChangeManager.firstRedo.change);
+                        ChangeManager.isPushing = true;
+                        ChangeManager.push(1, 0, ChangeManager.firstRedo.name, objects[i].getAttributes().get(ChangeManager.firstRedo.name));
+                        ChangeManager.push(objects[i]);
+                        objects[i].changeAttribute(ChangeManager.firstRedo.name, ChangeManager.firstRedo.change);
                         game.getDisplay().updateAtrDisplay(objects[i]);
                     }
                     for(int i = 0; i < creatures.length; i++){
-                        creatures[i].changeAttribute(ChangeManager.firstRedo.name, -ChangeManager.firstRedo.change);
+                        ChangeManager.isPushing = true;
+                        ChangeManager.push(1, 0, ChangeManager.firstRedo.name, objects[i].getAttributes().get(ChangeManager.firstRedo.name));
+                        ChangeManager.push(objects[i]);
+                        creatures[i].changeAttribute(ChangeManager.firstRedo.name, ChangeManager.firstRedo.change);
                         game.getDisplay().updateAtrDisplay(creatures[i]);
                     }
+                    ChangeManager.isPushing = false;
                     ChangeManager.popRedo();
                     break;
             }
         }
     }
-
     /**
      * This method is called when the user presses the undo button combination (Default ctrl z).
      * Undoes the latest change made by the user.
@@ -832,18 +853,20 @@ public class LevelEditState extends State {
                     objects = ChangeManager.getFirst().object;
                     creatures = ChangeManager.getFirst().creature;
                     for(int i = 0; i < objects.length; i++){
-                        objects[i].changeAttribute(ChangeManager.getFirst().name, -ChangeManager.getFirst().change);
-                        game.getDisplay().updateAtrDisplay(objects[i]);
-                        ChangeManager.pushRedo(objects.length, creatures.length, ChangeManager.getFirst().name, -ChangeManager.getFirst().change);
                         ChangeManager.isPushing = true;
-                        ChangeManager.push(objects[i]);
+                        ChangeManager.pushRedo(objects.length, creatures.length, ChangeManager.getFirst().name,
+                                objects[i].getAttributes().get(ChangeManager.getFirst().name));
+                        ChangeManager.pushRedo(objects[i]);
+                        objects[i].changeAttribute(ChangeManager.getFirst().name, ChangeManager.getFirst().change);
+                        game.getDisplay().updateAtrDisplay(objects[i]);
                     }
                     for(int i = 0; i < creatures.length; i++){
-                        creatures[i].changeAttribute(ChangeManager.getFirst().name, -ChangeManager.getFirst().change);
-                        game.getDisplay().updateAtrDisplay(creatures[i]);
-                        ChangeManager.pushRedo(objects.length, creatures.length, ChangeManager.getFirst().name, -ChangeManager.getFirst().change);
                         ChangeManager.isPushing = true;
-                        ChangeManager.push(creatures[i]);
+                        ChangeManager.pushRedo(objects.length, creatures.length, ChangeManager.getFirst().name,
+                                creatures[i].getAttributes().get(ChangeManager.getFirst().name));
+                        creatures[i].changeAttribute(ChangeManager.getFirst().name, ChangeManager.getFirst().change);
+                        game.getDisplay().updateAtrDisplay(creatures[i]);
+                        ChangeManager.pushRedo(creatures[i]);
                     }
                     ChangeManager.isPushing = false;
                     ChangeManager.pop();

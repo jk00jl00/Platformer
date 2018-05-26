@@ -140,8 +140,8 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
                 //If the user is placing a creature the top left corner will be by the mouse and the width and height will match the creature.
                 dragTangle.x = e.getX();
                 dragTangle.y = e.getY();
-                dragTangle.width = creatureWidth;
-                dragTangle.height = creatureHeight;
+                dragTangle.width = (int)Math.ceil(creatureWidth * camera.getZoom());
+                dragTangle.height = (int)Math.ceil(creatureHeight * camera.getZoom());
             }
             dragging = true;
 
@@ -181,8 +181,8 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
             if(placingCreature){
                 dragTangle.x = e.getX();
                 dragTangle.y = e.getY();
-                dragTangle.width = creatureWidth;
-                dragTangle.height = creatureHeight;
+                dragTangle.width = (int)Math.ceil(creatureWidth * camera.getZoom());
+                dragTangle.height = (int)Math.ceil(creatureHeight * camera.getZoom());
                 return;
             }
 
