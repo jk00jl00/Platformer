@@ -11,24 +11,20 @@ import java.awt.*;
 public class Projectile {
     //For removing itself.
     private final Game game;
+    private final double dx;
+    private final double dy;
+    //The shooter and projectile hitbox.
+    private final Creature shooter;
+    //Were it was shot for checking how far it has traveled.
+    private final int[] shotPos = new int[2];
     //Positions and speeds.
     int x;
     int y;
-    private final double dx;
-    private final double dy;
     int width;
     int height;
-
-    //The shooter and projectile hitbox.
-    private final Creature shooter;
     Rectangle hitBox;
-
     int dmg;
     int range;
-
-    //Were it was shot for checking how far it has traveled.
-    private final int[] shotPos = new int[2];
-
     //The objects it can hit.
     private GameObject[] gameObjects;
     private Creature[] creatures;

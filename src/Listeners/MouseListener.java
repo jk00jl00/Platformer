@@ -9,48 +9,54 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 
 public class MouseListener implements java.awt.event.MouseListener, MouseMotionListener{
-    //Positions
-    public Rectangle lClick;
-    private Rectangle rClick;
     public final Rectangle cPos = new Rectangle(0, 0, 2, 3);
     public final Rectangle dragTangle = new Rectangle(0,0,0,0);
-
+    //Positions
+    public Rectangle lClick;
     //Checks for dragging in different ways.
     public boolean dragging = false;
     public boolean rectReady;
     public boolean draggingSelection = false;
+    public boolean placingCreature;
+    public boolean rDrag;
+    public boolean rClicked;
+    private Rectangle rClick;
     private boolean hasSelection;
-
     //Checks to make sure the user is in the editor.
     private boolean inEdit;
-
     //Arrays to check if user is trying to drag objects.
     private GameObject[] selectedObjects;
     private Creature[] selectedCreatures;
-
     //Variables for placing creatures.
     private int creatureWidth = 0;
     private int creatureHeight = 0;
-    public boolean placingCreature;
-
     //How much the user has dragged the mouse.
     private int xDrag = 0;
     private int yDrag = 0;
-
     private Camera camera;
-    public boolean rDrag;
-    public boolean rClicked;
 
     public int getXDrag() {
         return xDrag;
+    }
+
+    public void setXDrag(int XDrag) {
+        this.xDrag = XDrag;
     }
 
     public int getYDrag() {
         return yDrag;
     }
 
+    public void setYDrag(int YDrag) {
+        this.yDrag = YDrag;
+    }
+
     public Rectangle getRClick() {
         return rClick;
+    }
+
+    public void setRClick(Rectangle r) {
+        this.rClick = r;
     }
 
     public Rectangle getDragTangle() {
@@ -73,20 +79,8 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
         this.selectedObjects = selectedObjects;
     }
 
-    public void setXDrag(int XDrag) {
-        this.xDrag = XDrag;
-    }
-
-    public void setYDrag(int YDrag) {
-        this.yDrag = YDrag;
-    }
-
     public void setSelectedCreatures(Creature[] selectedCreatures) {
         this.selectedCreatures = selectedCreatures;
-    }
-
-    public void setRClick(Rectangle r) {
-        this.rClick = r;
     }
 
     public void setCamera(Camera camera) {

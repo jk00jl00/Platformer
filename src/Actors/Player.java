@@ -9,13 +9,10 @@ import java.awt.*;
 
 public class Player extends Creature{
 
+    private static final Color defaultColor = Color.LIGHT_GRAY;
+    public final double jumpSpeed = 12.5;
     public double dy;
     public double dx;
-
-    public final double jumpSpeed = 12.5;
-
-    private static final Color defaultColor = Color.LIGHT_GRAY;
-
     private boolean[] keys;
     private PlayerState currentState;
     private long invisTime = 0;
@@ -42,6 +39,14 @@ public class Player extends Creature{
         this.color = Color.LIGHT_GRAY;
         getState();
     }
+
+    public static Color getDefaultColor(){
+        return defaultColor;
+    }
+
+    public static int getDefaultWidth(){return DEFAULT_CREATURE_WIDTH_;}
+
+    public static int getDefaultHeight(){return DEFAULT_CREATURE_HEIGHT_;}
 
     @Override
     public void update(GameObject[] go, Creature[] creatures) {
@@ -72,16 +77,16 @@ public class Player extends Creature{
         }
     }
 
-    public void setKeys(boolean[] b) {
-        this.keys = b;
-    }
-
     private void getState() {
         currentState = PlayerStateStack.getCurrent();
     }
 
     public boolean[] getKeys() {
         return keys;
+    }
+
+    public void setKeys(boolean[] b) {
+        this.keys = b;
     }
 
     public Rectangle getHitBox() {
@@ -104,12 +109,6 @@ public class Player extends Creature{
     public int getHealth() {
         return this.health;
     }
-
-    public static Color getDefaultColor(){
-        return defaultColor;
-    }
-    public static int getDefaultWidth(){return DEFAULT_CREATURE_WIDTH_;}
-    public static int getDefaultHeight(){return DEFAULT_CREATURE_HEIGHT_;}
 
     public boolean noState() {
         return currentState == null;

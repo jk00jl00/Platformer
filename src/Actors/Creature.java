@@ -10,6 +10,18 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 public class Creature{
+    //Static constants
+    //Creatures that can be placed.
+    public static final String[] CREATURES = new String[]{
+            "Player",
+            "BasicEnemy"
+    };
+    //The acceleration per frame towards the bottom of the screen.
+    public static final double grav = 0.5;
+    static final int DEFAULT_CREATURE_WIDTH_ = 16;
+    static final int DEFAULT_CREATURE_HEIGHT_ = 32;
+    private final HashMap<String, Integer> attributes = new HashMap<>();
+    public Color color = Color.BLUE;
     //The position and health of the player, used by all subclasses of player
     int x;
     int y;
@@ -18,6 +30,36 @@ public class Creature{
     int health;
     Rectangle hitBox;
     Facing facing;
+    GameObject[] gos;
+    Creature[] cs;
+    int dmg;
+    String type;
+
+    public Creature(){
+    }
+    public Creature(int x, int y){
+        this.x = x;
+        this.y = y;
+        this.health = 1;
+        this.attributes.put("x", this.x);
+        this.attributes.put("y", this.y);
+    }
+    public Creature(int x, int y, int health){
+        this.x = x;
+        this.y = y;
+        this.health = health;
+        this.attributes.put("x", this.x);
+        this.attributes.put("y", this.y);
+    }
+
+    //Getters
+    public static int getDefaultCreatureWidth() {
+        return DEFAULT_CREATURE_WIDTH_;
+    }
+
+    public static int getDefaultCreatureHeight() {
+        return DEFAULT_CREATURE_HEIGHT_;
+    }
 
     public HashMap<String, Integer> getAttributes() {
         return attributes;
@@ -49,56 +91,6 @@ public class Creature{
         return c;
     }
 
-    public enum Facing{
-        Right, Left
-    }
-
-    GameObject[] gos;
-    Creature[] cs;
-
-    int dmg;
-    String type;
-    public Color color = Color.BLUE;
-    private final HashMap<String, Integer> attributes = new HashMap<>();
-
-    //Static constants
-    //Creatures that can be placed.
-    public static final String[] CREATURES = new String[]{
-            "Player",
-            "BasicEnemy"
-    };
-    //The acceleration per frame towards the bottom of the screen.
-    public static final double grav = 0.5;
-    static final int DEFAULT_CREATURE_WIDTH_ = 16;
-    static final int DEFAULT_CREATURE_HEIGHT_ = 32;
-
-    public Creature(){
-    }
-
-    public Creature(int x, int y){
-        this.x = x;
-        this.y = y;
-        this.health = 1;
-        this.attributes.put("x", this.x);
-        this.attributes.put("y", this.y);
-    }
-
-    public Creature(int x, int y, int health){
-        this.x = x;
-        this.y = y;
-        this.health = health;
-        this.attributes.put("x", this.x);
-        this.attributes.put("y", this.y);
-    }
-    //Getters
-    public static int getDefaultCreatureWidth() {
-        return DEFAULT_CREATURE_WIDTH_;
-    }
-
-    public static int getDefaultCreatureHeight() {
-        return DEFAULT_CREATURE_HEIGHT_;
-    }
-
     public String getType() {
         return this.type;
     }
@@ -109,6 +101,11 @@ public class Creature{
 
     public Facing getFacing() {
         return facing;
+    }
+
+    //Setters
+    public void setFacing(Facing facing) {
+        this.facing = facing;
     }
 
     public int getHealth() {
@@ -137,11 +134,6 @@ public class Creature{
 
     public int getWidth() {
         return width;
-    }
-
-    //Setters
-    public void setFacing(Facing facing) {
-        this.facing = facing;
     }
 
     /**
@@ -190,5 +182,9 @@ public class Creature{
 
     public void collide() {
 
+    }
+
+    public enum Facing{
+        Right, Left
     }
 }

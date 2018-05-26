@@ -15,12 +15,6 @@ import java.awt.*;
 import java.awt.image.BufferStrategy;
 
 public class Game implements Runnable{
-    //GameLoop variables
-    private Thread thread;
-    private boolean running = false;
-    //Used when the level loads so that updates don't fall behind.
-    private boolean justLoaded = false;
-
     //Screen variables
     private final Display display;
     private final KeyPress kl = new KeyPress();
@@ -28,6 +22,11 @@ public class Game implements Runnable{
     private final ButtonListener bl = new ButtonListener();
     private final int width = 1280;
     private final int height = 720;
+    //GameLoop variables
+    private Thread thread;
+    private boolean running = false;
+    //Used when the level loads so that updates don't fall behind.
+    private boolean justLoaded = false;
     private String title;
     private Camera camera;
 
@@ -145,6 +144,10 @@ public class Game implements Runnable{
         return level;
     }
 
+    public void setLevel(Level level) {
+        this.level = level;
+    }
+
     public KeyPress getkl() {
         return kl;
     }
@@ -153,17 +156,13 @@ public class Game implements Runnable{
         return camera;
     }
 
-    public void setJustLoaded(boolean justLoaded) {
-        this.justLoaded = justLoaded;
-    }
-
-    public void setLevel(Level level) {
-        this.level = level;
-    }
-
     public void setCamera(Camera camera) {
         this.camera = camera;
         this.ml.setCamera(camera);
+    }
+
+    public void setJustLoaded(boolean justLoaded) {
+        this.justLoaded = justLoaded;
     }
 
     public ButtonListener getbl() {

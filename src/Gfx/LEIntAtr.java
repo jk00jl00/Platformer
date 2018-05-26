@@ -10,14 +10,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 //Class for the text boxes for the attributes of a selected object.
 public class LEIntAtr extends JTextField{
-    private int defaultValue;
     private final String atrName;
     private final int maxNumberOfCharacters = 5;
     private final ButtonListener bl;
-
-    public int getCurrentValue(){
-        return Integer.parseInt(this.getText());
-    }
+    private int defaultValue;
 
     LEIntAtr(int value, String atrName, ButtonListener bl){
         super();
@@ -28,6 +24,10 @@ public class LEIntAtr extends JTextField{
         this.setAction();
         this.overRideInsert();
         resetValue();
+    }
+
+    public int getCurrentValue(){
+        return Integer.parseInt(this.getText());
     }
 
     /**

@@ -14,21 +14,21 @@ import static Listeners.ButtonListener.*;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public class Display extends Canvas{
-    //Keeps the canvas variables;
-    private JFrame frame;
+    private static final String[] PLACEBLE_OBJECTS = GameObject.OBJECTS;
+    private static final String[] PLACEBLE_CREATURES = Creature.CREATURES;
     private final int width;
     private final int height;
     private final String name;
     private final JMenuItem[] editorButtons = new JMenuItem[9];
-    private JPanel buttonPanel;
-    private JPanel attriutes;
-    private static final String[] PLACEBLE_OBJECTS = GameObject.OBJECTS;
-    private static final String[] PLACEBLE_CREATURES = Creature.CREATURES;
-    private JList itemArea;
     private final String[] editItems = new String[]{
             "Objects",
             "Creatures"
     };
+    //Keeps the canvas variables;
+    private JFrame frame;
+    private JPanel buttonPanel;
+    private JPanel attriutes;
+    private JList itemArea;
     private JComboBox editItemTypeSelector;
 
     private HashMap<String , LEIntAtr> intAtr = new HashMap<>();

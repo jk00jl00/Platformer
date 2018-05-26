@@ -10,12 +10,10 @@ import java.awt.*;
 import java.util.ArrayList;
 //TODO - Only give the player the objects on screen in update.
 public class Level{
-    private String name;
-
     private final ArrayList<GameObject> gameObjects = new ArrayList<>();
     private final ArrayList<Creature> gameCreatures = new ArrayList<>();
     private final ArrayList<Projectile> projectiles = new ArrayList<>();
-
+    private String name;
     //If the game is paused darker will be true and the screen will darken.
     private boolean darker = false;
 
@@ -39,27 +37,6 @@ public class Level{
         return player;
     }
 
-    public boolean getDarker() {
-        return darker;
-    }
-
-    public Creature[] getCreatures() {
-        return gameCreatures.toArray(new Creature[gameCreatures.size()])    ;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public GameObject[] getObjects() {
-        return gameObjects.toArray(new GameObject[gameObjects.size()]);
-    }
-    //Setters
-
-    public void setDarker(boolean b){
-        this.darker = b;
-    }
-
     public void setPlayer(Player player) {
         this.player = player;
         this.playerStartX = player.getX();
@@ -71,8 +48,29 @@ public class Level{
         }
     }
 
+    public boolean getDarker() {
+        return darker;
+    }
+
+    public void setDarker(boolean b){
+        this.darker = b;
+    }
+
+    public Creature[] getCreatures() {
+        return gameCreatures.toArray(new Creature[gameCreatures.size()])    ;
+    }
+    //Setters
+
+    public String getName() {
+        return name;
+    }
+
     public void setName(String tempName) {
         this.name = tempName;
+    }
+
+    public GameObject[] getObjects() {
+        return gameObjects.toArray(new GameObject[gameObjects.size()]);
     }
 
     public void update(){

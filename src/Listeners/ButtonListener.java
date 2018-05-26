@@ -12,14 +12,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ButtonListener implements ActionListener, ListSelectionListener{
-    private final boolean[] buttonsPressed = new boolean[9];
-    private String selection = "objects";
-
-    private String toPlace = "";
-    public boolean intAtrChanged = false;
-    private int newAtrValue;
-    private String changedAtrName;
-
     //Constants
     public static final int PLACING = -1;
     public static final int SELECT_TOOL_ = 0;
@@ -31,10 +23,14 @@ public class ButtonListener implements ActionListener, ListSelectionListener{
     public static final int REDO = 6;
     public static final int SHOW_GRID_ = 7;
     public static final int SNAP_TO_GRID_ = 8;
-
     private static final String[] PLACEBLE_OBJECTS = GameObject.OBJECTS;
     private static final String[] PLACEBLE_CREATURES = Creature.CREATURES;
-
+    private final boolean[] buttonsPressed = new boolean[9];
+    public boolean intAtrChanged = false;
+    private String selection = "objects";
+    private String toPlace = "";
+    private int newAtrValue;
+    private String changedAtrName;
     private Display display;
 
     public ButtonListener(){

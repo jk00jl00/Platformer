@@ -7,11 +7,10 @@ import java.awt.*;
 
 public class BasicEnemy extends Creature{
 
-    public double dy;
-    public double dx;
-
     private static final Color defaultColor = Color.RED;
     private final BasicEnemyBehavior behavior;
+    public double dy;
+    public double dx;
 
     public BasicEnemy(int x, int y, int health) {
         super(x, y, health);
@@ -34,14 +33,6 @@ public class BasicEnemy extends Creature{
         this.behavior = new BasicEnemyBehavior(this);
         this.dmg = 1;
     }
-    //Getters
-    public Rectangle getHitBox() {
-        return hitBox;
-    }
-
-    public GameObject[] getGos() {
-        return gos;
-    }
 
     public static int getDefaultWidth(){return DEFAULT_CREATURE_HEIGHT_;}
 
@@ -49,6 +40,15 @@ public class BasicEnemy extends Creature{
 
     public static Color getDefaultColor(){
         return defaultColor;
+    }
+
+    //Getters
+    public Rectangle getHitBox() {
+        return hitBox;
+    }
+
+    public GameObject[] getGos() {
+        return gos;
     }
 
     public int getHealth() {

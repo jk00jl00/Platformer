@@ -13,6 +13,10 @@ public class Platform extends GameObject{
         createHitBox();
     }
 
+    public static Color getDefaultColor(){
+        return defaultColor;
+    }
+
     private void createHitBox() {
         hitBox = new Rectangle(this.x, this.y, this.width, this.height);
     }
@@ -29,9 +33,5 @@ public class Platform extends GameObject{
         sb.append(this.x).append(" ").append(this.y).append(" ").append(this.width).append(" ").append(this.height).append(" ");
 
         return sb.toString();
-    }
-
-    public static Color getDefaultColor(){
-        return defaultColor;
     }
 }

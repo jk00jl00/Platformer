@@ -7,10 +7,10 @@ import Utilities.Util;
 public class Camera {
     private final int width;
     private final int height;
+    private final Creature centerOn;
     private int x;
     private int y = 0;
     private int zoomlevel = 1;
-    private final Creature centerOn;
     private int invertedZoom;
 
     public Camera(Creature centerOn, int width, int height){

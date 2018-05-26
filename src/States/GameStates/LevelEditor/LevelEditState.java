@@ -24,17 +24,15 @@ public class LevelEditState extends State {
 
     private static final int GRID_HEIGHT = 32;
     private static final int GRID_WIDTH = 32;
+    private final ArrayList<GameObject> selectedGameObjects = new ArrayList<>();
+    private final ArrayList<Creature> selectedCreatures = new ArrayList<>();
     private MouseListener ml;
     private Rectangle tempRect;
     private Level workingLevel;
-
     private int[] beforeMoveObjects;
     private int[] beforeMoveCreatures;
     private GameObject[] copiedObjects = new GameObject[0];
     private Creature[] copiedCreatures = new Creature[0];
-    private final ArrayList<GameObject> selectedGameObjects = new ArrayList<>();
-    private final ArrayList<Creature> selectedCreatures = new ArrayList<>();
-
     //Contains the name of the place object's class .
     private String toPlace = "";
     private Color toPlaceColor;

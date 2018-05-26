@@ -10,32 +10,22 @@ import java.util.HashMap;
 
 //The superclass of all OBJECTS in game
 public class GameObject{
-    int x;
-    int y;
-    int width;
-    int height;
-    protected int dx;
-    protected int dy;
-    Rectangle hitBox;
-    public Color color;
-    public GameObject next;
-    public boolean removed;
-    String type;
-
-    private final HashMap<String, Integer> attributes = new HashMap<>();
-
     public static final String[] OBJECTS ={
             "Platform",
             "SolidBlock"
     };
-
-    public String getType() {
-        return type;
-    }
-
-    public HashMap<String, Integer> getAttributes() {
-        return attributes;
-    }
+    private final HashMap<String, Integer> attributes = new HashMap<>();
+    public Color color;
+    public GameObject next;
+    public boolean removed;
+    protected int dx;
+    protected int dy;
+    int x;
+    int y;
+    int width;
+    int height;
+    Rectangle hitBox;
+    String type;
 
     public GameObject(int x, int y, int width, int height){
         this.x = x;
@@ -46,6 +36,14 @@ public class GameObject{
         this.attributes.put("y", this.y);
         this.attributes.put("Width", this.width);
         this.attributes.put("Height", this.height);
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public HashMap<String, Integer> getAttributes() {
+        return attributes;
     }
 
     public void update(){

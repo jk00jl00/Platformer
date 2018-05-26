@@ -5,11 +5,11 @@ import Objects.GameObject;
 
 class ChangeManager {
 
-    static Change firstUndo;
-    static Change firstRedo;
     public static boolean isPushing = false;
     public static boolean firstObjectMove;
     public static boolean firstCreatureMove;
+    static Change firstUndo;
+    static Change firstRedo;
 
     /**
      * Adds a object to the first undo.
