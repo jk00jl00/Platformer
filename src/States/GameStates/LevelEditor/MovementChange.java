@@ -3,7 +3,7 @@ package States.GameStates.LevelEditor;
 import Actors.Creature;
 import Objects.GameObject;
 
-public class MovementChange extends Change{
+class MovementChange extends Change{
 
     public MovementChange(int o, int c) {
         this.object = new GameObject[o];

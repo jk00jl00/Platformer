@@ -7,9 +7,8 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 
 public class PauseMenuState extends State{
-    private boolean[] keys;
-    private boolean levelEdit;
-    private MenuText[] menuTexts = new MenuText[]{
+    private final boolean levelEdit;
+    private final MenuText[] menuTexts = new MenuText[]{
             new MenuText(200, new Font(Font.SANS_SERIF, Font.BOLD, 15), "Continue"),
             new MenuText(250, new Font(Font.SANS_SERIF, Font.BOLD, 15), "Exit to Menu"),
             new MenuText(300, new Font(Font.SANS_SERIF, Font.BOLD, 15), "Exit")
@@ -21,7 +20,7 @@ public class PauseMenuState extends State{
 
     @Override
     public void update() {
-        keys = game.getkl().getKeysPressed();
+        boolean[] keys = game.getkl().getKeysPressed();
         game.getLevel().getPlayer().setKeys(keys);
 
         if(keys[KeyEvent.VK_ESCAPE]){

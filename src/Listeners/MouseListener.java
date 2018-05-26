@@ -12,8 +12,8 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
     //Positions
     public Rectangle lClick;
     private Rectangle rClick;
-    public Rectangle cPos = new Rectangle(0, 0, 2, 3);
-    public Rectangle dragTangle = new Rectangle(0,0,0,0);
+    public final Rectangle cPos = new Rectangle(0, 0, 2, 3);
+    public final Rectangle dragTangle = new Rectangle(0,0,0,0);
 
     //Checks for dragging in different ways.
     public boolean dragging = false;

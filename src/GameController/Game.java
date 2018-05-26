@@ -3,7 +3,6 @@ package GameController;
 import Gfx.Camera;
 import Gfx.Display;
 import LevelManagment.Level;
-import LevelManagment.LevelLoader;
 import Listeners.ButtonListener;
 import Listeners.KeyPress;
 import Listeners.MouseListener;
@@ -22,22 +21,18 @@ public class Game implements Runnable{
     //Used when the level loads so that updates don't fall behind.
     private boolean justLoaded = false;
 
-    private int fps;
-
     //Screen variables
-    private Display display;
-    private KeyPress kl = new KeyPress();
-    private MouseListener ml = new MouseListener();
-    private ButtonListener bl = new ButtonListener();
-    private int width = 1280;
-    private int height = 720;
+    private final Display display;
+    private final KeyPress kl = new KeyPress();
+    private final MouseListener ml = new MouseListener();
+    private final ButtonListener bl = new ButtonListener();
+    private final int width = 1280;
+    private final int height = 720;
     private String title;
     private Camera camera;
-    private BufferStrategy bs;
-    private Graphics2D g;
 
     //Level variables
-    Level level;
+    private Level level;
 
 
     public Game(){
@@ -58,12 +53,12 @@ public class Game implements Runnable{
     @Override
     public void run() {
         try {
-            thread.sleep(100);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         initialize();
-        fps = 60;
+        int fps = 60;
         double timePerFrame = 1000000000/60;
         long start;
         long now;
@@ -103,13 +98,13 @@ public class Game implements Runnable{
 
     //Draws the game to the screen;
     private void draw() {
-        bs = display.getBufferStrategy();
+        BufferStrategy bs = display.getBufferStrategy();
         if(bs == null){
             display.createBufferStrategy(2);
             return;
         }
 
-        g = (Graphics2D) bs.getDrawGraphics();
+        Graphics2D g = (Graphics2D) bs.getDrawGraphics();
 
         //Start of drawing
 

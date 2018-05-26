@@ -12,9 +12,9 @@ import java.util.ArrayList;
 public class Level{
     private String name;
 
-    private ArrayList<GameObject> gameObjects = new ArrayList<>();
-    private ArrayList<Creature> gameCreatures = new ArrayList<>();
-    private ArrayList<Projectile> projectiles = new ArrayList<>();
+    private final ArrayList<GameObject> gameObjects = new ArrayList<>();
+    private final ArrayList<Creature> gameCreatures = new ArrayList<>();
+    private final ArrayList<Projectile> projectiles = new ArrayList<>();
 
     //If the game is paused darker will be true and the screen will darken.
     private boolean darker = false;

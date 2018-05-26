@@ -10,11 +10,10 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 
 public class PlayState extends State {
-    private boolean[] keys;
 
     @Override
     public void update() {
-        keys = game.getkl().getKeysPressed();
+        boolean[] keys = game.getkl().getKeysPressed();
         game.getLevel().getPlayer().setKeys(keys);
         if(keys[KeyEvent.VK_R]){
             game.getLevel().resetPlayer();
@@ -36,7 +35,6 @@ public class PlayState extends State {
         game.getkl().setKey(KeyEvent.VK_ESCAPE, false);
         State.currentState.init();
         State.currentState.update();
-        return;
     }
 
     @Override

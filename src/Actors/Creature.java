@@ -11,10 +11,10 @@ import java.util.HashMap;
 
 public class Creature{
     //The position and health of the player, used by all subclasses of player
-    protected int x;
-    protected int y;
-    protected int width;
-    protected int height;
+    int x;
+    int y;
+    int width;
+    int height;
     int health;
     Rectangle hitBox;
     Facing facing;
@@ -59,7 +59,7 @@ public class Creature{
     int dmg;
     String type;
     public Color color = Color.BLUE;
-    protected HashMap<String, Integer> attributes = new HashMap<>();
+    private final HashMap<String, Integer> attributes = new HashMap<>();
 
     //Static constants
     //Creatures that can be placed.

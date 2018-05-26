@@ -1,6 +1,5 @@
 package Actors;
 
-import Gfx.Camera;
 import Objects.GameObject;
 import States.CreatureStates.BasicEnemyBehavior;
 
@@ -12,7 +11,7 @@ public class BasicEnemy extends Creature{
     public double dx;
 
     private static final Color defaultColor = Color.RED;
-    private BasicEnemyBehavior behavior;
+    private final BasicEnemyBehavior behavior;
 
     public BasicEnemy(int x, int y, int health) {
         super(x, y, health);

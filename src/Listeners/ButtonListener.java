@@ -12,7 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ButtonListener implements ActionListener, ListSelectionListener{
-    private boolean[] buttonsPressed = new boolean[9];
+    private final boolean[] buttonsPressed = new boolean[9];
     private String selection = "objects";
 
     private String toPlace = "";

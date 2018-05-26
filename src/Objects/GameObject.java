@@ -10,19 +10,19 @@ import java.util.HashMap;
 
 //The superclass of all OBJECTS in game
 public class GameObject{
-    protected int x;
-    protected int y;
-    protected int width;
-    protected int height;
+    int x;
+    int y;
+    int width;
+    int height;
     protected int dx;
     protected int dy;
-    protected Rectangle hitBox;
+    Rectangle hitBox;
     public Color color;
     public GameObject next;
     public boolean removed;
-    protected String type;
+    String type;
 
-    protected HashMap<String, Integer> attributes = new HashMap<>();
+    private final HashMap<String, Integer> attributes = new HashMap<>();
 
     public static final String[] OBJECTS ={
             "Platform",

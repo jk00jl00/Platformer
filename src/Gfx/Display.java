@@ -2,16 +2,12 @@ package Gfx;
 
 import Actors.Creature;
 import GameController.Game;
-import Listeners.ButtonListener;
 import Objects.GameObject;
-import jdk.internal.util.xml.impl.Input;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.security.Key;
 import java.util.HashMap;
 
 import static Listeners.ButtonListener.*;
@@ -20,24 +16,22 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 public class Display extends Canvas{
     //Keeps the canvas variables;
     private JFrame frame;
-    private int width;
-    private int height;
-    private String name;
-    private JMenuItem[] editorButtons = new JMenuItem[9];
+    private final int width;
+    private final int height;
+    private final String name;
+    private final JMenuItem[] editorButtons = new JMenuItem[9];
     private JPanel buttonPanel;
     private JPanel attriutes;
     private static final String[] PLACEBLE_OBJECTS = GameObject.OBJECTS;
     private static final String[] PLACEBLE_CREATURES = Creature.CREATURES;
     private JList itemArea;
-    private String[] editItems = new String[]{
+    private final String[] editItems = new String[]{
             "Objects",
             "Creatures"
     };
     private JComboBox editItemTypeSelector;
-    private JMenuBar menuBar;
-    private JMenu editMenu;
 
-    HashMap<String , LEIntAtr> intAtr = new HashMap<>();
+    private HashMap<String , LEIntAtr> intAtr = new HashMap<>();
 
     //Constructor for the game display
     public Display(int width, int height, String name){
@@ -91,9 +85,9 @@ public class Display extends Canvas{
 
         this.frame.add(this.buttonPanel, gbc);
 
-        menuBar = new  JMenuBar();
+        JMenuBar menuBar = new JMenuBar();
 
-        editMenu = new JMenu("Edit");
+        JMenu editMenu = new JMenu("Edit");
         editMenu.setMnemonic(KeyEvent.VK_E);
 
         menuBar.add(editMenu);
@@ -106,7 +100,7 @@ public class Display extends Canvas{
         editorButtons[SELECT_TOOL_].addActionListener(game.getbl());
 
 
-        this.editMenu.add(editorButtons[SELECT_TOOL_]);
+        editMenu.add(editorButtons[SELECT_TOOL_]);
 
         //Save button.
         editorButtons[SAVE] = new JMenuItem("Save");
@@ -115,7 +109,7 @@ public class Display extends Canvas{
         editorButtons[SAVE].addActionListener(game.getbl());
         editorButtons[SAVE].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
 
-        this.editMenu.add(editorButtons[SAVE]);
+        editMenu.add(editorButtons[SAVE]);
 
         //Load button.
         editorButtons[LOAD] = new JMenuItem("Load");
@@ -124,8 +118,8 @@ public class Display extends Canvas{
         editorButtons[LOAD].addActionListener(game.getbl());
         editorButtons[LOAD].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.CTRL_DOWN_MASK));
 
-        this.editMenu.add(editorButtons[LOAD]);
-        this.editMenu.addSeparator();
+        editMenu.add(editorButtons[LOAD]);
+        editMenu.addSeparator();
 
         //Copy button.
         editorButtons[COPY] = new JMenuItem("Copy");
@@ -134,7 +128,7 @@ public class Display extends Canvas{
         editorButtons[COPY].addActionListener(game.getbl());
         editorButtons[COPY].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_DOWN_MASK));
 
-        this.editMenu.add(editorButtons[COPY]);
+        editMenu.add(editorButtons[COPY]);
 
         //Paste button.
         editorButtons[PASTE] = new JMenuItem("Paste");
@@ -143,7 +137,7 @@ public class Display extends Canvas{
         editorButtons[PASTE].addActionListener(game.getbl());
         editorButtons[PASTE].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK));
 
-        this.editMenu.add(editorButtons[PASTE]);
+        editMenu.add(editorButtons[PASTE]);
 
         //Undo button.
         editorButtons[UNDO] = new JMenuItem("Undo");
@@ -152,7 +146,7 @@ public class Display extends Canvas{
         editorButtons[UNDO].addActionListener(game.getbl());
         editorButtons[UNDO].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_DOWN_MASK));
 
-        this.editMenu.add(editorButtons[UNDO]);
+        editMenu.add(editorButtons[UNDO]);
 
         //Redo button.
         editorButtons[REDO] = new JMenuItem("Redo");
@@ -161,7 +155,7 @@ public class Display extends Canvas{
         editorButtons[REDO].addActionListener(game.getbl());
         editorButtons[REDO].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.SHIFT_DOWN_MASK|InputEvent.CTRL_DOWN_MASK));
 
-        this.editMenu.add(editorButtons[REDO]);
+        editMenu.add(editorButtons[REDO]);
 
         //Show grid button
         editorButtons[SHOW_GRID_] = new JMenuItem("Show Grid");
@@ -170,7 +164,7 @@ public class Display extends Canvas{
         editorButtons[SHOW_GRID_].addActionListener(game.getbl());
 
 
-        this.editMenu.add(editorButtons[SHOW_GRID_]);
+        editMenu.add(editorButtons[SHOW_GRID_]);
 
         //Snap to grid button
         editorButtons[SNAP_TO_GRID_] = new JMenuItem("Snap to grid");
@@ -179,7 +173,7 @@ public class Display extends Canvas{
         editorButtons[SNAP_TO_GRID_].addActionListener(game.getbl());
 
 
-        this.editMenu.add(editorButtons[SNAP_TO_GRID_]);
+        editMenu.add(editorButtons[SNAP_TO_GRID_]);
         gbc = new GridBagConstraints();
 
         //Edit item type selector menu
@@ -262,10 +256,10 @@ public class Display extends Canvas{
 
         switch (selection){
             case "Objects":
-                this.itemArea = new JList(this.PLACEBLE_OBJECTS);
+                this.itemArea = new JList(PLACEBLE_OBJECTS);
                 break;
             case"Creatures":
-                this.itemArea = new JList(this.PLACEBLE_CREATURES);
+                this.itemArea = new JList(PLACEBLE_CREATURES);
                 break;
         }
         GridBagConstraints gbc = new GridBagConstraints();

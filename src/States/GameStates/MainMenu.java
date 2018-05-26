@@ -8,7 +8,7 @@ import java.awt.*;
 
 public class MainMenu extends State{
 
-    private MenuText[] menuTexts = new MenuText[5];
+    private final MenuText[] menuTexts = new MenuText[5];
 
     public MainMenu(){
         int firstTExtY = 174;

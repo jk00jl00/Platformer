@@ -3,7 +3,7 @@ package States.GameStates.LevelEditor;
 import Actors.Creature;
 import Objects.GameObject;
 
-public class ChangeManager {
+class ChangeManager {
 
     static Change firstUndo;
     static Change firstRedo;
@@ -151,8 +151,7 @@ public class ChangeManager {
     }
 
     public static Change getFirst(){
-        Change temp = firstUndo;
-        return temp;
+        return firstUndo;
     }
 
     public static void pop() {

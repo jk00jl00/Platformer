@@ -7,28 +7,27 @@ import Objects.GameObject;
 import Utilities.Util;
 
 import java.awt.*;
-import java.rmi.MarshalException;
 
 public class Projectile {
     //For removing itself.
     private final Game game;
     //Positions and speeds.
-    protected int x;
-    protected int y;
-    protected double dx;
-    protected double dy;
-    protected int width;
-    protected int height;
+    int x;
+    int y;
+    private final double dx;
+    private final double dy;
+    int width;
+    int height;
 
     //The shooter and projectile hitbox.
-    Creature shooter;
+    private final Creature shooter;
     Rectangle hitBox;
 
     int dmg;
     int range;
 
     //Were it was shot for checking how far it has traveled.
-    int[] shotPos = new int[2];
+    private final int[] shotPos = new int[2];
 
     //The objects it can hit.
     private GameObject[] gameObjects;
@@ -68,7 +67,7 @@ public class Projectile {
         checkRange();
     }
 
-    protected void checkRange() {
+    private void checkRange() {
         if(this.hitBox != null){
             if (Math.abs(this.x - this.shotPos[0]) > this.range)
                 game.getLevel().removeProjectile(this);
@@ -80,7 +79,7 @@ public class Projectile {
      * Called last in the update function.
      * Moves the projectile pixel by pixel until either to move distance/frame is achieved or the projectile collides with a object.
      */
-    protected void move() {
+    private void move() {
         int traveledx = 0;
         int traveledy = 0;
         while (traveledx < ((dx > 0) ? dx : -dx) || traveledy < ((dy > 0) ? dy : -dy)) {

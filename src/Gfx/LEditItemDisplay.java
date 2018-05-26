@@ -3,7 +3,7 @@ package Gfx;
 import javax.swing.*;
 import java.awt.*;
 
-public class LEditItemDisplay extends JLabel implements ListCellRenderer<String>{
+class LEditItemDisplay extends JLabel implements ListCellRenderer<String>{
     private String name;
     private Image icon;
 

@@ -6,15 +6,14 @@ import javax.swing.*;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.StyledDocument;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 public class LEIntAtr extends JTextField{
-    int defaultValue;
-    String atrName;
-    int maxNumberOfCharacters = 5;
-    ButtonListener bl;
+    private int defaultValue;
+    private final String atrName;
+    private final int maxNumberOfCharacters = 5;
+    private final ButtonListener bl;
 
     public int getCurrentValue(){
         return Integer.parseInt(this.getText());

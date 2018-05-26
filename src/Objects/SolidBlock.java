@@ -1,12 +1,10 @@
 package Objects;
 
-import Gfx.Camera;
-
 import java.awt.*;
 
 public class SolidBlock extends GameObject{
 
-    private static Color defaultColor = Color.decode("#44240b");
+    private static final Color defaultColor = Color.decode("#44240b");
 
     public SolidBlock(int x, int y, int width, int height) {
         super(x, y, width, height);

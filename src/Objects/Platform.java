@@ -1,11 +1,9 @@
 package Objects;
 
-import Gfx.Camera;
-
 import java.awt.*;
 
 public class Platform extends GameObject{
-    private static Color defaultColor = Color.BLACK;
+    private static final Color defaultColor = Color.BLACK;
 
     public Platform(int x, int y, int width, int height) {
         //Makes sure the platforms are at least 5 pixels wide

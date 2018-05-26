@@ -10,10 +10,10 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 
 public class OnGroundStates extends PlayerState {
-    protected boolean[] keys;
+    boolean[] keys;
 
-    protected double xAcceleration = 0.5;
-    protected double xMaxSpeed = 7.5;
+    final double xAcceleration = 0.5;
+    final double xMaxSpeed = 7.5;
     protected double jumpSpeed = 12.5;
 
     public OnGroundStates(Player player, Game game) {

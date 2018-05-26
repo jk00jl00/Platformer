@@ -5,12 +5,12 @@ import Utilities.Util;
 
 //Keeps the offset in order to make centering the camera easier
 public class Camera {
-    private int width;
-    private int height;
+    private final int width;
+    private final int height;
     private int x;
     private int y = 0;
     private int zoomlevel = 1;
-    Creature centerOn;
+    private final Creature centerOn;
     private int invertedZoom;
 
     public Camera(Creature centerOn, int width, int height){

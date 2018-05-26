@@ -7,7 +7,7 @@ import java.awt.*;
 public class State{
     public static State currentState;
     protected static Game game;
-    protected State next;
+    private State next;
 
     public static void push(State state){
         state.next = currentState;
@@ -38,6 +38,6 @@ public class State{
 
     }
 
-    public void exit() {
+    protected void exit() {
     }
 }

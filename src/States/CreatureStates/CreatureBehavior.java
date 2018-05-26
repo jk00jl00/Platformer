@@ -2,19 +2,19 @@ package States.CreatureStates;
 
 import Actors.Creature;
 
-public class CreatureBehavior {
-    protected Creature creature;
-    protected double dy = 0;
-    protected double dx = 0;
+class CreatureBehavior {
+    final Creature creature;
+    double dy = 0;
+    double dx = 0;
 
-    protected CreatureBehavior(Creature creature){
+    CreatureBehavior(Creature creature){
         this.creature = creature;
     }
 
-    public void update(){
+    void update(){
 
     }
-    public void move(int x, int y){
+    void move(int x, int y){
         this.creature.move(x, y);
     }
 }

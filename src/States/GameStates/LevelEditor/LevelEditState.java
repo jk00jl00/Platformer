@@ -20,7 +20,6 @@ import java.util.ArrayList;
 
 import static Listeners.ButtonListener.*;
 
-
 public class LevelEditState extends State {
 
     private static final int GRID_HEIGHT = 32;
@@ -33,8 +32,8 @@ public class LevelEditState extends State {
     private int[] beforeMoveCreatures;
     private GameObject[] copiedObjects = new GameObject[0];
     private Creature[] copiedCreatures = new Creature[0];
-    private ArrayList<GameObject> selectedGameObjects = new ArrayList<>();
-    private ArrayList<Creature> selectedCreatures = new ArrayList<>();
+    private final ArrayList<GameObject> selectedGameObjects = new ArrayList<>();
+    private final ArrayList<Creature> selectedCreatures = new ArrayList<>();
 
     private String toPlace = "";
     private Color toPlaceColor;
@@ -361,8 +360,7 @@ public class LevelEditState extends State {
             if (this.tool != PLACING) {
                 this.changeTool(PLACING);
             }
-            if(this.editItemSelection.equals("creatures") && this.tool == PLACING) ml.placingCreature = true;
-            else ml.placingCreature = false;
+            ml.placingCreature = this.editItemSelection.equals("creatures") && this.tool == PLACING;
         }
     }
 
@@ -506,14 +504,12 @@ public class LevelEditState extends State {
         }
         //Toggles the grid.
         if(game.getbl().getButtonsPressed()[SHOW_GRID_]){
-            if(gridDisplayed) gridDisplayed = false;
-            else gridDisplayed = true;
+            gridDisplayed = !gridDisplayed;
             game.getbl().disableButton(SHOW_GRID_);
         }
         //Toggles snapping to the grid.
         if(game.getbl().getButtonsPressed()[SNAP_TO_GRID_]){
-            if(snapTo) snapTo = false;
-            else snapTo = true;
+            snapTo = !snapTo;
             game.getbl().disableButton(SNAP_TO_GRID_);
         }
         //Changes an attribute on a selected object
@@ -771,12 +767,12 @@ public class LevelEditState extends State {
                     objects = ChangeManager.firstRedo.object;
                     creatures = ChangeManager.firstRedo.creature;
 
-                    for(int i = 0; i < objects.length; i++){
+                    for (GameObject object : objects) {
                         ChangeManager.isPushing = true;
-                        ChangeManager.push(1, 0, ChangeManager.firstRedo.name, objects[i].getAttributes().get(ChangeManager.firstRedo.name));
-                        ChangeManager.push(objects[i]);
-                        objects[i].changeAttribute(ChangeManager.firstRedo.name, ChangeManager.firstRedo.change);
-                        game.getDisplay().updateAtrDisplay(objects[i]);
+                        ChangeManager.push(1, 0, ChangeManager.firstRedo.name, object.getAttributes().get(ChangeManager.firstRedo.name));
+                        ChangeManager.push(object);
+                        object.changeAttribute(ChangeManager.firstRedo.name, ChangeManager.firstRedo.change);
+                        game.getDisplay().updateAtrDisplay(object);
                     }
                     for(int i = 0; i < creatures.length; i++){
                         ChangeManager.isPushing = true;
@@ -852,21 +848,21 @@ public class LevelEditState extends State {
                 case "AttributeChange":
                     objects = ChangeManager.getFirst().object;
                     creatures = ChangeManager.getFirst().creature;
-                    for(int i = 0; i < objects.length; i++){
+                    for (GameObject object : objects) {
                         ChangeManager.isPushing = true;
                         ChangeManager.pushRedo(objects.length, creatures.length, ChangeManager.getFirst().name,
-                                objects[i].getAttributes().get(ChangeManager.getFirst().name));
-                        ChangeManager.pushRedo(objects[i]);
-                        objects[i].changeAttribute(ChangeManager.getFirst().name, ChangeManager.getFirst().change);
-                        game.getDisplay().updateAtrDisplay(objects[i]);
+                                object.getAttributes().get(ChangeManager.getFirst().name));
+                        ChangeManager.pushRedo(object);
+                        object.changeAttribute(ChangeManager.getFirst().name, ChangeManager.getFirst().change);
+                        game.getDisplay().updateAtrDisplay(object);
                     }
-                    for(int i = 0; i < creatures.length; i++){
+                    for (Creature creature : creatures) {
                         ChangeManager.isPushing = true;
                         ChangeManager.pushRedo(objects.length, creatures.length, ChangeManager.getFirst().name,
-                                creatures[i].getAttributes().get(ChangeManager.getFirst().name));
-                        creatures[i].changeAttribute(ChangeManager.getFirst().name, ChangeManager.getFirst().change);
-                        game.getDisplay().updateAtrDisplay(creatures[i]);
-                        ChangeManager.pushRedo(creatures[i]);
+                                creature.getAttributes().get(ChangeManager.getFirst().name));
+                        creature.changeAttribute(ChangeManager.getFirst().name, ChangeManager.getFirst().change);
+                        game.getDisplay().updateAtrDisplay(creature);
+                        ChangeManager.pushRedo(creature);
                     }
                     ChangeManager.isPushing = false;
                     ChangeManager.pop();
@@ -881,7 +877,7 @@ public class LevelEditState extends State {
      * Changes the tool and makes sure the old tool is disabled.
      * @param tool The tool to be selected.
      */
-    public void changeTool(int tool){
+    private void changeTool(int tool){
         switch (this.tool){
             case SELECT_TOOL_:
                 clearSelection();
@@ -967,7 +963,6 @@ public class LevelEditState extends State {
         State.push(new PauseMenuState(true));
         State.currentState.init();
         State.currentState.update();
-        return;
     }
 
     /**
@@ -1016,9 +1011,9 @@ public class LevelEditState extends State {
             }
             for(Creature c: selectedCreatures){
                 Rectangle r = c.getHitBox();
-                g.drawRect((int) Math.ceil((r.x - game.getCamera().getX()) * game.getCamera().getZoom()),
-                        (int)Math.ceil((r.y + game.getCamera().getX()) * game.getCamera().getZoom()),
-                        (int)Math.ceil(r.width * game.getCamera().getZoom()),(int)Math.ceil( r.height * game.getCamera().getZoom()));
+                g.drawRect((int)Math.ceil((r.x - game.getCamera().getX()) * game.getCamera().getZoom()),
+                        (int)Math.ceil((r.y + game.getCamera().getY())* game.getCamera().getZoom()),
+                        (int)Math.ceil(r.width * game.getCamera().getZoom()), (int)Math.ceil(r.height * game.getCamera().getZoom()));
             }
         }
         g.setColor(Color.BLUE.brighter().brighter().brighter());
