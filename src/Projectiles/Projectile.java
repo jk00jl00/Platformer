@@ -12,22 +12,22 @@ public class Projectile {
     //For removing itself.
     private final Game game;
     //Positions and speeds.
-    protected int x;
-    protected int y;
-    protected double dx;
-    protected double dy;
-    protected int width;
-    protected int height;
+    int x;
+    int y;
+    private final double dx;
+    private final double dy;
+    int width;
+    int height;
 
-    //The shoter and projectile hitbox.
-    Creature shooter;
+    //The shooter and projectile hitbox.
+    private final Creature shooter;
     Rectangle hitBox;
 
     int dmg;
     int range;
 
     //Were it was shot for checking how far it has traveled.
-    int[] shotPos = new int[2];
+    private final int[] shotPos = new int[2];
 
     //The objects it can hit.
     private GameObject[] gameObjects;
@@ -58,12 +58,21 @@ public class Projectile {
     /**
      * The default projectile update function.
      * @param g Objects to collide with.
-     * @param c Creawtures to collide with.
+     * @param c Creatures to collide with.
      */
     public void update(GameObject[] g, Creature[] c){
         this.gameObjects = g;
         this.creatures = c;
         move();
+        checkRange();
+    }
+
+    private void checkRange() {
+        if(this.hitBox != null){
+            if (Math.abs(this.x - this.shotPos[0]) > this.range)
+                game.getLevel().removeProjectile(this);
+
+        }
     }
 
     /**
@@ -73,30 +82,30 @@ public class Projectile {
     private void move() {
         int traveledx = 0;
         int traveledy = 0;
-        while(traveledx < ((dx > 0) ? dx:-dx) || traveledy < ((dy > 0) ? dy : -dy)){
-            if(dx > 0 && traveledx < ((dx > 0) ? dx:-dx)){
+        while (traveledx < ((dx > 0) ? dx : -dx) || traveledy < ((dy > 0) ? dy : -dy)) {
+            if (dx > 0 && traveledx < ((dx > 0) ? dx : -dx)) {
                 traveledx++;
                 this.x++;
-                if(hitBox == null) return;
+                if (hitBox == null) return;
                 this.hitBox.x++;
                 collide();
-            } else if(traveledx < ((dx > 0) ? dx:-dx)){
+            } else if (traveledx < ((dx > 0) ? dx : -dx)) {
                 traveledx++;
                 this.x--;
-                if(hitBox == null) return;
+                if (hitBox == null) return;
                 this.hitBox.x--;
                 collide();
             }
-            if(dy > 0 && traveledy < ((dy > 0) ? dy : -dy)){
+            if (dy > 0 && traveledy < ((dy > 0) ? dy : -dy)) {
                 traveledy++;
                 this.y++;
-                if(hitBox == null) return;
+                if (hitBox == null) return;
                 this.hitBox.y++;
                 collide();
-            } else if(traveledy < ((dy > 0) ? dy : -dy)){
+            } else if (traveledy < ((dy > 0) ? dy : -dy)) {
                 traveledy++;
                 this.y--;
-                if(hitBox == null) return;
+                if (hitBox == null) return;
                 this.hitBox.y--;
                 collide();
             }
@@ -127,6 +136,7 @@ public class Projectile {
     }
 
     public void draw(Graphics2D g, Camera camera) {
-        g.fillRect(this.x - camera.getX(), this.y + camera.getY(), this.width, this.height);
+        g.fillRect((int)Math.round((this.x - camera.getX()) * camera.getZoom()),(int)Math.round((this.y + camera.getY()) * camera.getZoom()),
+                (int) Math.round(this.width * camera.getZoom()),(int)Math.round(this.height * camera.getZoom()));
     }
 }

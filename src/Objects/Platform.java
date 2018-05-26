@@ -1,20 +1,15 @@
 package Objects;
 
-import Gfx.Camera;
-
 import java.awt.*;
 
 public class Platform extends GameObject{
-    private static Color defaultColor = Color.BLACK;
+    private static final Color defaultColor = Color.BLACK;
 
     public Platform(int x, int y, int width, int height) {
-        super(x, y, width, height);
+        //Makes sure the platforms are at least 5 pixels wide
+        super(x, y, (width < 5) ? 5 : width, (height < 5) ? 5 : height);
         this.type = "Platform";
         this.color = Color.BLACK;
-        this.attributes.put("x", this.x);
-        this.attributes.put("y", this.y);
-        this.attributes.put("Width", this.width);
-        this.attributes.put("Height", this.height);
         createHitBox();
     }
 
@@ -25,11 +20,6 @@ public class Platform extends GameObject{
     @Override
     public boolean isSolid() {
         return true;
-    }
-
-    @Override
-    public void draw(Graphics2D g, Camera camera) {
-        g.fillRect(this.x -  camera.getX(),this.y + camera.getY(), this.width, this.height);
     }
 
     @Override

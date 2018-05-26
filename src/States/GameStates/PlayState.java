@@ -10,16 +10,19 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 
 public class PlayState extends State {
-    private boolean[] keys;
 
     @Override
     public void update() {
-        keys = game.getkl().getKeysPressed();
+        boolean[] keys = game.getkl().getKeysPressed();
         game.getLevel().getPlayer().setKeys(keys);
         if(keys[KeyEvent.VK_R]){
             game.getLevel().resetPlayer();
         } else if(keys[KeyEvent.VK_ESCAPE]){
             enterMenu();
+            return;
+        } else if(game.getkl().getControlMasked()[KeyEvent.VK_R]){
+            game.resetLevel();
+            game.getkl().setControlMasked(KeyEvent.VK_R, false);
             return;
         }
         if(game.getLevel().getPlayer().noState()) PlayerStateStack.push(new OnGroundStates(game.getLevel().getPlayer(), game));
@@ -32,7 +35,6 @@ public class PlayState extends State {
         game.getkl().setKey(KeyEvent.VK_ESCAPE, false);
         State.currentState.init();
         State.currentState.update();
-        return;
     }
 
     @Override
@@ -58,7 +60,13 @@ public class PlayState extends State {
             State.pop();
             return;
         }
-
+        game.setJustLoaded(true);
+        game.setCamera(new Camera(game.getLevel().getPlayer(), game.getWidth(), game.getHeight()));
+    }
+    @Override
+    public void init(String name){
+        game.setLevel(LevelLoader.loadLevel(name));
+        game.setJustLoaded(true);
         game.setCamera(new Camera(game.getLevel().getPlayer(), game.getWidth(), game.getHeight()));
     }
 }

@@ -1,21 +1,15 @@
 package Objects;
 
-import Gfx.Camera;
-
 import java.awt.*;
 
 public class SolidBlock extends GameObject{
 
-    private static Color defaultColor = Color.decode("#44240b");
+    private static final Color defaultColor = Color.decode("#44240b");
 
     public SolidBlock(int x, int y, int width, int height) {
         super(x, y, width, height);
         this.type = "SolidBlock";
         this.color = Color.decode("#44240b");
-        this.attributes.put("x", this.x);
-        this.attributes.put("y", this.y);
-        this.attributes.put("Width", this.width);
-        this.attributes.put("Height", this.height);
         createHitBox();
     }
 
@@ -28,10 +22,6 @@ public class SolidBlock extends GameObject{
         return true;
     }
 
-    @Override
-    public void draw(Graphics2D g, Camera camera) {
-        g.fillRect(this.x -  camera.getX(),this.y + camera.getY(), this.width, this.height);
-    }
 
     @Override
     public String toLevelSave() {

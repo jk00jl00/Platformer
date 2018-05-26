@@ -7,7 +7,9 @@ import Listeners.ButtonListener;
 import Listeners.KeyPress;
 import Listeners.MouseListener;
 import States.GameStates.MainMenu;
+import States.GameStates.PlayState;
 import States.GameStates.State;
+import States.PlayerStates.PlayerStateStack;
 
 import java.awt.*;
 import java.awt.image.BufferStrategy;
@@ -16,23 +18,21 @@ public class Game implements Runnable{
     //GameLoop variables
     private Thread thread;
     private boolean running = false;
-
-    private int fps;
+    //Used when the level loads so that updates don't fall behind.
+    private boolean justLoaded = false;
 
     //Screen variables
-    private Display display;
-    private KeyPress kl = new KeyPress();
-    private MouseListener ml = new MouseListener();
-    private ButtonListener bl = new ButtonListener();
-    private int width = 1280;
-    private int height = 720;
+    private final Display display;
+    private final KeyPress kl = new KeyPress();
+    private final MouseListener ml = new MouseListener();
+    private final ButtonListener bl = new ButtonListener();
+    private final int width = 1280;
+    private final int height = 720;
     private String title;
     private Camera camera;
-    private BufferStrategy bs;
-    private Graphics2D g;
 
     //Level variables
-    Level level;
+    private Level level;
 
 
     public Game(){
@@ -53,12 +53,12 @@ public class Game implements Runnable{
     @Override
     public void run() {
         try {
-            thread.sleep(100);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         initialize();
-        fps = 60;
+        int fps = 60;
         double timePerFrame = 1000000000/60;
         long start;
         long now;
@@ -70,6 +70,11 @@ public class Game implements Runnable{
         //GameLoop
         while (running){
             //While updates are needed update;
+            //Checks if the game just loaded a level and skips extra frames.
+            if(justLoaded){
+                dt = 0;
+                justLoaded = false;
+            }
             now = System.nanoTime();
             dt += (now - start)/ timePerFrame;
             timer += now - start;
@@ -93,13 +98,13 @@ public class Game implements Runnable{
 
     //Draws the game to the screen;
     private void draw() {
-        bs = display.getBufferStrategy();
+        BufferStrategy bs = display.getBufferStrategy();
         if(bs == null){
             display.createBufferStrategy(2);
             return;
         }
 
-        g = (Graphics2D) bs.getDrawGraphics();
+        Graphics2D g = (Graphics2D) bs.getDrawGraphics();
 
         //Start of drawing
 
@@ -148,6 +153,10 @@ public class Game implements Runnable{
         return camera;
     }
 
+    public void setJustLoaded(boolean justLoaded) {
+        this.justLoaded = justLoaded;
+    }
+
     public void setLevel(Level level) {
         this.level = level;
     }
@@ -159,5 +168,12 @@ public class Game implements Runnable{
 
     public ButtonListener getbl() {
         return bl;
+    }
+
+    public void resetLevel() {
+        State.pop();
+        while(PlayerStateStack.getCurrent() != null) PlayerStateStack.pop();
+        State.push(new PlayState());
+        State.currentState.init(this.level.getName());
     }
 }

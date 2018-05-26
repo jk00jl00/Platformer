@@ -5,11 +5,13 @@ import Utilities.Util;
 
 //Keeps the offset in order to make centering the camera easier
 public class Camera {
-    private int width;
-    private int height;
+    private final int width;
+    private final int height;
     private int x;
     private int y = 0;
-    Creature centerOn;
+    private int zoomlevel = 1;
+    private final Creature centerOn;
+    private int invertedZoom;
 
     public Camera(Creature centerOn, int width, int height){
         this.centerOn = centerOn;
@@ -37,5 +39,30 @@ public class Camera {
     public void move(int x, int y) {
         this.x = Util.clamp(this.x + x, 0, 10000);
         this.y = Util.clamp(this.y + y, -10000, 0);
+    }
+
+    public void zoomOut(int i) {
+        this.zoomlevel -= i;
+        if(zoomlevel == 0) zoomlevel = -2;
+    }
+    public void zoomIn(int i){
+        this.zoomlevel += i;
+        if(zoomlevel == -1) zoomlevel = 1;
+    }
+
+    public double getZoom() {
+        return (zoomlevel > 0) ? zoomlevel : 1d / -zoomlevel;
+    }
+
+    public double getInvertedZoom() {
+        return (zoomlevel < 0) ? -zoomlevel : 1d / zoomlevel;
+    }
+
+    public double getInvertedZoom(boolean b) {
+        return (zoomlevel < 0) ? -zoomlevel : 1;
+    }
+
+    public int getZoomLevel() {
+        return zoomlevel;
     }
 }

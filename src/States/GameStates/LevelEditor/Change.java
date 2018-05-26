@@ -19,22 +19,13 @@ public class Change {
     boolean deleted;
     boolean moved = false;
 
+    String name;
+    int change;
+
     Change prev;
 
-    public Change(int o, int c) {
-        this.moved = true;
-        this.object = new GameObject[o];
-        this.dox = new int[o];
-        this.doy = new int[o];
-        this.creature = new Creature[c];
-        this.dcx = new int[c];
-        this.dcy = new int[c];
-    }
+    Change(){
 
-    public Change(int o, int c, boolean deleted) {
-        this.object = new GameObject[o];
-        this.creature = new Creature[c];
-        this.deleted = deleted;
     }
 
 }

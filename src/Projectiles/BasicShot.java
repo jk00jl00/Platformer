@@ -7,7 +7,7 @@ import java.awt.*;
 
 public class BasicShot extends Projectile{
     public BasicShot(Creature c, double dx, double dy, Game game) {
-        super(c, dx * 10, dy, game);
+        super(c, dx * 15, dy, game);
         this.dmg = 1;
         this.range = 500;
         this.width = 10;

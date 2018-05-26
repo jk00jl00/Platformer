@@ -2,7 +2,7 @@ package States.PlayerStates;
 
 public class PlayerStateStack {
 
-    private static PlayerStateStackController playerState = new PlayerStateStackController();
+    private static final PlayerStateStackController playerState = new PlayerStateStackController();
 
     public static PlayerState getCurrent(){
         try {
@@ -43,7 +43,7 @@ public class PlayerStateStack {
 
         private class PlayerStateStackItem{
             PlayerStateStackItem next;
-            PlayerState item;
+            final PlayerState item;
             PlayerStateStackItem(PlayerState state){
                 this.item = state;
             }

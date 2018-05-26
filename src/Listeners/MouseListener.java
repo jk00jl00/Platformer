@@ -12,8 +12,8 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
     //Positions
     public Rectangle lClick;
     private Rectangle rClick;
-    public Rectangle cPos = new Rectangle(0, 0, 2, 3);
-    public Rectangle dragTangle = new Rectangle(0,0,0,0);
+    public final Rectangle cPos = new Rectangle(0, 0, 2, 3);
+    public final Rectangle dragTangle = new Rectangle(0,0,0,0);
 
     //Checks for dragging in different ways.
     public boolean dragging = false;
@@ -34,10 +34,12 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
     public boolean placingCreature;
 
     //How much the user has dragged the mouse.
-    private int xDrag;
-    private int yDrag;
+    private int xDrag = 0;
+    private int yDrag = 0;
 
     private Camera camera;
+    public boolean rDrag;
+    public boolean rClicked;
 
     public int getXDrag() {
         return xDrag;
@@ -111,8 +113,10 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
             dragTangle.height = 1;
             if (hasSelection) {
                 //Checks if trying to drag.
+                Rectangle tempBox = new Rectangle((int)Math.ceil((dragTangle.x * camera.getInvertedZoom()) + camera.getX()),
+                        (int)Math.ceil((dragTangle.y * camera.getInvertedZoom()) - camera.getY()),(int)Math.ceil(dragTangle.width * camera.getInvertedZoom()),
+                        (int)Math.ceil(dragTangle.height * camera.getInvertedZoom()));
                 for (GameObject o : selectedObjects) {
-                    Rectangle tempBox = new Rectangle(dragTangle.x + camera.getX(), dragTangle.y - camera.getY(), dragTangle.width, dragTangle.height);
                     if (o.getHitBox().intersects(tempBox)) {
                         draggingSelection = true;
                         xDrag = 0;
@@ -122,7 +126,7 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
                 }
                 if (!draggingSelection  ) {
                     for (Creature c : selectedCreatures) {
-                        if (c.getHitBox().intersects(dragTangle)) {
+                        if (c.getHitBox().intersects(tempBox)) {
                             draggingSelection = true;
                             xDrag = 0;
                             yDrag = 0;
@@ -136,13 +140,17 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
                 //If the user is placing a creature the top left corner will be by the mouse and the width and height will match the creature.
                 dragTangle.x = e.getX();
                 dragTangle.y = e.getY();
-                dragTangle.width = creatureWidth;
-                dragTangle.height = creatureHeight;
+                dragTangle.width = (int)Math.ceil(creatureWidth * camera.getZoom());
+                dragTangle.height = (int)Math.ceil(creatureHeight * camera.getZoom());
             }
             dragging = true;
 
-        } else if(e.getButton() == MouseEvent.BUTTON3){
+        }
+        if(e.getButton() == MouseEvent.BUTTON3){
             this.rClick = new Rectangle(e.getX(), e.getY(), 2, 3);
+            xDrag = 0;
+            yDrag = 0;
+            this.rDrag = true;
         }
     }
 
@@ -150,6 +158,9 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
     public void mouseReleased(MouseEvent e) {
         if (e.getButton() ==  MouseEvent.BUTTON1 && dragging) {
             rectReady = true;
+        } else if(e.getButton() == MouseEvent.BUTTON3){
+            rDrag = false;
+            rClicked = true;
         }
         dragging = false;
     }
@@ -170,8 +181,8 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
             if(placingCreature){
                 dragTangle.x = e.getX();
                 dragTangle.y = e.getY();
-                dragTangle.width = creatureWidth;
-                dragTangle.height = creatureHeight;
+                dragTangle.width = (int)Math.ceil(creatureWidth * camera.getZoom());
+                dragTangle.height = (int)Math.ceil(creatureHeight * camera.getZoom());
                 return;
             }
 
@@ -180,6 +191,17 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
                 yDrag += e.getY() - lClick.y;
                 lClick.x += xDrag;
                 lClick.y += yDrag;
+                xDrag *= camera.getInvertedZoom();
+                yDrag *= camera.getInvertedZoom();
+                return;
+            }
+            if(rDrag){
+                xDrag += e.getX() - rClick.x;
+                yDrag += e.getY() - rClick.y;
+                rClick.x += xDrag;
+                rClick.y += yDrag;
+                xDrag *= camera.getInvertedZoom();
+                yDrag *= camera.getInvertedZoom();
                 return;
             }
 

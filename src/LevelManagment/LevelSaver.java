@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class LevelSaver {
+class LevelSaver {
     public static void saveGameState(Level level, String name){
 
     }

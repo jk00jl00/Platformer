@@ -6,25 +6,32 @@ import Objects.GameObject;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.util.HashMap;
 
+import static Listeners.ButtonListener.*;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public class Display extends Canvas{
     //Keeps the canvas variables;
     private JFrame frame;
-    private int width;
-    private int height;
-    private String name;
-    private JButton[] editorButtons = new JButton[4];
+    private final int width;
+    private final int height;
+    private final String name;
+    private final JMenuItem[] editorButtons = new JMenuItem[9];
     private JPanel buttonPanel;
+    private JPanel attriutes;
     private static final String[] PLACEBLE_OBJECTS = GameObject.OBJECTS;
     private static final String[] PLACEBLE_CREATURES = Creature.CREATURES;
     private JList itemArea;
-    private String[] editItems = new String[]{
+    private final String[] editItems = new String[]{
             "Objects",
             "Creatures"
     };
     private JComboBox editItemTypeSelector;
+
+    private HashMap<String , LEIntAtr> intAtr = new HashMap<>();
 
     //Constructor for the game display
     public Display(int width, int height, String name){
@@ -78,57 +85,95 @@ public class Display extends Canvas{
 
         this.frame.add(this.buttonPanel, gbc);
 
+        JMenuBar menuBar = new JMenuBar();
+
+        JMenu editMenu = new JMenu("Edit");
+        editMenu.setMnemonic(KeyEvent.VK_E);
+
+        menuBar.add(editMenu);
+        frame.setJMenuBar(menuBar);
+
         //Select tool button
-        editorButtons[0] = new JButton("S");
+        editorButtons[SELECT_TOOL_] = new JMenuItem("Select");
 
-        editorButtons[0].setToolTipText("Select tool");
-        editorButtons[0].setBorder(BorderFactory.createBevelBorder(0));
-        editorButtons[0].addActionListener(game.getbl());
+        editorButtons[SELECT_TOOL_].setToolTipText("Select tool");
+        editorButtons[SELECT_TOOL_].addActionListener(game.getbl());
 
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(0,0,0,0);
-        gbc.ipady = this.height/80;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.CENTER;
 
-        this.buttonPanel.add(editorButtons[0], gbc);
+        editMenu.add(editorButtons[SELECT_TOOL_]);
 
-        //Delete tool button
-        editorButtons[1] = new JButton("D");
+        //Save button.
+        editorButtons[SAVE] = new JMenuItem("Save");
 
-        editorButtons[1].setToolTipText("Delete tool");
-        editorButtons[1].setBorder(BorderFactory.createBevelBorder(0));
-        editorButtons[1].addActionListener(game.getbl());
+        editorButtons[SAVE].setToolTipText("Save current level");
+        editorButtons[SAVE].addActionListener(game.getbl());
+        editorButtons[SAVE].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
 
-        gbc.gridx = 1;
-        gbc.gridy = 0;
+        editMenu.add(editorButtons[SAVE]);
 
-        this.buttonPanel.add(editorButtons[1], gbc);
+        //Load button.
+        editorButtons[LOAD] = new JMenuItem("Load");
+
+        editorButtons[LOAD].setToolTipText("Load a selected level");
+        editorButtons[LOAD].addActionListener(game.getbl());
+        editorButtons[LOAD].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.CTRL_DOWN_MASK));
+
+        editMenu.add(editorButtons[LOAD]);
+        editMenu.addSeparator();
+
+        //Copy button.
+        editorButtons[COPY] = new JMenuItem("Copy");
+
+        editorButtons[COPY].setToolTipText("Copy selection");
+        editorButtons[COPY].addActionListener(game.getbl());
+        editorButtons[COPY].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_DOWN_MASK));
+
+        editMenu.add(editorButtons[COPY]);
+
+        //Paste button.
+        editorButtons[PASTE] = new JMenuItem("Paste");
+
+        editorButtons[PASTE].setToolTipText("Paste a copy from clipboard");
+        editorButtons[PASTE].addActionListener(game.getbl());
+        editorButtons[PASTE].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK));
+
+        editMenu.add(editorButtons[PASTE]);
+
+        //Undo button.
+        editorButtons[UNDO] = new JMenuItem("Undo");
+
+        editorButtons[UNDO].setToolTipText("Undo the latest change");
+        editorButtons[UNDO].addActionListener(game.getbl());
+        editorButtons[UNDO].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_DOWN_MASK));
+
+        editMenu.add(editorButtons[UNDO]);
+
+        //Redo button.
+        editorButtons[REDO] = new JMenuItem("Redo");
+
+        editorButtons[REDO].setToolTipText("Redoes the the latest undo");
+        editorButtons[REDO].addActionListener(game.getbl());
+        editorButtons[REDO].setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.SHIFT_DOWN_MASK|InputEvent.CTRL_DOWN_MASK));
+
+        editMenu.add(editorButtons[REDO]);
 
         //Show grid button
-        editorButtons[2] = new JButton("G");
+        editorButtons[SHOW_GRID_] = new JMenuItem("Show Grid");
 
-        editorButtons[2].setToolTipText("Show Grid");
-        editorButtons[2].setBorder(BorderFactory.createBevelBorder(0));
-        editorButtons[2].addActionListener(game.getbl());
+        editorButtons[SHOW_GRID_].setToolTipText("Shows grid");
+        editorButtons[SHOW_GRID_].addActionListener(game.getbl());
 
-        gbc.gridx = 0;
-        gbc.gridy = 1;
 
-        this.buttonPanel.add(editorButtons[2], gbc);
+        editMenu.add(editorButtons[SHOW_GRID_]);
 
         //Snap to grid button
-        editorButtons[3] = new JButton("SG");
+        editorButtons[SNAP_TO_GRID_] = new JMenuItem("Snap to grid");
 
-        editorButtons[3].setToolTipText("Snap to Grid");
-        editorButtons[3].setBorder(BorderFactory.createBevelBorder(0));
-        editorButtons[3].addActionListener(game.getbl());
+        editorButtons[SNAP_TO_GRID_].setToolTipText("Toggles snapping to grid");
+        editorButtons[SNAP_TO_GRID_].addActionListener(game.getbl());
 
-        gbc.gridx = 1;
-        gbc.gridy = 1;
 
-        this.buttonPanel.add(editorButtons[3], gbc);
+        editMenu.add(editorButtons[SNAP_TO_GRID_]);
         gbc = new GridBagConstraints();
 
         //Edit item type selector menu
@@ -138,7 +183,7 @@ public class Display extends Canvas{
         editItemTypeSelector.addActionListener(game.getbl());
 
         gbc.gridx = 0;
-        gbc.gridy = 2;
+        gbc.gridy = 0;
         gbc.weighty = 0;
         gbc.weightx = 1;
         gbc.gridwidth = 2;
@@ -148,7 +193,7 @@ public class Display extends Canvas{
         this.buttonPanel.add(editItemTypeSelector, gbc);
         gbc = new GridBagConstraints();
 
-        //The scrollPanel for selecting what to place;
+        //The JList for selecting what to place;
 
         this.itemArea = new JList(editItems);
 
@@ -159,7 +204,7 @@ public class Display extends Canvas{
         this.itemArea.addListSelectionListener(game.getbl());
 
         gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weighty = 1;
@@ -193,7 +238,7 @@ public class Display extends Canvas{
         this.requestFocus();
     }
 
-    public JButton[] getButtons() {
+    public JMenuItem[] getButtons() {
         return this.editorButtons;
     }
 
@@ -211,10 +256,10 @@ public class Display extends Canvas{
 
         switch (selection){
             case "Objects":
-                this.itemArea = new JList(this.PLACEBLE_OBJECTS);
+                this.itemArea = new JList(PLACEBLE_OBJECTS);
                 break;
             case"Creatures":
-                this.itemArea = new JList(this.PLACEBLE_CREATURES);
+                this.itemArea = new JList(PLACEBLE_CREATURES);
                 break;
         }
         GridBagConstraints gbc = new GridBagConstraints();
@@ -228,7 +273,7 @@ public class Display extends Canvas{
         this.itemArea.addListSelectionListener(game.getbl());
 
         gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weighty = 1;
@@ -241,5 +286,114 @@ public class Display extends Canvas{
 
     public void removeItemAreaSelection() {
         this.itemArea.clearSelection();
+    }
+
+    /**
+     * Called when a single object has been selected in the editor.
+     * Opens a display below the the itemArea with the objects attributes
+     * @param o The object which attributes will be displayed.
+     */
+    public void displayAttributes(GameObject o, Game game) {
+        this.attriutes = new JPanel();
+        this.intAtr = new HashMap<>();
+        this.attriutes.setLayout(new GridBagLayout());
+        this.attriutes.setBorder(BorderFactory.createMatteBorder(5,0,5,0, Color.BLACK));
+        GridBagConstraints gbc;
+
+
+        int i = 0;
+        for(String s : o.getAttributes().keySet()){
+            gbc = new GridBagConstraints();
+            gbc.anchor = GridBagConstraints.EAST;
+            gbc.fill = GridBagConstraints.NONE;
+            JLabel l = new JLabel();
+            l.setText(s + ": ");
+            gbc.gridx = 0;
+            gbc.gridy = i;
+            attriutes.add(l, gbc);
+            LEIntAtr f = new LEIntAtr(o.getAttributes().get(s), s ,game.getbl());
+            intAtr.put(s, f);
+            gbc.fill = GridBagConstraints.BOTH;
+            gbc.anchor = GridBagConstraints.CENTER;
+            gbc.weightx = 0.5;
+            gbc.gridx = 1;
+
+            attriutes.add(f, gbc);
+            f.setColumns(5);
+            i++;
+        }
+
+        gbc = new GridBagConstraints();
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+
+        this.buttonPanel.add(attriutes, gbc);
+        this.frame.pack();
+    }
+    public void displayAttributes(Creature c, Game game) {
+        this.attriutes = new JPanel();
+        this.intAtr = new HashMap<>();
+        this.attriutes.setLayout(new GridBagLayout());
+        this.attriutes.setBorder(BorderFactory.createMatteBorder(5,0,5,0, Color.BLACK));
+        GridBagConstraints gbc;
+
+
+        int i = 0;
+        for(String s : c.getAttributes().keySet()){
+            gbc = new GridBagConstraints();
+            gbc.anchor = GridBagConstraints.EAST;
+            gbc.fill = GridBagConstraints.NONE;
+            JLabel l = new JLabel();
+            l.setText(s + ": ");
+            gbc.gridx = 0;
+            gbc.gridy = i;
+            attriutes.add(l, gbc);
+            LEIntAtr f = new LEIntAtr(c.getAttributes().get(s), s ,game.getbl());
+            intAtr.put(s, f);
+            gbc.fill = GridBagConstraints.BOTH;
+            gbc.anchor = GridBagConstraints.CENTER;
+            gbc.weightx = 0.5;
+            gbc.gridx = 1;
+
+            attriutes.add(f, gbc);
+            f.setColumns(5);
+            i++;
+        }
+
+        gbc = new GridBagConstraints();
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+
+        this.buttonPanel.add(attriutes, gbc);
+        this.frame.pack();
+    }
+
+    public void removeAtrDisplay() {
+        if(attriutes != null) {
+            this.buttonPanel.remove(this.attriutes);
+            this.frame.pack();
+            this.attriutes = null;
+        }
+    }
+
+    public void updateAtrDisplay(GameObject o) {
+        for(String s: intAtr.keySet()){
+            if(intAtr.get(s).getCurrentValue() != o.getAttributes().get(s)){
+                intAtr.get(s).setValue(o.getAttributes().get(s));
+            }
+        }
+    }
+    public void updateAtrDisplay(Creature c) {
+        for(String s: intAtr.keySet()){
+            if(intAtr.get(s).getCurrentValue() != c.getAttributes().get(s)){
+                intAtr.get(s).setValue(c.getAttributes().get(s));
+            }
+        }
     }
 }

@@ -6,9 +6,9 @@ import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
 public class MenuText {
-    public int y;
-    public Font font;
-    public String text;
+    public final int y;
+    public final Font font;
+    public final String text;
     public Rectangle clickBox;
     public boolean highlighted = false;
 

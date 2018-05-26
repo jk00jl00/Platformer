@@ -4,8 +4,8 @@ import Actors.Player;
 import GameController.Game;
 
 public abstract class PlayerState {
-    protected Player player;
-    protected Game game;
+    final Player player;
+    final Game game;
 
     PlayerState(Player player, Game game){
         this.player = player;
@@ -16,7 +16,7 @@ public abstract class PlayerState {
     public abstract void update();
     public abstract void handleKeys();
     public abstract void move();
-    public abstract void enter();
+    protected abstract void enter();
     protected abstract void exit();
 
 }

@@ -12,7 +12,7 @@ public class Player extends Creature{
     public double dy;
     public double dx;
 
-    public double jumpSpeed = 12.5;
+    public final double jumpSpeed = 12.5;
 
     private static final Color defaultColor = Color.LIGHT_GRAY;
 
@@ -20,7 +20,6 @@ public class Player extends Creature{
     private PlayerState currentState;
     private long invisTime = 0;
     private long lastShot;
-    private int shotCooldown = 10;
 
     public Player(int x, int y, int health) {
         super(x, y, health);
@@ -60,7 +59,7 @@ public class Player extends Creature{
     }
 
     public void draw(Graphics2D g, Camera camera){
-        g.fillRect(this.x - camera.getX(), this.y + camera.getY(), this.width, this.height);
+        super.draw(g, camera);
         g.drawString("Health: " + this.health, 0, (int)g.getFontMetrics().getStringBounds("Health: " + this.health, g).getHeight());
     }
 
@@ -117,6 +116,7 @@ public class Player extends Creature{
     }
 
     public boolean canShoot(boolean spaceReleased){
+        int shotCooldown = 10;
         return (System.currentTimeMillis() - lastShot > shotCooldown) && spaceReleased;
     }
 

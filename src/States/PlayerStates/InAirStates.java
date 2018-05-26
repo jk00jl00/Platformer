@@ -13,12 +13,12 @@ import java.awt.event.KeyEvent;
 import static Utilities.Util.collide;
 
 public class InAirStates extends PlayerState {
-    protected boolean[] keys;
+    private boolean[] keys;
 
-    protected double inAirXAcc= 0.2;
-    protected double xMaxSpeed = 7.5;
+    private final double inAirXAcc= 0.2;
+    private final double xMaxSpeed = 7.5;
     protected double jumpSpeed = 12.5;
-    protected double maxAirSpeed = 20;
+    private final double maxAirSpeed = 20;
 
 
     InAirStates(Player creature, Game game) {
@@ -124,7 +124,7 @@ public class InAirStates extends PlayerState {
     }
 
     @Override
-    public void exit() {
+    protected void exit() {
         PlayerStateStack.pop();
 
     }
