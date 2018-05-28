@@ -3,6 +3,7 @@ package Listeners;
 import Actors.Creature;
 import Gfx.Display;
 import Gfx.LEIntAtr;
+import Gfx.LEStringAtr;
 import Objects.GameObject;
 
 import javax.swing.*;
@@ -27,9 +28,11 @@ public class ButtonListener implements ActionListener, ListSelectionListener{
     private static final String[] PLACEBLE_CREATURES = Creature.CREATURES;
     private final boolean[] buttonsPressed = new boolean[9];
     public boolean intAtrChanged = false;
+    public boolean stringAtrChanged = false;
     private String selection = "objects";
     private String toPlace = "";
     private int newAtrValue;
+    private String newStringAtrValue;
     private String changedAtrName;
     private Display display;
 
@@ -143,11 +146,21 @@ public class ButtonListener implements ActionListener, ListSelectionListener{
         changedAtrName = leIntAtr.getAtrName();
     }
 
+    public void attributeChange(LEStringAtr leStringAtr) {
+        stringAtrChanged = true;
+        newStringAtrValue = leStringAtr.getCurrentValue();
+        changedAtrName = leStringAtr.getAtrName();
+    }
+
     public int getAtrChange() {
         return newAtrValue;
     }
 
     public String getAtrName() {
         return changedAtrName;
+    }
+
+    public String getStringAtrChange() {
+        return newStringAtrValue;
     }
 }

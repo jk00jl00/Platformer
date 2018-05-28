@@ -21,7 +21,7 @@ public class PauseMenuState extends State{
     @Override
     public void update() {
         boolean[] keys = game.getkl().getKeysPressed();
-        game.getLevel().getPlayer().setKeys(keys);
+        game.getLevelManager().getCurrentLevel().getPlayer().setKeys(keys);
 
         if(keys[KeyEvent.VK_ESCAPE]){
             exitMenu();
@@ -44,7 +44,7 @@ public class PauseMenuState extends State{
      */
     private void exitMenu() {
         game.getkl().setKey(KeyEvent.VK_ESCAPE, false);
-        game.getLevel().setDarker(false);
+        game.getLevelManager().getCurrentLevel().setDarker(false);
         State.pop();
     }
 
@@ -67,12 +67,12 @@ public class PauseMenuState extends State{
                         State.currentState.init();
                         //Makes sure the player does not have a state in the stack.
                         while(PlayerStateStack.getCurrent() != null) PlayerStateStack.pop();
-                        game.getLevel().setDarker(false);
+                        game.getLevelManager().getCurrentLevel().setDarker(false);
                         return true;
                     case "Continue":
                         game.getml().setLClick(null);
                         State.pop();
-                        game.getLevel().setDarker(false);
+                        game.getLevelManager().getCurrentLevel().setDarker(false);
                         return true;
 
                 }
@@ -83,10 +83,10 @@ public class PauseMenuState extends State{
 
     @Override
     public void draw(Graphics2D g) {
-        g.setColor((game.getLevel().getDarker()) ? Color.DARK_GRAY.darker() : Color.DARK_GRAY);
+        g.setColor((game.getLevelManager().getCurrentLevel().getDarker()) ? Color.DARK_GRAY.darker() : Color.DARK_GRAY);
         g.fillRect(0, 0, game.getWidth() + 100, game.getHeight() + 100);
 
-        game.getLevel().draw(g, game.getCamera());
+        game.getLevelManager().getCurrentLevel().draw(g, game.getCamera());
         for (MenuText m: menuTexts) {
             if(m.clickBox == null) m.init(game.getDisplay(), g, this.levelEdit);
             g.setFont(m.font);
@@ -104,6 +104,6 @@ public class PauseMenuState extends State{
 
     @Override
     public void init() {
-        game.getLevel().setDarker(true);
+        game.getLevelManager().getCurrentLevel().setDarker(true);
     }
 }

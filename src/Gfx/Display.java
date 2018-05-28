@@ -32,6 +32,7 @@ public class Display extends Canvas{
     private JComboBox editItemTypeSelector;
 
     private HashMap<String , LEIntAtr> intAtr = new HashMap<>();
+    private HashMap<String , LEStringAtr> stringAtr = new HashMap<>();
 
     //Constructor for the game display
     public Display(int width, int height, String name){
@@ -290,8 +291,8 @@ public class Display extends Canvas{
 
     /**
      * Called when a single object has been selected in the editor.
-     * Opens a display below the the itemArea with the objects attributes
-     * @param o The object which attributes will be displayed.
+     * Opens a display below the the itemArea with the objects intAttributes
+     * @param o The object which intAttributes will be displayed.
      */
     public void displayAttributes(GameObject o, Game game) {
         this.attriutes = new JPanel();
@@ -302,7 +303,7 @@ public class Display extends Canvas{
 
 
         int i = 0;
-        for(String s : o.getAttributes().keySet()){
+        for(String s: o.getStringAttributes().keySet()){
             gbc = new GridBagConstraints();
             gbc.anchor = GridBagConstraints.EAST;
             gbc.fill = GridBagConstraints.NONE;
@@ -311,7 +312,28 @@ public class Display extends Canvas{
             gbc.gridx = 0;
             gbc.gridy = i;
             attriutes.add(l, gbc);
-            LEIntAtr f = new LEIntAtr(o.getAttributes().get(s), s ,game.getbl());
+            LEStringAtr f = new LEStringAtr(o.getStringAttributes().get(s), s, game.getbl());
+            stringAtr.put(s, f);
+            gbc.fill = GridBagConstraints.BOTH;
+            gbc.anchor = GridBagConstraints.CENTER;
+            gbc.weightx = 0.5;
+            gbc.gridx = 1;
+
+            attriutes.add(f, gbc);
+            f.setColumns(10);
+            i++;
+        }
+
+        for(String s : o.getIntAttributes().keySet()){
+            gbc = new GridBagConstraints();
+            gbc.anchor = GridBagConstraints.EAST;
+            gbc.fill = GridBagConstraints.NONE;
+            JLabel l = new JLabel();
+            l.setText(s + ": ");
+            gbc.gridx = 0;
+            gbc.gridy = i;
+            attriutes.add(l, gbc);
+            LEIntAtr f = new LEIntAtr(o.getIntAttributes().get(s), s ,game.getbl());
             intAtr.put(s, f);
             gbc.fill = GridBagConstraints.BOTH;
             gbc.anchor = GridBagConstraints.CENTER;
@@ -384,8 +406,8 @@ public class Display extends Canvas{
 
     public void updateAtrDisplay(GameObject o) {
         for(String s: intAtr.keySet()){
-            if(intAtr.get(s).getCurrentValue() != o.getAttributes().get(s)){
-                intAtr.get(s).setValue(o.getAttributes().get(s));
+            if(intAtr.get(s).getCurrentValue() != o.getIntAttributes().get(s)){
+                intAtr.get(s).setValue(o.getIntAttributes().get(s));
             }
         }
     }

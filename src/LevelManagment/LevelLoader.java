@@ -3,6 +3,7 @@ package LevelManagment;
 import Actors.Creature;
 import Actors.Player;
 import Objects.GameObject;
+import Objects.Gate;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -39,12 +40,21 @@ public class LevelLoader {
                 try {
                     Class<?> c = Class.forName("Objects." + currentReadSplit[0]);
                     Constructor<?> constr = c.getConstructor(int.class, int.class, int.class, int.class);
-                    l.addGameObject((GameObject) constr.newInstance(new Object[]{
+                    GameObject o = (GameObject) constr.newInstance(new Object[]{
                             Integer.parseInt(currentReadSplit[1]),
                             Integer.parseInt(currentReadSplit[2]),
                             Integer.parseInt(currentReadSplit[3]),
                             Integer.parseInt(currentReadSplit[4])
-                    }));
+                    });
+
+                    if(currentReadSplit[0].equals("Gate")){
+                        Gate g = (Gate) o;
+                        g.setStartlevel(currentReadSplit[5]);
+                        g.setEndlevel(currentReadSplit[6]);
+                        o = g;
+                    }
+
+                    l.addGameObject(o);
                 } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
                     e.printStackTrace();
                 }

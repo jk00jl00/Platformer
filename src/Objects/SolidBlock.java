@@ -10,11 +10,6 @@ public class SolidBlock extends GameObject{
         super(x, y, width, height);
         this.type = "SolidBlock";
         this.color = Color.decode("#44240b");
-        createHitBox();
-    }
-
-    private void createHitBox() {
-        hitBox = new Rectangle(this.x, this.y, this.width, this.height);
     }
 
     @Override

@@ -4,7 +4,6 @@ import Actors.Creature;
 import Actors.Player;
 import Gfx.Camera;
 import LevelManagment.Level;
-import LevelManagment.LevelLoader;
 import Listeners.MouseListener;
 import Objects.GameObject;
 import States.GameStates.PauseMenuState;
@@ -290,7 +289,7 @@ public class LevelEditState extends State {
         if(toPlace.equals("Player")) {
             Player player = new Player((int)Math.ceil((tempRect.x* game.getCamera().getInvertedZoom()) + game.getCamera().getX()),
                     (int)Math.ceil((tempRect.y + game.getCamera().getY()) * game.getCamera().getInvertedZoom()));
-            game.getLevel().setPlayer(player);
+            game.getLevelManager().getCurrentLevel().setPlayer(player);
         } else{
             //Stores a generic Creature to replace with the placement.
             Creature c = new Creature(0, 0);
@@ -313,7 +312,7 @@ public class LevelEditState extends State {
                 ChangeManager.push(0, 1, false);
                 ChangeManager.push(c);
                 //Add the creature to the level.
-                game.getLevel().addCreature(c);
+                game.getLevelManager().getCurrentLevel().addCreature(c);
                 ChangeManager.firstRedo = null;
             }
         }
@@ -345,7 +344,7 @@ public class LevelEditState extends State {
             ChangeManager.isPushing = true;
             ChangeManager.push(1, 0, false);
             ChangeManager.push(o);
-            game.getLevel().addGameObject(o);
+            game.getLevelManager().getCurrentLevel().addGameObject(o);
             tempRect = null;
             ml.dragTangle.width = 0;
             ml.rectReady = false;
@@ -438,12 +437,12 @@ public class LevelEditState extends State {
         for(GameObject o: selectedGameObjects){
             //Removes the GameObjects from the level and adds them to the Change object.
             ChangeManager.push(o);
-            game.getLevel().removeObject(o);
+            game.getLevelManager().getCurrentLevel().removeObject(o);
         }
         for(Creature c: selectedCreatures){
             //Removes the Creatures from the level and adds them to the Change object.
             ChangeManager.push(c);
-            game.getLevel().removeCreature(c);
+            game.getLevelManager().getCurrentLevel().removeCreature(c);
         }
         ChangeManager.isPushing = false;
         clearSelection();
@@ -478,6 +477,7 @@ public class LevelEditState extends State {
     /**
      * Is called in the update method in order to check which buttons have been pressed in the editMenu of the editor.
      */
+    //TODO - add stringAtribute change.
     private void checkButtonsPressed() {
         //Checks if the select tool has been selected and switches to it.
         if(game.getbl().getButtonsPressed()[SELECT_TOOL_]){
@@ -524,7 +524,31 @@ public class LevelEditState extends State {
             snapTo = !snapTo;
             game.getbl().disableButton(SNAP_TO_GRID_);
         }
-        //Changes an attribute on a selected object
+        //Changes a String attribute on a selected object.
+        if(game.getbl().stringAtrChanged){
+            if(selectionEmpty() || this.selectedCreatures.size()  + this.selectedGameObjects.size() > 1){
+                game.getbl().stringAtrChanged = false;
+                return;
+            }
+            if(selectedGameObjects.size() > 0){
+                ChangeManager.isPushing = true;
+                ChangeManager.push(1, 0, game.getbl().getAtrName(), selectedGameObjects.get(0).getStringAttributes().get(game.getbl().getAtrName()));
+                selectedGameObjects.get(0).changeStringAttribute(game.getbl().getAtrName(), game.getbl().getStringAtrChange());
+                ChangeManager.push(selectedGameObjects.get(0));
+                ChangeManager.isPushing = false;
+                game.getbl().intAtrChanged = false;
+                ChangeManager.firstRedo = null;
+            } else{
+                ChangeManager.isPushing = true;
+                ChangeManager.push(0, 1, game.getbl().getAtrName(), selectedGameObjects.get(0).getIntAttributes().get(game.getbl().getAtrName()));
+                selectedCreatures.get(0).changeStringAttribute(game.getbl().getAtrName(), game.getbl().getStringAtrChange());
+                ChangeManager.push(selectedCreatures.get(0));
+                ChangeManager.isPushing = false;
+                game.getbl().intAtrChanged = false;
+                ChangeManager.firstRedo = null;
+            }
+        }
+        //Changes an integer attribute on a selected object
         if(game.getbl().intAtrChanged){
             //Makes sure a object is still selected.
             if(selectionEmpty() || this.selectedCreatures.size() + this.selectedGameObjects.size() > 1) {
@@ -534,7 +558,7 @@ public class LevelEditState extends State {
             //Check if the selection is a object.
             if(selectedGameObjects.size() > 0){
                 ChangeManager.isPushing = true;
-                ChangeManager.push(1, 0, game.getbl().getAtrName(), selectedGameObjects.get(0).getAttributes().get(game.getbl().getAtrName()));
+                ChangeManager.push(1, 0, game.getbl().getAtrName(), selectedGameObjects.get(0).getIntAttributes().get(game.getbl().getAtrName()));
                 selectedGameObjects.get(0).changeAttribute(game.getbl().getAtrName(), game.getbl().getAtrChange());
                 ChangeManager.push(selectedGameObjects.get(0));
                 ChangeManager.isPushing = false;
@@ -542,7 +566,7 @@ public class LevelEditState extends State {
                 ChangeManager.firstRedo = null;
             } else{
                 ChangeManager.isPushing = true;
-                ChangeManager.push(0, 1, game.getbl().getAtrName(), selectedGameObjects.get(0).getAttributes().get(game.getbl().getAtrName()));
+                ChangeManager.push(0, 1, game.getbl().getAtrName(), selectedGameObjects.get(0).getIntAttributes().get(game.getbl().getAtrName()));
                 selectedCreatures.get(0).changeAttribute(game.getbl().getAtrName(), game.getbl().getAtrChange());
                 ChangeManager.push(selectedCreatures.get(0));
                 ChangeManager.isPushing = false;
@@ -631,12 +655,12 @@ public class LevelEditState extends State {
             //Checks if you clicked once or dragged
             if(tempRect.width > 1){
                 //Adds any objects that intersect with the selection rectangle.
-                for(GameObject o: game.getLevel().getObjects()){
+                for(GameObject o: game.getLevelManager().getCurrentLevel().getObjects()){
                     if(o.getHitBox().intersects(tempRect)){
                         selectedGameObjects.add(o);
                     }
                 }
-                for(Creature c: game.getLevel().getCreatures()){
+                for(Creature c: game.getLevelManager().getCurrentLevel().getCreatures()){
                     if(c.getHitBox().intersects(tempRect)){
                         selectedCreatures.add(c);
                     }
@@ -658,7 +682,7 @@ public class LevelEditState extends State {
             } else {
                 //Same as above but will only select the first object found.
                 boolean object = false;
-                for (GameObject o : game.getLevel().getObjects()) {
+                for (GameObject o : game.getLevelManager().getCurrentLevel().getObjects()) {
                     if (o.getHitBox().intersects(tempRect)) {
                         selectedGameObjects.add(o);
                         object = true;
@@ -666,7 +690,7 @@ public class LevelEditState extends State {
                     }
                 }
                 if(selectionEmpty())
-                    for (Creature c : game.getLevel().getCreatures()) {
+                    for (Creature c : game.getLevelManager().getCurrentLevel().getCreatures()) {
                         if (c.getHitBox().intersects(tempRect)) {
                             selectedCreatures.add(c);
                             break;
@@ -748,13 +772,13 @@ public class LevelEditState extends State {
                     ChangeManager.isPushing = true;
                     for(GameObject o: ChangeManager.firstRedo.object) {
                         if(selectedGameObjects.contains(o)) selectedGameObjects.remove(o);
-                        game.getLevel().removeObject(o);
+                        game.getLevelManager().getCurrentLevel().removeObject(o);
                         ChangeManager.push(o);
                     }
                     for(Creature c: ChangeManager.firstRedo.creature){
                         if(selectedCreatures.contains(c)) selectedCreatures.remove(c);
                         ChangeManager.push(c);
-                        game.getLevel().removeCreature(c);
+                        game.getLevelManager().getCurrentLevel().removeCreature(c);
                     }
                     ChangeManager.isPushing = false;
                     ChangeManager.popRedo();
@@ -763,11 +787,11 @@ public class LevelEditState extends State {
                     ChangeManager.push(ChangeManager.firstRedo.object.length, ChangeManager.firstRedo.creature.length, false);
                     ChangeManager.isPushing = true;
                     for (GameObject o: ChangeManager.firstRedo.object){
-                        game.getLevel().addGameObject(o);
+                        game.getLevelManager().getCurrentLevel().addGameObject(o);
                         ChangeManager.push(o);
                     }
                     for(Creature c: ChangeManager.firstRedo.creature){
-                        game.getLevel().addCreature(c);
+                        game.getLevelManager().getCurrentLevel().addCreature(c);
                         ChangeManager.push(c);
                     }
                     ChangeManager.isPushing = false;
@@ -797,14 +821,14 @@ public class LevelEditState extends State {
 
                     for (GameObject object : objects) {
                         ChangeManager.isPushing = true;
-                        ChangeManager.push(1, 0, ChangeManager.firstRedo.name, object.getAttributes().get(ChangeManager.firstRedo.name));
+                        ChangeManager.push(1, 0, ChangeManager.firstRedo.name, object.getIntAttributes().get(ChangeManager.firstRedo.name));
                         ChangeManager.push(object);
                         object.changeAttribute(ChangeManager.firstRedo.name, ChangeManager.firstRedo.change);
                         game.getDisplay().updateAtrDisplay(object);
                     }
                     for(int i = 0; i < creatures.length; i++){
                         ChangeManager.isPushing = true;
-                        ChangeManager.push(1, 0, ChangeManager.firstRedo.name, objects[i].getAttributes().get(ChangeManager.firstRedo.name));
+                        ChangeManager.push(1, 0, ChangeManager.firstRedo.name, objects[i].getIntAttributes().get(ChangeManager.firstRedo.name));
                         ChangeManager.push(objects[i]);
                         creatures[i].changeAttribute(ChangeManager.firstRedo.name, ChangeManager.firstRedo.change);
                         game.getDisplay().updateAtrDisplay(creatures[i]);
@@ -830,12 +854,12 @@ public class LevelEditState extends State {
                     ChangeManager.isPushing = true;
                     for(GameObject o: ChangeManager.getFirst().object) {
                         if(selectedGameObjects.contains(o)) selectedGameObjects.remove(o);
-                        game.getLevel().removeObject(o);
+                        game.getLevelManager().getCurrentLevel().removeObject(o);
                         ChangeManager.pushRedo(o);
                     }
                     for(Creature c: ChangeManager.getFirst().creature){
                         if(selectedCreatures.contains(c)) selectedCreatures.remove(c);
-                        game.getLevel().removeCreature(c);
+                        game.getLevelManager().getCurrentLevel().removeCreature(c);
                         ChangeManager.pushRedo(c);
                     }
                     ChangeManager.isPushing = false;
@@ -846,11 +870,11 @@ public class LevelEditState extends State {
                     ChangeManager.pushRedo(ChangeManager.getFirst().object.length, ChangeManager.getFirst().creature.length, false);
                     ChangeManager.isPushing = true;
                     for (GameObject o: ChangeManager.getFirst().object){
-                        game.getLevel().addGameObject(o);
+                        game.getLevelManager().getCurrentLevel().addGameObject(o);
                         ChangeManager.pushRedo(o);
                     }
                     for(Creature c: ChangeManager.getFirst().creature){
-                        game.getLevel().addCreature(c);
+                        game.getLevelManager().getCurrentLevel().addCreature(c);
                         ChangeManager.pushRedo(c);
                     }
                     ChangeManager.isPushing = false;
@@ -879,7 +903,7 @@ public class LevelEditState extends State {
                     for (GameObject object : objects) {
                         ChangeManager.isPushing = true;
                         ChangeManager.pushRedo(objects.length, creatures.length, ChangeManager.getFirst().name,
-                                object.getAttributes().get(ChangeManager.getFirst().name));
+                                object.getIntAttributes().get(ChangeManager.getFirst().name));
                         ChangeManager.pushRedo(object);
                         object.changeAttribute(ChangeManager.getFirst().name, ChangeManager.getFirst().change);
                         game.getDisplay().updateAtrDisplay(object);
@@ -943,18 +967,8 @@ public class LevelEditState extends State {
      */
     private boolean loadLevel() {
         game.getkl().setControlMasked(KeyEvent.VK_L, false);
-        //Shows a dialog box where the user can input a level name.
-        String name = JOptionPane.showInputDialog("Enter level name");
-        //Attempts to load the the level with the name.
-        Level tempLevel = LevelLoader.loadLevel(name);
-        //Checks if a level was loaded.
-        if(tempLevel == null){
-            JOptionPane.showMessageDialog(null, "No level found");
-            return true;
-        }
-        //Sets the current level to be the loaded one.
-        workingLevel = LevelLoader.loadLevel(name);
-        game.setLevel(this.workingLevel);
+        game.getLevelManager().loadLevel();
+        workingLevel = game.getLevelManager().getCurrentLevel();
         return false;
     }
 
@@ -994,18 +1008,18 @@ public class LevelEditState extends State {
     }
 
     /**
-     * The states draw method called by the drag method in the gameLoop.
+     * The states draw method called by the draw method in the gameLoop.
      * Draws out the level to the screen along with any selections made.
      * @param g The Graphics2D Object from the Game.draw method.
      */
     @Override
     public void draw(Graphics2D g) {
         //Clears the screen.
-        g.setColor((game.getLevel().getDarker()) ? Color.DARK_GRAY.darker() : Color.DARK_GRAY);
+        g.setColor((game.getLevelManager().getCurrentLevel().getDarker()) ? Color.DARK_GRAY.darker() : Color.DARK_GRAY);
         g.fillRect(0, 0, (int)Math.ceil((game.getWidth() + 100) * game.getCamera().getInvertedZoom(true)),
                 (int)Math.ceil((game.getHeight() +100) * game.getCamera().getInvertedZoom(true)));
         //Draws the level.
-        game.getLevel().draw(g, game.getCamera());
+        game.getLevelManager().getCurrentLevel().draw(g, game.getCamera());
         //Draws the grid if it is displayed.
         if(gridDisplayed && game.getCamera().getZoom() == 1){
             g.setColor(Color.BLACK);
@@ -1058,7 +1072,7 @@ public class LevelEditState extends State {
         game.getDisplay().displayEditItems(game);
         game.getml().setInEdit(true);
         this.workingLevel = new Level();
-        game.setLevel(workingLevel);
+        game.getLevelManager().setCurrentLevel(workingLevel);
         game.setCamera(new Camera(workingLevel.getPlayer(), game.getWidth(), game.getHeight()));
         ml = game.getml();
         ml.dragTangle.width = 0;

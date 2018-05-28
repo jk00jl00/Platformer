@@ -21,6 +21,7 @@ public class Creature{
     static final int DEFAULT_CREATURE_WIDTH_ = 16;
     static final int DEFAULT_CREATURE_HEIGHT_ = 32;
     private final HashMap<String, Integer> attributes = new HashMap<>();
+    private final HashMap<String, String> stringAttributes = new HashMap<>();
     public Color color = Color.BLUE;
     //The position and health of the player, used by all subclasses of player
     int x;
@@ -182,6 +183,10 @@ public class Creature{
 
     public void collide() {
 
+    }
+
+    public void changeStringAttribute(String atrName, String stringAtrChange) {
+        this.stringAttributes.replace(atrName, stringAtrChange);
     }
 
     public enum Facing{

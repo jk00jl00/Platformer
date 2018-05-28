@@ -12,9 +12,11 @@ import java.util.HashMap;
 public class GameObject{
     public static final String[] OBJECTS ={
             "Platform",
-            "SolidBlock"
+            "SolidBlock",
+            "Gate"
     };
-    private final HashMap<String, Integer> attributes = new HashMap<>();
+    protected final HashMap<String, Integer> intAttributes = new HashMap<>();
+    protected final HashMap<String, String> stringAttributes = new HashMap<>();
     public Color color;
     public GameObject next;
     public boolean removed;
@@ -32,18 +34,19 @@ public class GameObject{
         this.y = y;
         this.width = width;
         this.height = height;
-        this.attributes.put("x", this.x);
-        this.attributes.put("y", this.y);
-        this.attributes.put("Width", this.width);
-        this.attributes.put("Height", this.height);
+        this.intAttributes.put("x", this.x);
+        this.intAttributes.put("y", this.y);
+        this.intAttributes.put("Width", this.width);
+        this.intAttributes.put("Height", this.height);
+        createHitBox();
     }
 
     public String getType() {
         return type;
     }
 
-    public HashMap<String, Integer> getAttributes() {
-        return attributes;
+    public HashMap<String, Integer> getIntAttributes() {
+        return intAttributes;
     }
 
     public void update(){
@@ -72,8 +75,8 @@ public class GameObject{
         this.y = Util.clamp(this.y + y, 0, 10000 - this.height);
         this.hitBox.x = this.x;
         this.hitBox.y = this.y;
-        this.attributes.replace("x", this.x);
-        this.attributes.replace("y", this.y);
+        this.intAttributes.replace("x", this.x);
+        this.intAttributes.replace("y", this.y);
     }
 
     public int getX() {
@@ -85,17 +88,22 @@ public class GameObject{
     }
 
     public void changeAttribute(String name, int change) {
-        this.attributes.replace(name, change);
+        this.intAttributes.replace(name, change);
 
-        this.x = this.attributes.get("x");
-        this.y = this.attributes.get("y");
-        this.height = this.attributes.get("Height");
-        this.width = this.attributes.get("Width");
-        this.hitBox.x = this.attributes.get("x");
-        this.hitBox.y = this.attributes.get("y");
-        this.hitBox.height = this.attributes.get("Height");
-        this.hitBox.width = this.attributes.get("Width");
+        this.x = this.intAttributes.get("x");
+        this.y = this.intAttributes.get("y");
+        this.height = this.intAttributes.get("Height");
+        this.width = this.intAttributes.get("Width");
+        this.hitBox.x = this.intAttributes.get("x");
+        this.hitBox.y = this.intAttributes.get("y");
+        this.hitBox.height = this.intAttributes.get("Height");
+        this.hitBox.width = this.intAttributes.get("Width");
     }
+
+    private void createHitBox() {
+        hitBox = new Rectangle(this.x, this.y, this.width, this.height);
+    }
+
 
     public GameObject copyOf(){
         GameObject o = new GameObject(0, 0, 0, 0);
@@ -114,5 +122,13 @@ public class GameObject{
         }
 
         return o;
+    }
+
+    public HashMap<String, String> getStringAttributes() {
+        return stringAttributes;
+    }
+
+    public void changeStringAttribute(String name, String change) {
+        this.stringAttributes.replace(name, change);
     }
 }

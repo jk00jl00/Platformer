@@ -4,7 +4,12 @@ import Actors.Creature;
 import Actors.Player;
 import GameController.Game;
 import Objects.GameObject;
+import Objects.Gate;
 import Projectiles.BasicShot;
+import States.GameStates.PlayState;
+import States.GameStates.State;
+import Utilities.Util;
+import com.sun.corba.se.impl.oa.poa.ActiveObjectMap;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -57,6 +62,14 @@ public class OnGroundStates extends PlayerState {
             PlayerStateStack.getCurrent().enter();
             PlayerStateStack.getCurrent().update();
         }
+        if(keys[KeyEvent.VK_F]){
+            Gate g = (Gate)Util.collide(player.getHitBox(), game.getLevelManager().getCurrentLevel().getObjects(), "Gate");
+            if(g != null){
+                activateGate(g);
+                keys[KeyEvent.VK_W] = false;
+                game.getkl().setKey(KeyEvent.VK_F, false);
+            }
+        }
         if(keys[KeyEvent.VK_W]){
             PlayerStateStack.push(new InAirStates(player, game));
             PlayerStateStack.push(new JumpingState(player, game));
@@ -72,9 +85,13 @@ public class OnGroundStates extends PlayerState {
         }
     }
 
+    private void activateGate(Gate g) {
+        game.getLevelManager().tpToNewLevel(g.getEndLeveL());
+    }
+
     private void shoot() {
         if(player.canShoot(game.getkl().spaceReleased)) {
-            game.getLevel().addProjectile(new BasicShot(this.player, (this.player.getFacing() == Creature.Facing.Right) ? 1 : -1, 0, game));
+            game.getLevelManager().getCurrentLevel().addProjectile(new BasicShot(this.player, (this.player.getFacing() == Creature.Facing.Right) ? 1 : -1, 0, game));
             player.shot();
             game.getkl().spaceReleased = false;
         }

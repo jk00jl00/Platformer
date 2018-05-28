@@ -30,6 +30,7 @@ public class BasicEnemyBehavior extends CreatureBehavior{
     private void checkMovement() {
         dx = 0;
         if(movingRight){
+            //Moves the creature in steps until either the creature hits a wall or it moves a pixel.
             doLoop:
             do{
                 dx += 0.2;

@@ -67,6 +67,28 @@ class ChangeManager {
     }
 
     /**
+     * Same as push(int,int, String, int) but with a StringAttribute
+     * @param o The amount of changed objects
+     * @param c The amount of changed creatures.
+     * @param s The name of the changed attribute.
+     * @param d The value of the attribute before the change.
+     */
+    public static void push(int o, int c, String s, String d) {
+        if(firstUndo == null) {
+            firstUndo = new AttributeChange(o, c);
+            firstUndo.name = s;
+            firstUndo.changeS = d;
+            return;
+        }
+        Change temp = new AttributeChange(o, c);
+        temp.prev = firstUndo;
+        firstUndo = temp;
+
+        firstUndo.name = s;
+        firstUndo.changeS = d;
+    }
+
+    /**
      * Creates an AttributeChange as the firstRedo.
      * @param o The amount of objects changed.
      * @param c The amount of creatures changed.
@@ -86,6 +108,27 @@ class ChangeManager {
 
         firstRedo.name = s;
         firstRedo.change = i;
+    }
+    /**
+     * Same as pushRedo(int,int, String, int) but with a StringAttribute
+     * @param o The amount of changed objects
+     * @param c The amount of changed creatures.
+     * @param s The name of the changed attribute.
+     * @param d The value of the attribute before the change.
+     */
+    public static void pushRedo(int o, int c, String s, String d) {
+        if(firstRedo == null) {
+            firstRedo = new AttributeChange(o, c);
+            firstRedo.name = s;
+            firstRedo.changeS = d;
+            return;
+        }
+        Change temp = new AttributeChange(o, c);
+        temp.prev = firstRedo;
+        firstRedo = temp;
+
+        firstRedo.name = s;
+        firstRedo.changeS = d;
     }
 
     /**
@@ -229,6 +272,12 @@ class ChangeManager {
         return firstUndo;
     }
 
+    /**
+     * Adds movement to the current change when moving with arrow keys.
+     * @param o The moved object.
+     * @param x The amount moved on the x-axis.
+     * @param y The amount moved on the y-axis.
+     */
     public static void moveStep(GameObject o, int x, int y) {
         if(isPushing && !firstObjectMove) {
             if(firstUndo.dox[firstUndo.oIndex] == 0 && firstUndo.doy[firstUndo.oIndex] == 0) push(o,x,y);

@@ -23,6 +23,7 @@ public class Change {
     int change;
 
     Change prev;
+    public String changeS;
 
     Change(){
 

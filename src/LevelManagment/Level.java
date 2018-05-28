@@ -4,6 +4,7 @@ import Actors.Creature;
 import Actors.Player;
 import Gfx.Camera;
 import Objects.GameObject;
+import Objects.Gate;
 import Projectiles.Projectile;
 
 import java.awt.*;
@@ -136,5 +137,18 @@ public class Level{
 
     public void saveLevel(){
         LevelSaver.saveLevel(this, this.name);
+    }
+
+    public String getGate() {
+        String s ="";
+
+        for(GameObject o : gameObjects){
+            if(o.getType().equals("Gate")){
+                Gate g = (Gate)o;
+                s = g.getEndLeveL();
+            }
+        }
+
+        return s;
     }
 }

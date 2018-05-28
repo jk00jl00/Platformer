@@ -10,15 +10,10 @@ public class Platform extends GameObject{
         super(x, y, (width < 5) ? 5 : width, (height < 5) ? 5 : height);
         this.type = "Platform";
         this.color = Color.BLACK;
-        createHitBox();
     }
 
     public static Color getDefaultColor(){
         return defaultColor;
-    }
-
-    private void createHitBox() {
-        hitBox = new Rectangle(this.x, this.y, this.width, this.height);
     }
 
     @Override

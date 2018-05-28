@@ -2,6 +2,7 @@ package Utilities;
 
 import Actors.Creature;
 import Objects.GameObject;
+import Objects.Gate;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -30,5 +31,14 @@ public class Util {
             if(r.intersects(c.getHitBox())) return true;
         }
         return false;
+    }
+
+    public static GameObject collide(Rectangle r, GameObject[] objects, String type) {
+        for(GameObject o: objects){
+            if(o.getType().equals(type)){
+                if(r.intersects(o.getHitBox())) return o;
+            }
+        }
+        return null;
     }
 }

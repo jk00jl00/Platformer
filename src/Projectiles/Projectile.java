@@ -66,7 +66,7 @@ public class Projectile {
     private void checkRange() {
         if(this.hitBox != null){
             if (Math.abs(this.x - this.shotPos[0]) > this.range)
-                game.getLevel().removeProjectile(this);
+                game.getLevelManager().getCurrentLevel().removeProjectile(this);
 
         }
     }
@@ -115,7 +115,7 @@ public class Projectile {
         if(hitBox == null) return;
         for(GameObject o: gameObjects){
             if(Util.collide(o.getHitBox(), this.hitBox)){
-                game.getLevel().removeProjectile(this);
+                game.getLevelManager().getCurrentLevel().removeProjectile(this);
                 this.hitBox = null;
                 return;
             }
@@ -124,7 +124,7 @@ public class Projectile {
             if(c.equals(shooter)) continue;
             if(Util.collide(c.getHitBox(), hitBox)){
                 c.damage(this.dmg);
-                game.getLevel().removeProjectile(this);
+                game.getLevelManager().getCurrentLevel().removeProjectile(this);
                 this.hitBox = null;
                 return;
             }

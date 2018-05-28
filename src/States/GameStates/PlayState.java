@@ -8,15 +8,15 @@ import States.PlayerStates.PlayerStateStack;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
-
+//TODO - Fix reset level.
 public class PlayState extends State {
 
     @Override
     public void update() {
         boolean[] keys = game.getkl().getKeysPressed();
-        game.getLevel().getPlayer().setKeys(keys);
+        game.getLevelManager().getCurrentLevel().getPlayer().setKeys(keys);
         if(keys[KeyEvent.VK_R]){
-            game.getLevel().resetPlayer();
+            game.getLevelManager().getCurrentLevel().resetPlayer();
         } else if(keys[KeyEvent.VK_ESCAPE]){
             enterMenu();
             return;
@@ -25,8 +25,8 @@ public class PlayState extends State {
             game.getkl().setControlMasked(KeyEvent.VK_R, false);
             return;
         }
-        if(game.getLevel().getPlayer().noState()) PlayerStateStack.push(new OnGroundStates(game.getLevel().getPlayer(), game));
-        game.getLevel().update();
+        if(game.getLevelManager().getCurrentLevel().getPlayer().noState()) PlayerStateStack.push(new OnGroundStates(game.getLevelManager().getCurrentLevel().getPlayer(), game));
+        game.getLevelManager().getCurrentLevel().update();
         game.getCamera().update();
     }
 
@@ -42,31 +42,23 @@ public class PlayState extends State {
         g.setColor(Color.DARK_GRAY);
         g.fillRect(0, 0, game.getWidth() + 100, game.getHeight() + 100);
 
-        game.getLevel().draw(g, game.getCamera());
+        game.getLevelManager().getCurrentLevel().draw(g, game.getCamera());
     }
 
     @Override
     public void init() {
-        //game.getLevel().instantiate();
-        String levelName = JOptionPane.showInputDialog("Enter level name");
-        if(levelName == null){
-            State.pop();
-            return;
-        }
-        game.setLevel(LevelLoader.loadLevel(levelName));
-
-        if(game.getLevel() == null){
-            JOptionPane.showMessageDialog(null, "No level with that name");
-            State.pop();
+        //game.getLevelManager().instantiate();
+        if(!game.getLevelManager().loadLevel()){
+            pop();
             return;
         }
         game.setJustLoaded(true);
-        game.setCamera(new Camera(game.getLevel().getPlayer(), game.getWidth(), game.getHeight()));
+        game.setCamera(new Camera(game.getLevelManager().getCurrentLevel().getPlayer(), game.getWidth(), game.getHeight()));
     }
     @Override
     public void init(String name){
-        game.setLevel(LevelLoader.loadLevel(name));
+        game.getLevelManager().setCurrentLevel(LevelLoader.loadLevel(name));
         game.setJustLoaded(true);
-        game.setCamera(new Camera(game.getLevel().getPlayer(), game.getWidth(), game.getHeight()));
+        game.setCamera(new Camera(game.getLevelManager().getCurrentLevel().getPlayer(), game.getWidth(), game.getHeight()));
     }
 }

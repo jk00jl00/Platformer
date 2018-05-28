@@ -3,6 +3,7 @@ package GameController;
 import Gfx.Camera;
 import Gfx.Display;
 import LevelManagment.Level;
+import LevelManagment.LevelManager;
 import Listeners.ButtonListener;
 import Listeners.KeyPress;
 import Listeners.MouseListener;
@@ -31,7 +32,7 @@ public class Game implements Runnable{
     private Camera camera;
 
     //Level variables
-    private Level level;
+    private LevelManager lm;
 
 
     public Game(){
@@ -46,6 +47,7 @@ public class Game implements Runnable{
     private void initialize(){
         State.setGame(this);
         State.currentState = new MainMenu();
+        lm = new LevelManager(this);
     }
 
     //Holds the gameLoop and keeps it running
@@ -140,12 +142,8 @@ public class Game implements Runnable{
         return height;
     }
 
-    public Level getLevel() {
-        return level;
-    }
-
-    public void setLevel(Level level) {
-        this.level = level;
+    public LevelManager getLevelManager() {
+        return lm;
     }
 
     public KeyPress getkl() {
@@ -170,9 +168,7 @@ public class Game implements Runnable{
     }
 
     public void resetLevel() {
-        State.pop();
         while(PlayerStateStack.getCurrent() != null) PlayerStateStack.pop();
-        State.push(new PlayState());
-        State.currentState.init(this.level.getName());
+        lm.setFirstLevel();
     }
 }

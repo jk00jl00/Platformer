@@ -64,7 +64,7 @@ public class InAirStates extends PlayerState {
     private void shoot() {
         if(player.canShoot(game.getkl().spaceReleased)) {
             System.out.println(player.getFacing());
-            game.getLevel().addProjectile(new BasicShot(this.player, (this.player.getFacing() == Creature.Facing.Right) ? 1 : -1, 0, game));
+            game.getLevelManager().getCurrentLevel().addProjectile(new BasicShot(this.player, (this.player.getFacing() == Creature.Facing.Right) ? 1 : -1, 0, game));
             player.shot();
             game.getkl().spaceReleased = false;
         }
