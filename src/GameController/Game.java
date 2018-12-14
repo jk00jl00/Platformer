@@ -60,7 +60,7 @@ public class Game implements Runnable{
         }
         initialize();
         int fps = 60;
-        double timePerFrame = 1000000000/60;
+        double timePerFrame = 1000000000/fps;
         long start;
         long now;
         double dt = 0;

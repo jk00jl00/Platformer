@@ -15,6 +15,7 @@ public class Player extends Creature{
     public double dx;
     private boolean[] keys;
     private PlayerState currentState;
+    int shotCoolDown = 100;
     private long invisTime = 0;
     private long lastShot;
 
@@ -114,9 +115,9 @@ public class Player extends Creature{
         return currentState == null;
     }
 
-    public boolean canShoot(boolean spaceReleased){
-        int shotCooldown = 10;
-        return (System.currentTimeMillis() - lastShot > shotCooldown) && spaceReleased;
+    public boolean canShoot(){
+
+        return System.currentTimeMillis() - lastShot > shotCoolDown;
     }
 
     public void shot() {

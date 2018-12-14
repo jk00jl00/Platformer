@@ -8,7 +8,8 @@ public class KeyPress implements KeyListener {
 
     private final boolean[] keysPressed = new boolean[524];
     private final boolean[] controlMasked = new boolean[524];
-    public boolean spaceReleased = true;
+    public boolean wReleased;
+    public boolean sReleased;
 
     public boolean[] getKeysPressed() {
         return keysPressed;
@@ -28,7 +29,8 @@ public class KeyPress implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
         keysPressed[e.getKeyCode()] = false;
-        if(e.getKeyCode() == KeyEvent.VK_SPACE) spaceReleased = true;
+        if(e.getKeyCode() == KeyEvent.VK_W) wReleased = true;
+        if(e.getKeyCode() == KeyEvent.VK_S) sReleased = true;
     }
 
     public void setKey(int key, boolean b) {
@@ -41,5 +43,9 @@ public class KeyPress implements KeyListener {
 
     public void setControlMasked(int key, boolean b) {
         controlMasked[key] = b;
+    }
+
+    public boolean arrowKey() {
+        return keysPressed[KeyEvent.VK_LEFT] || keysPressed[KeyEvent.VK_UP] || keysPressed[KeyEvent.VK_RIGHT] || keysPressed[KeyEvent.VK_DOWN];
     }
 }

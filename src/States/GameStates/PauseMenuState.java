@@ -26,16 +26,18 @@ public class PauseMenuState extends State{
         if(keys[KeyEvent.VK_ESCAPE]){
             exitMenu();
         }
-        //Makes sure the menu is drawn before actions can be made and also returns if the user has not pressed left click.
-        if(menuTexts[0].clickBox == null || game.getml().lClick == null) return;
-        //Returns if a menutext was clicked.
-        if (checkClicks()) return;
-
+        //Makes sure the menu is drawn before actions can be made.
+        if(menuTexts[0].clickBox == null) return;
         for(MenuText m: menuTexts){
             if(m.clickBox.intersects(game.getml().cPos)){
                 m.highlighted = true;
             } else if(m.highlighted) m.highlighted = false;
         }
+        //Returns if the user has not pressed left click.
+        if(game.getml().lClick == null) return;
+        //Returns if a menutext was clicked.
+        checkClicks();
+
     }
 
     /**
@@ -97,8 +99,8 @@ public class PauseMenuState extends State{
                 g.setColor(Color.BLUE);
             g.drawString(m.text, m.clickBox.x, m.y);
 
-            g.setColor(Color.BLUE);
-            g.drawRect(m.clickBox.x, m.clickBox.y, m.clickBox.width, m.clickBox.height);
+            /*g.setColor(Color.BLUE);
+            g.drawRect(m.clickBox.x, m.clickBox.y, m.clickBox.width, m.clickBox.height);*/
         }
     }
 

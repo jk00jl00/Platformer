@@ -36,8 +36,8 @@ public class MainMenu extends State{
                 g.setColor(Color.BLUE);
             g.drawString(m.text, game.getWidth()/2 - (int)g.getFontMetrics().getStringBounds(m.text, g).getWidth()/2, m.y);
             //Draws a blue outline in which clicking will activate the texts function.
-            g.setColor(Color.BLUE);
-            g.drawRect(m.clickBox.x, m.clickBox.y, m.clickBox.width, m.clickBox.height);
+            /*g.setColor(Color.BLUE);
+            g.drawRect(m.clickBox.x, m.clickBox.y, m.clickBox.width, m.clickBox.height);*/
         }
     }
 
@@ -46,13 +46,14 @@ public class MainMenu extends State{
      */
     @Override
     public void update() {
-        if(menuTexts[0].clickBox == null || game.getml().lClick == null) return;
-        checkMenuClick();
+        if(menuTexts[0].clickBox == null) return;
         for(MenuText m: menuTexts){
             if(m.clickBox.intersects(game.getml().cPos) && !m.text.equals("Main Menu")){
                 m.highlighted = true;
             } else if(m.highlighted) m.highlighted = false;
         }
+        if(game.getml().lClick == null) return;
+        checkMenuClick();
         game.getml().lClick = null;
 
     }

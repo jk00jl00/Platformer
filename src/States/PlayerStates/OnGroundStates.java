@@ -34,7 +34,6 @@ public class OnGroundStates extends PlayerState {
     private void checkIfFalling() {
         player.dy += Player.grav;
 
-        Rectangle currentPosition = player.getHitBox();
         Rectangle nextPosition = new Rectangle(player.getX(), player.getY(), player.getWidth(), player.getHeight());
 
         nextPosition.y += Math.round(player.dy);
@@ -79,9 +78,8 @@ public class OnGroundStates extends PlayerState {
         if(!(keys[KeyEvent.VK_D] || keys[KeyEvent.VK_A])) {
             player.dx = 0;
         }
-        if(keys[KeyEvent.VK_SPACE]){
+        if(game.getkl().arrowKey()){
             shoot();
-            game.getkl().setKey(KeyEvent.VK_SPACE, false);
         }
     }
 
@@ -90,10 +88,17 @@ public class OnGroundStates extends PlayerState {
     }
 
     private void shoot() {
-        if(player.canShoot(game.getkl().spaceReleased)) {
-            game.getLevelManager().getCurrentLevel().addProjectile(new BasicShot(this.player, (this.player.getFacing() == Creature.Facing.Right) ? 1 : -1, 0, game));
+        if(player.canShoot()) {
+            double dx = (keys[KeyEvent.VK_RIGHT]) ? 1 : (keys[KeyEvent.VK_LEFT]) ? -1 : 0;
+            double dy = (keys[KeyEvent.VK_DOWN]) ? 1 : (keys[KeyEvent.VK_UP]) ? -1 : 0;
+
+            if(dx != 0&& dy != 0){
+                dx /= 2;
+                dy /=2;
+            }
+
+            game.getLevelManager().getCurrentLevel().addProjectile(new BasicShot(this.player, dx, dy, game));
             player.shot();
-            game.getkl().spaceReleased = false;
         }
     }
 
@@ -122,10 +127,6 @@ public class OnGroundStates extends PlayerState {
         }
         if(player.dx > 0) player.setFacing(Creature.Facing.Right);
         else if(player.dx < 0)player.setFacing(Creature.Facing.Left);
-    }
-
-    protected void collide(){
-
     }
 
     @Override

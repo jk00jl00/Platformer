@@ -65,7 +65,7 @@ public class Projectile {
 
     private void checkRange() {
         if(this.hitBox != null){
-            if (Math.abs(this.x - this.shotPos[0]) > this.range)
+            if (Math.sqrt(  Math.pow(Math.abs(this.x - this.shotPos[0]), 2) + Math.pow(Math.abs(this.y - this.shotPos[1]), 2)) > this.range)
                 game.getLevelManager().getCurrentLevel().removeProjectile(this);
 
         }
