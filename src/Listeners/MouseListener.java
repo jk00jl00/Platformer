@@ -194,8 +194,6 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
                 yDrag += e.getY() - rClick.y;
                 rClick.x += xDrag;
                 rClick.y += yDrag;
-                xDrag *= camera.getInvertedZoom();
-                yDrag *= camera.getInvertedZoom();
                 return;
             }
 

@@ -13,7 +13,8 @@ public class GameObject{
     public static final String[] OBJECTS ={
             "Platform",
             "SolidBlock",
-            "Gate"
+            "Gate",
+            "MovingPlatform"
     };
     protected final HashMap<String, Integer> intAttributes = new HashMap<>();
     protected final HashMap<String, String> stringAttributes = new HashMap<>();

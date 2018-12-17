@@ -26,7 +26,6 @@ public class SolidBlock extends GameObject{
 
         return sb.toString();
     }
-
     public static Color getDefaultColor(){
         return defaultColor;
     }

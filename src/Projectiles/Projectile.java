@@ -114,7 +114,7 @@ public class Projectile {
     private void collide() {
         if(hitBox == null) return;
         for(GameObject o: gameObjects){
-            if(Util.collide(o.getHitBox(), this.hitBox)){
+            if(o.isSolid() && Util.collide(o.getHitBox(), this.hitBox)){
                 game.getLevelManager().getCurrentLevel().removeProjectile(this);
                 this.hitBox = null;
                 return;

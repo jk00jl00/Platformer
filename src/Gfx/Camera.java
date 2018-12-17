@@ -1,13 +1,14 @@
 package Gfx;
 
 import Actors.Creature;
+import Actors.Player;
 import Utilities.Util;
 
 //Keeps the offset in order to make centering the camera easier
 public class Camera {
     private final int width;
     private final int height;
-    private final Creature centerOn;
+    private Creature centerOn;
     private int x;
     private int y = 0;
     private int zoomlevel = 1;
@@ -64,5 +65,9 @@ public class Camera {
 
     public int getZoomLevel() {
         return zoomlevel;
+    }
+
+    public void setFocus(Creature creature) {
+        centerOn = creature;
     }
 }

@@ -1,5 +1,5 @@
 false 632 2071
-38
+39
 SolidBlock 2058 8273 7942 1727 
 SolidBlock 2899 3887 2028 260 
 SolidBlock 312 2106 2652 2041 
@@ -38,6 +38,7 @@ Platform 4491 3569 145 19
 Platform 4316 3666 145 19 
 Platform 4492 3762 145 19 
 Gate 533 2046 55 58 none test 
+Gate 700 2047 73 58 none end 
 9
 BasicEnemy 1034 2087 
 BasicEnemy 1454 2087 

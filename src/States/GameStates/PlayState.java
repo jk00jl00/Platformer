@@ -5,7 +5,6 @@ import LevelManagment.LevelLoader;
 import States.PlayerStates.OnGroundStates;
 import States.PlayerStates.PlayerStateStack;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 //TODO - Fix reset level.
@@ -23,6 +22,7 @@ public class PlayState extends State {
         } else if(game.getkl().getControlMasked()[KeyEvent.VK_R]){
             game.resetLevel();
             game.getkl().setControlMasked(KeyEvent.VK_R, false);
+            game.getCamera().setFocus(game.getLevelManager().getCurrentLevel().getPlayer());
             return;
         }
         if(game.getLevelManager().getCurrentLevel().getPlayer().noState()) PlayerStateStack.push(new OnGroundStates(game.getLevelManager().getCurrentLevel().getPlayer(), game));

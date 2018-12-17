@@ -13,11 +13,6 @@ public class WalkingState extends OnGroundStates {
     }
 
     @Override
-    public void update() {
-        super.update();
-    }
-
-    @Override
     public void handleKeys() {
         if (keys[KeyEvent.VK_D]) {
             if(player.dx < 0){
@@ -40,11 +35,6 @@ public class WalkingState extends OnGroundStates {
 
         super.handleKeys();
 
-    }
-
-    @Override
-    public void move() {
-        super.move();
     }
 
     @Override

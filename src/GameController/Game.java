@@ -2,13 +2,11 @@ package GameController;
 
 import Gfx.Camera;
 import Gfx.Display;
-import LevelManagment.Level;
 import LevelManagment.LevelManager;
 import Listeners.ButtonListener;
 import Listeners.KeyPress;
 import Listeners.MouseListener;
 import States.GameStates.MainMenu;
-import States.GameStates.PlayState;
 import States.GameStates.State;
 import States.PlayerStates.PlayerStateStack;
 
@@ -89,7 +87,7 @@ public class Game implements Runnable{
             if(timer >= 250000000){
                 //System.out.println("Frames: " + ticks * 4);
                 //if(PlayerStateStack.getCurrent() != null)System.out.println("State: " + PlayerStateStack.getCurrent());
-                //if(level != null)System.out.println("dx: " + level.getPlayer().dx + "  ||  dy: " + level.getPlayer().dy);
+                if(lm.getCurrentLevel() != null)System.out.println("dx: " + lm.getCurrentLevel().getPlayer().dx + "  ||  dy: " + lm.getCurrentLevel().getPlayer().dy);
                 //if(level != null) System.out.println("x: " + this.camera.getX() + ", y: " + this.camera.getY());
                 ticks = 0;
                 timer = 0;
@@ -169,6 +167,6 @@ public class Game implements Runnable{
 
     public void resetLevel() {
         while(PlayerStateStack.getCurrent() != null) PlayerStateStack.pop();
-        lm.setFirstLevel();
+        lm.setToFirstLevel();
     }
 }

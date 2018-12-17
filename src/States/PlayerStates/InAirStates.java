@@ -55,9 +55,8 @@ public class InAirStates extends PlayerState {
                 player.dx += 0.5;
             }
         }
-        if(keys[KeyEvent.VK_SPACE]){
+        if(game.getkl().arrowKey()){
             shoot();
-            game.getkl().setKey(KeyEvent.VK_SPACE, false);
         }
     }
 
@@ -89,7 +88,7 @@ public class InAirStates extends PlayerState {
         for(GameObject o: player.getGos())
             if (o.isSolid()) {
                 if (collide(o.getHitBox(), nextPosition)) {
-                    if (currentPosition.x + player.getWidth() <= o.getHitBox().x) {
+                    if (currentPosition.x <= o.getHitBox().x) {
                         nextPosition.x = o.getHitBox().x - player.getWidth();
                     } else{
                         nextPosition.x = o.getHitBox().x +o.getHitBox().width;

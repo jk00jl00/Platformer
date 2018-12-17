@@ -83,7 +83,7 @@ public class LevelEditState extends State {
      * Drags the camera using input from the user's mouse.
      */
     private void cameraDrag() {
-        game.getCamera().move(-ml.getXDrag(), ml.getYDrag());
+        game.getCamera().move((int)Math.round(-ml.getXDrag() * game.getCamera().getInvertedZoom()), (int)Math.round(ml.getYDrag() * game.getCamera().getInvertedZoom()));
         ml.setXDrag(0);
         ml.setYDrag(0);
     }

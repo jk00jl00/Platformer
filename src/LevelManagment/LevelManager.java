@@ -75,7 +75,7 @@ public class LevelManager {
         this.currentLevel = currentLevel;
     }
 
-    public void setFirstLevel() {
+    public void setToFirstLevel() {
         currentLevel = LevelLoader.loadLevel(firstLevel);
     }
 }

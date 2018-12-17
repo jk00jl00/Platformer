@@ -5,6 +5,8 @@ import Actors.Player;
 import GameController.Game;
 import Objects.GameObject;
 import Objects.Gate;
+import Objects.MovingPlatform;
+import Objects.Platform;
 import Projectiles.BasicShot;
 import States.GameStates.PlayState;
 import States.GameStates.State;
@@ -20,6 +22,7 @@ public class OnGroundStates extends PlayerState {
     final double xAcceleration = 0.5;
     final double xMaxSpeed = 7.5;
     protected double jumpSpeed = 12.5;
+    protected double onPlatformSpeed;
 
     public OnGroundStates(Player player, Game game) {
         super(player, game);
@@ -28,6 +31,7 @@ public class OnGroundStates extends PlayerState {
     @Override
     public void update() {
         this.keys = player.getKeys();
+        onPlatformSpeed = 0;
         checkIfFalling();
     }
 
@@ -41,6 +45,9 @@ public class OnGroundStates extends PlayerState {
             if (o.isSolid()) {
                 if(collide(o.getHitBox(), nextPosition)) {
                     player.dy = 0;
+                    if(o.getType().equals("MovingPlatform")){
+                        onPlatformSpeed = (double) ((MovingPlatform)o).getDir();
+                    }
                     return;
                 }
             }
@@ -108,11 +115,12 @@ public class OnGroundStates extends PlayerState {
         Rectangle nextPosition = new Rectangle(player.getX(), player.getY(), player.getWidth(), player.getHeight());
 
         nextPosition.x += Math.round(player.dx);
+        if(onPlatformSpeed != 0) nextPosition.x += onPlatformSpeed;
 
-        for(GameObject o: player.getGos())
+        for(GameObject  o: player.getGos())
             if (o.isSolid()) {
                 if (collide(o.getHitBox(), nextPosition)) {
-                    if (currentPosition.x + player.getWidth() <= o.getHitBox().x) {
+                    if (currentPosition.x <= o.getHitBox().x) {
                         nextPosition.x = o.getHitBox().x - player.getWidth();
                     } else{
                         nextPosition.x = o.getHitBox().x +o.getHitBox().width;

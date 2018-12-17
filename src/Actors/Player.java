@@ -15,7 +15,7 @@ public class Player extends Creature{
     public double dx;
     private boolean[] keys;
     private PlayerState currentState;
-    int shotCoolDown = 100;
+    int shotCoolDown = 200;
     private long invisTime = 0;
     private long lastShot;
 
